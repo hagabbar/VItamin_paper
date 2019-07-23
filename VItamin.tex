@@ -39,33 +39,74 @@ With the beginning of the Laser Interferometer Gravitational wave Observatory's 
 %show...'' or something similar.
 \end{abstract}
 
-When performing Bayesian GW parameter estimation, we assume that we are given some observed waveform which is buried in noise. For this study, we consider the noise to be whitened Gaussian noise. Given a noisy waveform, we would like to find an optimal procedure for retrieving some finite set of unknown GW parameters \cite{Jaranowski2012}. Our procedure should be able to give us an accurate estimate of the parameters of our observed signal, while also accounting for the uncertainty which comes from having multiple noise realizations of our observed data able to be mapped to one parameter estimate.
+When performing Bayesian GW parameter estimation, we assume that we are given 
+some observed waveform which is buried in noise. For this study, we consider 
+the noise to be whitened Gaussian noise. Given a noisy waveform, we would like 
+to find an optimal procedure for retrieving some finite set of unknown GW parameters 
+\cite{Jaranowski2012}. Our procedure should be able to give us an accurate estimate 
+of the parameters of our observed signal, while also accounting for the uncertainty 
+which comes from having multiple noise realizations of our observed data able to 
+be mapped to one parameter estimate.
 
-According to Bayes Theorem, a posterior for a set of GW parameters can be described by the following expression:
+According to Bayes Theorem, a posterior for a set of GW parameters can be described 
+by the following expression:
 
 \begin{equation}
     p(\theta|x) = \frac{p(x|\theta) * p(\theta)}{p(x)},
 \end{equation}
 
-where $p(\theta|x)$ is the probability of the parameters given observed data, $p(x|\theta)$ is the probability of the observed data given the parameters, $p(\theta)$ is the prior we put on our parameter distribution and $p(x)$ is the probability of our data. We typically assume that $p(x)$ is a constant, $1$, which then reduces to the following equation:
+where $p(\theta|x)$ is the probability of the parameters given observed data, 
+$p(x|\theta)$ is the probability of the observed data given the parameters, $p(\theta)$ 
+is the prior we put on our parameter distribution and $p(x)$ is the probability of our data. 
+We typically assume that $p(x)$ is a constant, $1$, which then reduces to the following equation:
 
 \begin{equation}
     p(\theta|x) \propto p(x|\theta) * p(\theta),
 \end{equation}
 
-where $p(\theta|x)$ is the posterior, $p(x|\theta)$ is the likelihood and $p(\theta)$ is the prior. For this study, we assume that the noise is stationary with zero mean and some constant variance in each detector. Small changes in the power spectrum density over time are not considered in this analysis. 
+where $p(\theta|x)$ is the posterior, $p(x|\theta)$ is the likelihood and $p(\theta)$ is the prior. 
+For this study, we assume that the noise is stationary with zero mean and some constant variance 
+in each detector. Small changes in the power spectrum density over time are not considered in this analysis. 
 
-There are several algorithms which may be used to sample from the posterior distribution of astrophysical GW source parameters. The algorithm which is used in our studies is the nested sampling algorithm. Nested sampling takes a multi-dimensional evidence integral calculation (fully marginalized likelihood) and transforms it into a more manageable 1-D integral. Where the fully marginalized likelihood is equivalent to taking the integral of the likelihood and multiplying it by the prior \cite{1409.7215}.
+There are several algorithms which may be used to sample from the posterior distribution 
+of astrophysical GW source parameters. The algorithm which is used in our studies is 
+the nested sampling algorithm. Nested sampling takes a multi-dimensional evidence 
+integral calculation (fully marginalized likelihood) and transforms it into a more 
+manageable 1-D integral. Where the fully marginalized likelihood is equivalent to taking 
+the integral of the likelihood and multiplying it by the prior \cite{1409.7215}.
 
 % should state exactly HOW the likelihood is calculated below
 
-The first step of the nested sampling algorithm starts by generating an initial set of live points made from the prior distribution. The likelihood for each point is calculated and the point with the lowest likelihood is removed. The removed sample is then replaced with a new sample which has a higher likelihood. This cycle repeats itself until a predefined stopping threshold is achieved \cite{1409.7215}. Samples from the posterior may be drawn by randomly selecting from both all current 'live' points and all previously removed 'live' points. 
+The first step of the nested sampling algorithm starts by generating an initial 
+set of live points made from the prior distribution. The likelihood for each point 
+is calculated and the point with the lowest likelihood is removed. The removed sample 
+is then replaced with a new sample which has a higher likelihood. This cycle repeats 
+itself until a predefined stopping threshold is achieved \cite{1409.7215}. Samples 
+from the posterior may be drawn by randomly selecting from both all current 'live' 
+points and all previously removed 'live' points. 
 
-The codebase which we use to do our Bayesian analysis is the Bilby inference library \cite{1811.02042}. For testing, waveforms have a duration of 1 second, sampling frequency of 128Hz, fixed right ascension ($\alpha$), declination ($\delta$), inclination angle ($\theta_j$), spin, luminosity distance, and polarization angle ($\psi$). We allow 3 parameters to vary: chirp mass, phase and time of coalescence. Our waveform model is \texttt{IMRPhenomPv2} with a minimum cutoff frequency of 20Hz. Analysis is done using a single detector (H1) which has a power spectrum density derived from the Advanced LIGO design sensitivity curves.
+The codebase which we use to do our Bayesian analysis is the Bilby inference library 
+\cite{1811.02042}. For testing, waveforms have a duration of 1 second, sampling frequency 
+of 128Hz, fixed right ascension ($\alpha$), declination ($\delta$), inclination angle 
+($\theta_j$), spin, luminosity distance, and polarization angle ($\psi$). We allow 3 
+parameters to vary: chirp mass, phase and time of coalescence. Our waveform model is 
+\texttt{IMRPhenomPv2} with a minimum cutoff frequency of 20Hz. Analysis is done using 
+a single detector (H1) which has a power spectrum density derived from the Advanced 
+LIGO design sensitivity curves.
 
-The priors we choose for the analysis are all fixed for the parameters which we do not allow to vary in our test set. For other parameters, we set a prior on chirp mass from 30 - 43 solar masses, a phase prior of $0 - 2\pi$, distance prior of 1Gpc - 3Gpc, and a time of coalesence prior of $1126259642.4 - 1126259642.6$. The nested sampler is run using 1000 live points and has a predefined stopping criteria. The sampler takes $\mathcal{O}(3 \: \textrm{minutes})$ to converge.
+The priors we choose for the analysis are all fixed for the parameters which we do not 
+allow to vary in our test set. For other parameters, we set a prior on chirp mass from 
+30 - 43 solar masses, a phase prior of $0 - 2\pi$, distance prior of 1Gpc - 3Gpc, and 
+a time of coalesence prior of $1126259642.4 - 1126259642.6$. The nested sampler is run 
+using 1000 live points and has a predefined stopping criteria. The sampler takes 
+$\mathcal{O}(3 \: \textrm{minutes})$ to converge.
 
-After the sampler has converged, we draw samples and produce a posterior for our astrophysical GW source parameters we are trying to estimate, an example of which can be seen for one test event in Fig. \ref{fig:bilby_pos_ex}. We will now investigate whether we can reproduce the results seen in Fig. \ref{fig:bilby_pos_ex} using our proposed machine learning approach (CVAEs). The advantages and reasons for using such an alternative approach will become more clear in the following sections. 
+After the sampler has converged, we draw samples and produce a posterior for our 
+astrophysical GW source parameters we are trying to estimate, an example of which 
+can be seen for one test event in Fig. \ref{fig:bilby_pos_ex}. We will now investigate 
+whether we can reproduce the results seen in Fig. \ref{fig:bilby_pos_ex} using our 
+proposed machine learning approach (CVAEs). The advantages and reasons for using such 
+an alternative approach will become more clear in the following sections. 
 
 \begin{figure}
     \centering
