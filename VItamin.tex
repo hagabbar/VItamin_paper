@@ -189,43 +189,38 @@ and produces a another latent space vector $z_2$.
 
 
 %
-% loss functions used in the neural networks
+% Brief introduction to loss functions used in the neural networks
 %
 In order for our variational autoencoders to learn anything, we need a metric by which 
 we can ascertain the effectivness of our networks. This is done by computing 
 a loss function which minimizes the difference 
-between predictions on the posterior with respect to the truth and the Kullback-Leibler divergence 
+between predictions on the posterior with respect to the truth (cost function) and the Kullback-Leibler divergence 
 between latent space distributions $z_1$ and $z_2$. 
 
+%
+% Cost function
+%
+The cost function is constructed by first defining a normalization factor
 
-To-do:
+\begin{equation}
+    f_{norm} = 0.5 \cdot \log(c + \exp(x_{\sigma})) - 0.5 \cdot \log(2\pi),
+\end{equation}
 
-\begin{itemize}
-\item Add Section describing how conditional variational autoencoders work.
-\end{itemize}
+where $c$ is a small constant and $x_{\sigma}$ are standard deviation predictions 
+on the source paramters from the decoder network given latent space predictions 
+from encoder-2 ($z_2$) and training GW sigals ($y_{t}$).
 
+%
+% KL divergence
+%
 
-Then the body of the main text appears after the intro paragraph.
-Figure environments can be left in place in the document.
-\verb|\includegraphics| commands are ignored since Nature wants
-the figures sent as separate files and the captions are
-automatically moved to the end of the document (they are printed
-out with the \verb|\end{document}| command. However, tables must
-be manually moved to the end of the document, after the addendum.
+%
+% Results
+%
 
-Citation of Einstein's paper \cite{Einstein}.
-
-\begin{figure}
-%%%\includegraphics{something} % this command will be ignored
-\caption{Each figure legend should begin with a brief title for
-the whole figure and continue with a short description of each
-panel and the symbols used. For contributions with methods
-sections, legends should not contain any details of methods, or
-exceed 100 words (fewer than 500 words in total for the whole
-paper). In contributions without methods sections, legends should
-be fewer than 300 words (800 words or fewer in total for the whole
-paper).}
-\end{figure}
+%
+% Conclusions
+%
 
 \section*{Another Section}
 
