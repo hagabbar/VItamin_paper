@@ -27,27 +27,40 @@
  \item School of Computing Science, University of Glasgow, Glasgow G12 8QQ, United Kingdom
 \end{affiliations}
 
+%
+% Introductory paragraph describing the content of the letter
+%
 \begin{abstract}
-With the beginning of the Laser Interferometer Gravitational wave Observatory's (LIGO) and Virgo's third observation run well under way, we are now in an era where gravitational wave (GW) detection is commonplace. As the sensitivity of both detectors increases, we will see more many more detections on a weekly and even daily basis.  The current method used to estimate the parameters of gravitational wave events is done using a form of Bayesian inference. Although effective, Bayesian inference is a computationally expensive method which can take of order hours to weeks to complete when applied to a single GW event. We propose the use of a conditional variational autoencoder (CVAE) as a computationally inexpensive alternative to this approach. Here we show that a CVAE can return the posterior estimate for any parameter of a detected GW event on the order of microseconds, an immense speed-up over current inference techniques.
-
-%For Nature, the abstract is really an introductory paragraph set
-%in bold type.  This paragraph must be ``fully referenced'' and
-%less than 180 words for Letters.  This is the thing that is
-%supposed to be aimed at people from other disciplines and is
-%arguably the most important part to getting your paper past the
-%editors.  End this paragraph with a sentence like ``Here we
-%show...'' or something similar.
+With the beginning of the Laser Interferometer Gravitational wave Observatory's 
+(LIGO) and Virgo's third observation run well under way, we are now in an era 
+where gravitational wave (GW) detection is commonplace. As the sensitivity of 
+both detectors increases, we will see more many more detections on a weekly 
+and even daily basis.  The current method used to estimate the parameters of 
+gravitational wave events is done using a form of Bayesian inference. Although 
+effective, Bayesian inference is a computationally expensive method which can 
+take of order hours to weeks to complete when applied to a single GW event. We 
+propose the use of a conditional variational autoencoder (CVAE) as a 
+computationally inexpensive alternative to this approach. Here we show that 
+a CVAE can return the posterior estimate for any parameter of a detected GW 
+event on the order of microseconds, an immense speed-up over current 
+inference techniques.
 \end{abstract}
 
+%
+% Set up parameter estimation problem
+%
 When performing Bayesian GW parameter estimation, we assume that we are given 
 some observed waveform which is buried in noise. For this study, we consider 
 the noise to be whitened Gaussian noise. Given a noisy waveform, we would like 
 to find an optimal procedure for retrieving some finite set of unknown GW parameters 
 \cite{Jaranowski2012}. Our procedure should be able to give us an accurate estimate 
 of the parameters of our observed signal, while also accounting for the uncertainty 
-which comes from having multiple noise realizations of our observed data able to 
+which arises from having multiple noise realizations of our observed data able to 
 be mapped to one parameter estimate.
 
+%
+% Describe Bayes Theorem
+%
 According to Bayes Theorem, a posterior for a set of GW parameters can be described 
 by the following expression:
 
@@ -68,14 +81,15 @@ where $p(\theta|x)$ is the posterior, $p(x|\theta)$ is the likelihood and $p(\th
 For this study, we assume that the noise is stationary with zero mean and some constant variance 
 in each detector. Small changes in the power spectrum density over time are not considered in this analysis. 
 
+%
+% Describe nested sampling algorithm
+%
 There are several algorithms which may be used to sample from the posterior distribution 
 of astrophysical GW source parameters. The algorithm which is used in our studies is 
 the nested sampling algorithm. Nested sampling takes a multi-dimensional evidence 
 integral calculation (fully marginalized likelihood) and transforms it into a more 
 manageable 1-D integral. Where the fully marginalized likelihood is equivalent to taking 
 the integral of the likelihood and multiplying it by the prior \cite{1409.7215}.
-
-% should state exactly HOW the likelihood is calculated below
 
 The first step of the nested sampling algorithm starts by generating an initial 
 set of live points made from the prior distribution. The likelihood for each point 
@@ -85,42 +99,104 @@ itself until a predefined stopping threshold is achieved \cite{1409.7215}. Sampl
 from the posterior may be drawn by randomly selecting from both all current 'live' 
 points and all previously removed 'live' points. 
 
+%
+% discuss codebass which we use to generate waveforms, sampling frequency, and paramter space
+%
 The codebase which we use to do our Bayesian analysis is the Bilby inference library 
 \cite{1811.02042}. For testing, waveforms have a duration of 1 second, sampling frequency 
-of 128Hz, fixed right ascension ($\alpha$), declination ($\delta$), inclination angle 
+of 256Hz, fixed right ascension ($\alpha$), declination ($\delta$), inclination angle 
 ($\theta_j$), spin, luminosity distance, and polarization angle ($\psi$). We allow 3 
 parameters to vary: chirp mass, phase and time of coalescence. Our waveform model is 
 \texttt{IMRPhenomPv2} with a minimum cutoff frequency of 20Hz. Analysis is done using 
 a single detector (H1) which has a power spectrum density derived from the Advanced 
 LIGO design sensitivity curves.
 
+%
+% Discuss priors that we use
+%
 The priors we choose for the analysis are all fixed for the parameters which we do not 
-allow to vary in our test set. For other parameters, we set a prior on chirp mass from 
-30 - 43 solar masses, a phase prior of $0 - 2\pi$, distance prior of 1Gpc - 3Gpc, and 
+allow to vary in our test set. For other parameters, we set a prior on both component masses from 
+35 - 50 solar masses, a phase prior of $0 - 2\pi$, distance prior of 1Gpc - 3Gpc, and 
 a time of coalesence prior of $1126259642.4 - 1126259642.6$. The nested sampler is run 
-using 1000 live points and has a predefined stopping criteria. The sampler takes 
+using 1000 live points and has a predefined stopping criteria of $0.1$. The sampler takes 
 $\mathcal{O}(3 \: \textrm{minutes})$ to converge.
 
-After the sampler has converged, we draw samples and produce a posterior for our 
+%
+% Conclude bilby section
+% 
+After the sampler has converged, we draw samples and produce a posterior on the 
 astrophysical GW source parameters we are trying to estimate, an example of which 
 can be seen for one test event in Fig. \ref{fig:bilby_pos_ex}. We will now investigate 
 whether we can reproduce the results seen in Fig. \ref{fig:bilby_pos_ex} using our 
-proposed machine learning approach (CVAEs). The advantages and reasons for using such 
-an alternative approach will become more clear in the following sections. 
+proposed machine learning approach (CVAEs). The advantages of which include orders 
+of magnitude speed-up in parameter posterior estimation. 
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{figures/samp_8_corner.png}
-    \caption{Predicted posterior distributions produced by the Bilby inference library for a test GW event with chirp mass $31.21$, phase $2.04$ and time of coalescence $1126259642.5$. Three contours are plotted in the 2D histograms at 1,2 and 3 sigma credibility intervals. 1D histograms have 1 sigma vertical confidence intervals plotted as blue dashed lines.}
+    \caption{Predicted posterior distributions produced by the Bilby 
+    inference library for a test GW event with chirp mass $31.21$, 
+    phase $2.04$ and time of coalescence $1126259642.5$. Three 
+    contours are plotted in the 2D histograms at 1,2 and 3 sigma 
+    credibility intervals. 1D histograms have 1 sigma vertical 
+    confidence intervals plotted as blue dashed lines.}
     \label{fig:bilby_pos_ex}
 \end{figure}
    
 
 %
-% intro to conditional variational autoencoders
+% What is an autoencoder?
 %
+Conditional variational autoencoders are a form of variational autoencoders 
+which are conditioned on an observation. The autoencoders from which they 
+are derived are typically used 
+for problems involving image reconstruction and attempt to reproduce a  
+given input. An autoencoder is composed of two neural networks, an encoder 
+and a decoder. The encoder network takes as input an image, then converts 
+the image into a lower dimensional space, what is also known as the {\it{latent space}}. 
+The output of the encoder is then fed as input to the decoder network 
+which generates as output a reconstruction of the original input
+image to the encoder network. Through training, we hope to learn a latent space which will 
+take on the most important properties of the input training samples.  
 
-\textit{Conditional Variational Autoencoders}---
+%
+% What is a variational autoencoder?
+%
+One failing of an autoencoder is that they are only able to return one 
+output for any one given input. In order to produce variable outputs for 
+one given input, we need to to utilize what is known as a variational autoencoder.
+A variational autoencoder is also composed of both an encoder and a decoder network. 
+The major difference between a variational autoencoder and an autoencoder is how the 
+latent space is produced. In our variational autoender, the mean and the log squared 
+of the standard deviation of the output of the encoder is calculated. We then multiply 
+the log squared of the standard deviation by a unit Gaussian distribution which is 
+of the same dimension as that of the latent space. This is then summed together 
+with the mean to produce the latent space $z$. The latent space is given as input 
+to the decoder network, which attempts to reconstruct the given input to 
+the encoder network. In this study we use fully-connected layers in 
+both the decoder and the encoder networks.
+
+%
+% How does our 3-network set-up work?
+%
+For this study, we will use a combination of three networks; two encoder networks (Encoder-1, Encoder-2) 
+and one decoder network. The decoder network takes as input a set of latent space 
+$z$ predictions from one of the encoder networks. The decoder network samples from 
+the posterior by producing prediction on our parameters $x$. Encoder-1 takes as 
+input a set of GW signals and produces a latent space vector $z_1$, while encoder-2 
+takes as input both a set of GW signals and their associated source parameters 
+and produces a another latent space vector $z_2$.
+
+
+%
+% loss functions used in the neural networks
+%
+In order for our variational autoencoders to learn anything, we need a metric by which 
+we can ascertain the effectivness of our networks. This is done by computing 
+a loss function which minimizes the difference 
+between predictions on the posterior with respect to the truth and the Kullback-Leibler divergence 
+between latent space distributions $z_1$ and $z_2$. 
+
 
 To-do:
 
