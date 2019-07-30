@@ -3,34 +3,105 @@
 %% Written by Peter Czoschke, 26 February 2004
 %%
 
-\documentclass{nature}
+\documentclass[%
+%superscriptaddress,
+%groupedaddress,
+%unsortedaddress,
+%runinaddress,
+%frontmatterverbose, 
+%preprint,
+showpacs,
+%preprintnumbers,
+%nofootinbib,
+%nobibnotes,
+%bibnotes,
+ amsmath,amssymb,
+ aps,
+ twocolumn,
+ prl,
+ reprint,
+%pra,
+%prb,
+%rmp,
+%prstab,
+%prstper,
+floatfix,
+]{revtex4-1}
+
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+%\usepackage{lineno}
+\usepackage{color}
+\usepackage{acronym}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{hyperref}
+%\addbibresource{references.bib}
+%\linenumbers % Commence numbering lines
+%\usepackage{hyperref}% add hypertext capabilities
+%\usepackage[mathlines]{lineno}% Enable numbering of text and display math
+%\linenumbers\relax % Commence numbering lines
+\hypersetup{
+%--- fill inside borders ---
+  colorlinks=true,        % false: boxed links; true: colored links
+  linkcolor=black,         % color of internal links
+  citecolor=cyan,         % color of links to bibliography
+}
 
 %% make sure you have the nature.cls and naturemag.bst files where
 %% LaTeX can find them
 
-\bibliographystyle{naturemag}
-
-\title{Estimating Bayesian Parameter Estimation Using Conditional Variational Autoencoders}
+%\bibliographystyle{authortitle}
 
 %% Notice placement of commas and superscripts and use of &
 %% in the author list
 
-\author{Hunter Gabbard$^{1}$, Ik Siong Heng$^1$, Chris Messenger$^1$, Francesco Tonolini$^2$, \& Roderick Murray-Smith$^2$}
+%\author{Hunter Gabbard$^{1}$, Ik Siong Heng$^1$, Chris Messenger$^1$, \\
+%    Francesco Tonolini$^2$, \& Roderick Murray-Smith$^2$}
 
+%% ----- comment commands for each of us
+\newcommand{\chris}[1]{\textbf{\textcolor{green}{CHRIS: #1}}}
+\newcommand{\francesco}[1]{\textbf{\textcolor{red}{FRANCESCO: #1}}}
+\newcommand{\hunter}[1]{\textbf{\textcolor{blue}{HUNTER: #1}}}
+\newcommand{\siong}[1]{\textbf{\textcolor{cyan}{SIONG: #1}}}
+\newcommand{\rod}[1]{\textbf{\textcolor{yellow}{ROD: #1}}}
 
 \begin{document}
 
+\preprint{APS/123-QED}
+
+\title{Estimating Bayesian Parameter Estimation Using Conditional Variational Autoencoders}
+
+\author{Hunter Gabbard$^1$}
+ \email{Corresponding author: h.gabbard.1@research.gla.ac.uk}
+\author{Ik Siong Heng$^1$}
+\author{Chris Messenger$^1$}
+\author{Francesco Tonolini$^2$}
+\author{\& Roderick Murray-Smith$^2$}
+
+\affiliation{
+ SUPA, School of Physics and Astronomy$^1$, \\
+ School of Computing Science$^2$, \\
+ University of Glasgow, \\
+ Glasgow G12 8QQ, United Kingdom \\
+}
+
+\date{\today}
+
 \maketitle
 
-\begin{affiliations}
- \item SUPA, School of Physics and Astronomy, University of Glasgow, Glasgow G12 8QQ, United Kingdom
- \item School of Computing Science, University of Glasgow, Glasgow G12 8QQ, United Kingdom
-\end{affiliations}
+\acrodef{BBH}[BBH]{binary black hole}
+\acrodef{SNR}[SNR]{signal-to-noise ratio}
+\acrodef{PSD}[PSD]{power spectral density}
+\acrodef{FFT}[FFT]{fast Fourier transform}
+\acrodef{CNN}[CNN]{convolutional neural network}
+\acrodef{ROC}[ROC]{receiver operator characteristic}
 
 %
 % Introductory paragraph describing the content of the letter
 %
-\begin{abstract}
+\textbf{
 With the beginning of the Laser Interferometer Gravitational wave Observatory's 
 (LIGO) and Virgo's third observation run well under way, we are now in an era 
 where gravitational wave (GW) detection is commonplace. As the sensitivity of 
@@ -43,8 +114,7 @@ propose the use of a conditional variational autoencoder (CVAE) as a
 computationally inexpensive alternative to this approach. Here we show that 
 a CVAE can return the posterior estimate for any parameter of a detected GW 
 event on the order of microseconds, an immense speed-up over current 
-inference techniques.
-\end{abstract}
+inference techniques.}
 
 %
 % Set up parameter estimation problem
@@ -52,8 +122,8 @@ inference techniques.
 When performing Bayesian GW parameter estimation, we assume that we are given 
 some observed waveform which is buried in noise. For this study, we consider 
 the noise to be whitened Gaussian noise. Given a noisy waveform, we would like 
-to find an optimal procedure for retrieving some finite set of unknown GW parameters 
-\cite{Jaranowski2012}. Our procedure should be able to give us an accurate estimate 
+to find an optimal procedure for retrieving some finite set of unknown GW parameters \cite{Jaranowski2012}
+. Our procedure should be able to give us an accurate estimate 
 of the parameters of our observed signal, while also accounting for the uncertainty 
 which arises from having multiple noise realizations of our observed data able to 
 be mapped to one parameter estimate.
@@ -95,15 +165,16 @@ The first step of the nested sampling algorithm starts by generating an initial
 set of live points made from the prior distribution. The likelihood for each point 
 is calculated and the point with the lowest likelihood is removed. The removed sample 
 is then replaced with a new sample which has a higher likelihood. This cycle repeats 
-itself until a predefined stopping threshold is achieved \cite{1409.7215}. Samples 
+itself until a predefined stopping threshold is achieved \cite{1409.7215}
+. Samples 
 from the posterior may be drawn by randomly selecting from both all current 'live' 
 points and all previously removed 'live' points. 
 
 %
 % discuss codebase which we use to generate waveforms, sampling frequency, and paramter space
 %
-The codebase which we use to do our Bayesian analysis is the Bilby inference library 
-\cite{1811.02042}. For testing, waveforms have a duration of 1 second, sampling frequency 
+The codebase which we use to do our Bayesian analysis is the Bilby inference library \cite{1811.02042}
+. For testing, waveforms have a duration of 1 second, sampling frequency 
 of 256Hz, fixed right ascension ($\alpha$), declination ($\delta$), inclination angle 
 ($\theta_j$), spin, luminosity distance, and polarization angle ($\psi$). We allow 3 
 parameters to vary: chirp mass, phase and time of coalescence. Our waveform model is 
@@ -126,22 +197,26 @@ $\mathcal{O}(3 \: \textrm{minutes})$ to converge.
 % 
 After the sampler has converged, we draw samples and produce a posterior on the 
 astrophysical GW source parameters we are trying to estimate, an example of which 
-can be seen for one test event in Fig. \ref{fig:bilby_pos_ex}. We will now investigate 
-whether we can reproduce the results seen in Fig. \ref{fig:bilby_pos_ex} using our 
+can be seen for one test event in Fig. 
+%\ref{fig:bilby_pos_ex}
+. We will now investigate 
+whether we can reproduce the results seen in Fig. 
+%\ref{fig:bilby_pos_ex} 
+using our 
 proposed machine learning approach (CVAEs). The advantages of which include orders 
 of magnitude speed-up in parameter posterior estimation. 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/samp_8_corner.png}
-    \caption{Predicted posterior distributions produced by the Bilby 
-    inference library for a test GW event with chirp mass $31.21$, 
-    phase $2.04$ and time of coalescence $1126259642.5$. Three 
-    contours are plotted in the 2D histograms at 1,2 and 3 sigma 
-    credibility intervals. 1D histograms have 1 sigma vertical 
-    confidence intervals plotted as blue dashed lines.}
-    \label{fig:bilby_pos_ex}
-\end{figure}
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=\textwidth]{figures/samp_8_corner.png}
+%    \caption{Predicted posterior distributions produced by the Bilby 
+%    inference library for a test GW event with chirp mass $31.21$, 
+%    phase $2.04$ and time of coalescence $1126259642.5$. Three 
+%    contours are plotted in the 2D histograms at 1,2 and 3 sigma 
+%    credibility intervals. 1D histograms have 1 sigma vertical 
+%    confidence intervals plotted as blue dashed lines.}
+%    \label{fig:bilby_pos_ex}
+%\end{figure}
    
 
 %
@@ -187,10 +262,15 @@ input a set of GW signals and produces a latent space vector $z_1$, while encode
 takes as input both a set of GW signals and their associated source parameters 
 and produces a another latent space vector $z_2$.
 
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/network_setup.png}
+    \caption{\label{fig:network_config} My figure.  An example of a cool figure}
+\end{figure}
+
 %
 % Training procedure
 %
-Training is accomplished through a series of 3 steps illustrated in \ref{fig: network_config}. 
+Training is accomplished through a series of 3 steps illustrated in \ref{fig:network_config}. 
 In step 1 encoder-1 is given $y_t$ GW training samples and returns as output mean
 latent space $z^{y}_{\mu}$. Then in step 2, encoder-2 takes a combination of $(x_{t},y_{t})$ 
 and returns $z^{x,y}_{\mu}$. The K-L divergence between both $z^{y}_{\mu}$ and $z^{x,y}_{\mu}$ is 
@@ -238,7 +318,7 @@ trying to predict. A Gaussian likelihood is computed and summed over
 \end{equation}
 
 where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are standard deviation squared predictions from the 
-decoder network.s
+decoder network.
 
 
 %
@@ -268,6 +348,16 @@ This is loss is then backpropogated through all three networks
 training samples for a pre-defined number of iterations.
 
 %
+% loss plot
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/losses_logscale.png}
+    \caption{\label{fig:loss_log} Loss plot with the cost, KL, 
+    and total loss values plotted as a function of the total 
+    number of training iterations. }
+\end{figure}
+
+%
 % Test procedure
 %
 After training has completed, we simply feed encoder-1 our test 
@@ -282,47 +372,82 @@ our final posterior samples.
 %
 % Results
 %
+We present results from $25$ test cases of GWs produced from 
+a parameter space which is consistent with the prior assumptions  
+on the parameter space defined previously. The only difference 
+being that all time of coalescence parameters are fixed 
+at $0.5s$ within the $1s$ time window. We compare our 
+VAE predictions with posteriors produced by the Bilby
+inference library.
+
+%
+% K-L divergence results
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/hist-kl_0.png}
+    \caption{\label{fig:kl_results} Histograms of 
+    25 different test GW signal KL divergence values. 
+    Red denotes predictions from VItamin and blue 
+    denotes predictions from Bilby.}
+\end{figure}
+
+%
+% A-D results
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/hist-ad_0.png}
+    \caption{\label{fig:ad_results} Histograms of 
+    25 different test GW signal Anderson-Darling (AD) statistic 
+    component mass 1 values. Distributions which are similar 
+    will have AD values which are close to 0.
+    Red denotes predictions from VItamin and blue 
+    denotes predictions from Bilby.}
+\end{figure}
+
+%
+% 1-D overlap results
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/latest-1d_0.png}
+    \caption{\label{fig:1D_overlap} Histograms of 
+    25 different test GW signal component mass 1 values. 
+    Numbers in the upper right-hand corner denote overlap 
+    values where 1 means $\sim{100}\%$ overlap and 0 
+    means $\sim{0}\%$ overlap.
+    Red denotes predictions from VItamin and blue 
+    denotes predictions from Bilby.}
+\end{figure}
+
+%
+% P-P plot
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/latest_pp_plot.png}
+    \caption{\label{fig:pp_plot} P-p plot 
+    using $100$ unique test samples and $5000$
+    posterior sample predictions per test sample. 
+    The x axis denotes the theoretical cummulative 
+    distribution whereas the y axis denotes 
+    the predicted cummulative distribution.}
+\end{figure}
+
+%
+% P-P plot
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/posteriors_13.png}
+    \caption{\label{fig:lum_dist-t0_scatter} This figure illustrates 
+    25 different test GW samples with $5000$ posterior samples 
+    from both Bilby and VItamin plotted. Red denotes predictions 
+    from VItamin and blue denotes predictions from Bilby. Luminosity 
+    distance is plotted as a function of time of coalescence.}
+\end{figure}
 
 %
 % Conclusions
 %
 
-\section*{Another Section}
-
-Sections can only be used in Articles.  Contributions should be
-organized in the sequence: title, text, methods, references,
-Supplementary Information line (if any), acknowledgements,
-interest declaration, corresponding author line, tables, figure
-legends.
-
-Spelling must be British English (Oxford English Dictionary)
-
-In addition, a cover letter needs to be written with the
-following:
-\begin{enumerate}
- \item A 100 word or less summary indicating on scientific grounds
-why the paper should be considered for a wide-ranging journal like
-\textsl{Nature} instead of a more narrowly focussed journal.
- \item A 100 word or less summary aimed at a non-scientific audience,
-written at the level of a national newspaper.  It may be used for
-\textsl{Nature}'s press release or other general publicity.
- \item The cover letter should state clearly what is included as the
-submission, including number of figures, supporting manuscripts
-and any Supplementary Information (specifying number of items and
-format).
- \item The cover letter should also state the number of
-words of text in the paper; the number of figures and parts of
-figures (for example, 4 figures, comprising 16 separate panels in
-total); a rough estimate of the desired final size of figures in
-terms of number of pages; and a full current postal address,
-telephone and fax numbers, and current e-mail address.
-\end{enumerate}
-
-See \textsl{Nature}'s website
-(\texttt{http://www.nature.com/nature/submit/gta/index.html}) for
-complete submission guidelines.
-
-\begin{methods}
+\section{Methods}
 Put methods in here.  If you are going to subsection it, use
 \verb|\subsection| commands.  Methods section should be less than
 800 words and if it is less than 200 words, it can be incorporated
@@ -334,7 +459,6 @@ Here is a description of a specific method used.  Note that the
 subsection heading ends with a full stop (period) and that the
 command is \verb|\subsection{}| not \verb|\subsection*{}|.
 
-\end{methods}
 
 %% Put the bibliography here, most people will use BiBTeX in
 %% which case the environment below should be replaced with
@@ -347,20 +471,20 @@ command is \verb|\subsection{}| not \verb|\subsection*{}|.
 % reference.
 % \end{thebibliography}
 
-\bibliographystyle{naturemag}
-\bibliography{sample}
+%bibliographystyle{authortitle}
+%\bibliography{sample}
 
 
 %% Here is the endmatter stuff: Supplementary Info, etc.
 %% Use \item's to separate, default label is "Acknowledgements"
 
-\begin{addendum}
- \item Put acknowledgements here.
- \item[Competing Interests] The authors declare that they have no
-competing financial interests.
- \item[Correspondence] Correspondence and requests for materials
-should be addressed to Hunter Gabbard~(email: h.gabbard.1@research.gla.ac.uk).
-\end{addendum}
+%\begin{addendum}
+% \item Put acknowledgements here.
+% \item[Competing Interests] The authors declare that they have no
+%competing financial interests.
+% \item[Correspondence] Correspondence and requests for materials
+%should be addressed to Hunter Gabbard~(email: h.gabbard.1@research.gla.ac.uk).
+%\end{addendum}
 
 %%
 %% TABLES
@@ -384,5 +508,8 @@ aaaaaa & bbbbbb & cccccc & dddddd & eeeeee\\
 \hline
 \end{tabular}
 \end{table}
+
+\bibliographystyle{apsrev4-1}
+\bibliography{references}% Produces the bibliography via BibTeX.
 
 \end{document}
