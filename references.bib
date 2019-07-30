@@ -10,6 +10,24 @@
   DOI =          "http://dx.doi.org/10.1002/andp.19053221004"
 } 
 
+% Conditional Variational Autoencoder paper
+@misc{1812.04405,
+Author = {Artidoro Pagnoni and Kevin Liu and Shangyan Li},
+Title = {Conditional Variational Autoencoder for Neural Machine Translation},
+Year = {2018},
+Eprint = {arXiv:1812.04405},
+}
+
+% Bayes theorem citation
+@misc{Bayestheorem,     
+      title = {Bayes' theorem},
+      year = {2009},
+      month = {01},
+      publisher = {Oxford University Press},
+      isbn = {9780199233991},
+      url = "https://www.oxfordreference.com/view/10.1093/acref/9780199233991.001.0001/acref-9780199233991-e-3561"
+}
+
 % Living review in relativity GW Data Analysis
 @Article{Jaranowski2012,
 author="Jaranowski, Piotr
@@ -101,6 +119,49 @@ archivePrefix = "arXiv",
       doi = {10.1007/lrr-2016-1},
    adsurl = {http://adsabs.harvard.edu/abs/2016LRR....19....1A},
   adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+% Matching matched filtering using deep networks
+@article{PhysRevLett.120.141103,
+  title = {Matching Matched Filtering with Deep Networks for Gravitational-Wave Astronomy},
+  author = {Gabbard, Hunter and Williams, Michael and Hayes, Fergus and Messenger, Chris},
+  journal = {Phys. Rev. Lett.},
+  volume = {120},
+  issue = {14},
+  pages = {141103},
+  numpages = {6},
+  year = {2018},
+  month = {Apr},
+  publisher = {American Physical Society},
+  doi = {10.1103/PhysRevLett.120.141103},
+  url = {https://link.aps.org/doi/10.1103/PhysRevLett.120.141103}
+}
+
+
+
+% autoencoder reference
+@article{LIOU20083150,
+title = "Modeling word perception using the Elman network",
+journal = "Neurocomputing",
+volume = "71",
+number = "16",
+pages = "3150 - 3157",
+year = "2008",
+note = "Advances in Neural Information Processing (ICONIP 2006) / Brazilian Symposium on Neural Networks (SBRN 2006)",
+issn = "0925-2312",
+doi = "https://doi.org/10.1016/j.neucom.2008.04.030",
+url = "http://www.sciencedirect.com/science/article/pii/S0925231208002865",
+author = "Cheng-Yuan Liou and Jau-Chi Huang and Wen-Chie Yang",
+keywords = "Word perception, Compositional representation, Authorship, Stylistic similarity, Categorization, Semantic search, Elman network, Linguistic analysis, Personalized code, Content addressable memory, Polysemous word",
+abstract = "This paper presents an automatic acquisition process to acquire the semantic meaning for the words. This process obtains the representation vectors for stemmed words by iteratively improving the vectors, using a trained Elman network. Experiments performed on a corpus composed of Shakespeare's writings show its linguistic analysis and categorization abilities."
+}
+
+% IMRphenomp v2 reference
+@misc{1809.10113,
+Author = {Sebastian Khan and Katerina Chatziioannou and Mark Hannam and Frank Ohme},
+Title = {Phenomenological model for the gravitational-wave signal from precessing binary black holes with two-spin effects},
+Year = {2018},
+Eprint = {arXiv:1809.10113},
 }
 
 % numerical relativity waveforms
@@ -214,26 +275,6 @@ Saulson and Matthew West and Joshua L Willis},
   abstract={We describe the PyCBC search for gravitational waves from compact-object binary coalescences in advanced gravitational-wave detector data. The search was used in the first Advanced Laser Interferometer Gravitational-wave Observatory (LIGO) observing run and unambiguously identified two black hole binary mergers, GW150914 and GW151226. At its core, the PyCBC search performs a matched-filter search for binary merger signals using a bank of gravitational-wave template waveforms. We provide a complete description of the search pipeline including the steps used to mitigate the effects of noise transients in the data, identify candidate events and measure their statistical significance. The analysis is able to measure false-alarm rates as low as one per million years, required for confident detection of signals. Using data from initial LIGO's sixth science run, we show that the new analysis reduces the background noise in the search, giving a ##IMG## [http://ej.iop.org/images/0264-9381/33/21/215004/cqgaa3f42ieqn1.gif] {$30 \% $} increase in sensitive volume for binary neutron star systems over previous searches.}
 }
 
-<<<<<<< HEAD
-% Appropriate metric for previous version of IMRPhenom waveform
-@article{PhysRevD.91.124042,
-  title = {Template-space metric for searches for gravitational waves from the inspiral, merger, and ringdown of binary black holes},
-  author = {Kalaghatgi, Chinmay and Ajith, Parameswaran and Arun, K. G.},
-  journal = {Phys. Rev. D},
-  volume = {91},
-  issue = {12},
-  pages = {124042},
-  numpages = {10},
-  year = {2015},
-  month = {Jun},
-  publisher = {American Physical Society},
-  doi = {10.1103/PhysRevD.91.124042},
-  url = {https://link.aps.org/doi/10.1103/PhysRevD.91.124042}
-}
-
-
-=======
->>>>>>> FergDev
 %Template bank citations
 
 @article{PhysRevD.47.2198,
@@ -884,11 +925,18 @@ Larson and T K Lee and C Lintott and T B Littenberg and A Lundgren and C Østerl
 }
 
 % G&H papers
-@misc{1701.00008,
-Author = {Daniel George and E. A. Huerta},
-Title = {Deep Neural Networks to Enable Real-time Multimessenger Astrophysics},
-Year = {2016},
-Eprint = {arXiv:1701.00008},
+@article{GEORGE201864,
+title = {Deep Learning for real-time gravitational wave detection and parameter estimation: Results with Advanced LIGO data},
+journal = {Physics Letters B},
+volume = {778},
+pages = {64 - 70},
+year = {2018},
+issn = {0370-2693},
+doi = {https://doi.org/10.1016/j.physletb.2017.12.053},
+url = {http://www.sciencedirect.com/science/article/pii/S0370269317310390},
+author = {Daniel George and E.A. Huerta},
+keywords = {Deep Learning, Convolutional neural networks, Gravitational waves, LIGO, Time-series signal processing, Classification and regression},
+abstract = {The recent Nobel-prize-winning detections of gravitational waves from merging black holes and the subsequent detection of the collision of two neutron stars in coincidence with electromagnetic observations have inaugurated a new era of multimessenger astrophysics. To enhance the scope of this emergent field of science, we pioneered the use of deep learning with convolutional neural networks, that take time-series inputs, for rapid detection and characterization of gravitational wave signals. This approach, Deep Filtering, was initially demonstrated using simulated LIGO noise. In this article, we present the extension of Deep Filtering using real data from LIGO, for both detection and parameter estimation of gravitational waves from binary black hole mergers using continuous data streams from multiple LIGO detectors. We demonstrate for the first time that machine learning can detect and estimate the true parameters of real events observed by LIGO. Our results show that Deep Filtering achieves similar sensitivities and lower errors compared to matched-filtering while being far more computationally efficient and more resilient to glitches, allowing real-time processing of weak time-series signals in non-stationary non-Gaussian noise with minimal resources, and also enables the detection of new classes of gravitational wave sources that may go unnoticed with existing detection algorithms. This unified framework for data analysis is ideally suited to enable coincident detection campaigns of gravitational waves and their multimessenger counterparts in real-time.}
 }
 
 @misc{1706.07446,
@@ -1085,20 +1133,6 @@ Eprint = {arXiv:1710.02185},
     year={2016}
 }
 
-% Physics letters B version of G&H paper
-@article{GEORGE201864,
-title = "Deep Learning for real-time gravitational wave detection and parameter estimation: Results with Advanced LIGO data",
-journal = "Physics Letters B",
-volume = "778",
-pages = "64 - 70",
-year = "2018",
-issn = "0370-2693",
-doi = "https://doi.org/10.1016/j.physletb.2017.12.053",
-url = "http://www.sciencedirect.com/science/article/pii/S0370269317310390",
-author = "Daniel George and E.A. Huerta",
-keywords = "Deep Learning, Convolutional neural networks, Gravitational waves, LIGO, Time-series signal processing, Classification and regression"
-}
-
 % Find Chirp Paper Allen et al.
 @article{PhysRevD.85.122006,
   title = {FINDCHIRP: An algorithm for detection of gravitational waves from inspiraling compact binaries},
@@ -1124,5 +1158,34 @@ keywords = "Deep Learning, Convolutional neural networks, Gravitational waves, L
   url = {https://dl4physicalsciences.github.io/files/nips_dlps_2017_13.pdf}
 }
 
+% Gebhard paper about cnn magic bullet
+@misc{1904.08693,
+Author = {Timothy D. Gebhard and Niki Kilbertus and Ian Harry and Bernhard Schölkopf},
+Title = {Convolutional neural networks: a magic bullet for gravitational-wave detection?},
+Year = {2019},
+Eprint = {arXiv:1904.08693},
+}
 
+% Earthquake monitoring paper
+@article{Coughlin_2017,
+	doi = {10.1088/1361-6382/aa5a60},
+	url = {https://doi.org/10.1088%2F1361-6382%2Faa5a60},
+	year = 2017,
+	month = {feb},
+	publisher = {{IOP} Publishing},
+	volume = {34},
+	number = {4},
+	pages = {044004},
+	author = {Michael Coughlin and Paul Earle and Jan Harms and Sebastien Biscans and Christopher Buchanan and Eric Coughlin and Fred Donovan and Jeremy Fee and Hunter Gabbard and Michelle Guy and Nikhil Mukund and Matthew Perry},
+	title = {Limiting the effects of earthquakes on gravitational-wave interferometers},
+	journal = {Classical and Quantum Gravity},
+	abstract = {Ground-based gravitational wave interferometers such as the Laser Interferometer Gravitational-wave Observatory (LIGO) are susceptible to ground shaking from high-magnitude teleseismic events, which can interrupt their operation in science mode and significantly reduce their duty cycle. It can take several hours for a detector to stabilize enough to return to its nominal state for scientific observations. The down time can be reduced if advance warning of impending shaking is received and the impact is suppressed in the isolation system with the goal of maintaining stable operation even at the expense of increased instrumental noise. Here, we describe an early warning system for modern gravitational-wave observatories. The system relies on near real-time earthquake alerts provided by the U.S. Geological Survey (USGS) and the National Oceanic and Atmospheric Administration (NOAA). Preliminary low latency hypocenter and magnitude information is generally available in 5 to 20 min of a significant earthquake depending on its magnitude and location. The alerts are used to estimate arrival times and ground velocities at the gravitational-wave detectors. In general, 90% of the predictions for ground-motion amplitude are within a factor of 5 of measured values. The error in both arrival time and ground-motion prediction introduced by using preliminary, rather than final, hypocenter and magnitude information is minimal. By using a machine learning algorithm, we develop a prediction model that calculates the probability that a given earthquake will prevent a detector from taking data. Our initial results indicate that by using detector control configuration changes, we could prevent interruption of operation from 40 to 100 earthquake events in a 6-month time-period.}
+}
 
+% original variational inference paper
+@misc{1904.06264,
+Author = {Francesco Tonolini and Ashley Lyons and Piergiorgio Caramazza and Daniele Faccio and Roderick Murray-Smith},
+Title = {Variational Inference for Computational Imaging Inverse Problems},
+Year = {2019},
+Eprint = {arXiv:1904.06264},
+}
