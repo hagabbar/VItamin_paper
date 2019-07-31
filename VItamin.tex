@@ -71,12 +71,14 @@ floatfix,
 
 \preprint{APS/123-QED}
 
-\title{Estimating Bayesian Parameter Estimation Using Conditional Variational Autoencoders}
+\title{Estimating Bayesian Parameter Estimation Using Conditional Variational
+Autoencoders\chris{need to have gravitational waves in the title but stay below
+15 words}}
 
 \author{Hunter Gabbard$^1$}
  \email{Corresponding author: h.gabbard.1@research.gla.ac.uk}
-\author{Ik Siong Heng$^1$}
 \author{Chris Messenger$^1$}
+\author{Ik Siong Heng$^1$}
 \author{Francesco Tonolini$^2$}
 \author{\& Roderick Murray-Smith$^2$}
 
@@ -84,13 +86,15 @@ floatfix,
  SUPA, School of Physics and Astronomy$^1$, \\
  School of Computing Science$^2$, \\
  University of Glasgow, \\
- Glasgow G12 8QQ, United Kingdom \\
+ Glasgow G12 8QQ, United Kingdom\chris{Probably want to have 2 seperate
+affiliations} \\
 }
 
 \date{\today}
 
 \maketitle
 
+\acrodef{GW}[GW]{gravitational wave}
 \acrodef{BBH}[BBH]{binary black hole}
 \acrodef{SNR}[SNR]{signal-to-noise ratio}
 \acrodef{PSD}[PSD]{power spectral density}
@@ -101,179 +105,418 @@ floatfix,
 %
 % Introductory paragraph describing the content of the letter
 %
-\textbf{
-With the beginning of the Laser Interferometer Gravitational wave Observatory's 
-(LIGO) and Virgo's third observation run well under way, we are now in an era 
-where gravitational wave (GW) detection is commonplace \cite{PhysRevLett.116.061102,
-PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of 
-both detectors increases, we will see more many more detections on a weekly 
-and even daily basis.  The current method used to estimate the parameters of 
-gravitational wave events is done using a form of Bayesian inference \cite{1409.7215}. Although 
-effective, Bayesian inference is a computationally expensive method which can 
-take of order hours to weeks to complete when applied to a single GW event. We 
-propose the use of a conditional variational autoencoder (CVAE) as a 
-computationally inexpensive alternative to this approach \cite{1904.06264,1812.04405}. Here we show that 
-a CVAE can return posterior estimates for any parameter of a detected GW 
-event on the order of less than $1s$, an immense speed-up over current 
-inference techniques.}
+% This format begins with a title of, at most, 15 words, followed by an
+% introductory paragraph (not abstract) of approximately 150 words, summarizing
+% the background, rationale, main results (introduced by "Here we show" or some
+% equivalent phrase) and implications of the study. This paragraph should be
+% referenced, as in Nature style, and should be considered part of the main
+% text, so that any subsequent introductory material avoids too much redundancy
+% with the introductory paragraph.
+%
+\textbf{ 
+%
+% background
+%
+With the beginning of the Laser Interferometer Gravitational wave
+Observatory's (LIGO)\chris{use the acronym package for ALL acronyms.} and
+Virgo's third observation run well under way, we are now in an era where
+\ac{GW} detection is commonplace~\cite{PhysRevLett.116.061102,
+PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of both detectors
+increases, we will see more many more detections on a weekly and even daily
+basis\chris{too vague. You could actually quote numbers here}.  The current
+method used to estimate the parameters of gravitational wave events is done
+using a form of\chris{a form of? } Bayesian inference~\cite{1409.7215}.
+%
+% rationale
+%
+Although effective~\chris{let's not mnake enemies. The Bayesian PE that is
+currently done is excellent and amazing and computes the correct result. It is
+just slow.}, Bayesian inference is a computationally expensive method which can
+take of order hours to weeks to complete when applied to a single GW
+event\chris{again, we can get the actual numbers for this and be more specific.
+Also, why does it even matter to be fast? Need to mention that the rate of
+future detections will swamp current methods *and* we desperately need accurate
+low latency PE for EM follow-up.  Current low latency methods are good but only
+an approximation and also take O(1 min) to run}. We propose the use of a
+conditional variational autoencoder (CVAE) as a computationally
+inexpensive\chris{not true. It is very expensive it's just that the cost is
+spent before the events are detected allowing rapid accurate and complete
+Bayesian results to be shared almost instantantaneously.  We need to be very
+careful here regarding what the practical bottleneck would be for an
+instantaneous PE run.} alternative to this
+approach~\cite{1904.06264,1812.04405}. 
+%
+% results
+%
+Here we show that a CVAE~\chris{best to
+use machine learning here as opposed to an obscure acronym.} can return
+posterior estimates for any~\chris{we don't show this for *any* parameter, we
+show realistic but simplified cases. We assume that this is extendable to
+all/any parameters.} parameter of a detected \ac{GW} event on the order of less
+than $1s$~\chris{we need to measure this number.}, an immense~\chris{quantify
+this even of it's just to the nearest order of magnitude.} speed-up over
+current inference techniques.}
+
+\chris{
+The paragraph structure needs to be changed a bit. Here's how I see it based on
+this text from the Nature guidelines - "As a guideline, the text should be
+structured in broad sections (abstract, introduction, results, conclusions,
+methods)." 
+\begin{itemize} 
+%
+\item Abstract - introductory paragraph
+(not abstract) of approximately 150 words, summarizing the background,
+rationale, main results (introduced by "Here we show" or some equivalent
+phrase) and implications of the study. It's getting there.  
+%
+\item introduction - this section has to expand upon what has mentioned in the
+abstract background (which was only ~50 words). It needs to cover the state of
+the gravitational wave field and the number of detections expected in the next
+~5 years. It should briefly discuss the issue of low latency EM follow up. It
+needs to cover Bayesian inference (not in too much detail) and the signal model
+we are interested in here (again, not too much detail but enough for the
+average Nature reader). It then needs to introduce machine learning and focus
+mainly on how our scheme works. We also need to include a statement about how
+the training data priors affect the result (are they really the priors?)   
+%
+\item results - here you would outline the process of comparison between the
+standard approach and the new one. Define training and test data and how Bilby
+is run on all test data for comparison. How do we then train our network. How
+do we then produce results on the test data. Here you refer to results plots
+but try to not make conclusion statememnts (just descriptive). Also include the
+speed analysis here.  
+%
+\item conclusions - now draw conclusions about the quality of the comparison
+results. Highlight the current limitations but also highlight the importance of
+this for the GW field (multi-detector is easy, additional parameters are easy,
+longer datasets may be a challenge regarding GPU memory?, we don't have to
+assume a noise model if we inject training data into real noise, we do rely on
+well defined signal models, EM-follow up in very low latency, can we use
+transfer learning if we want to retrain, ...) End with broader statements about
+inference in other fields and how this is applicable across the sciences.
+%
+\item methods - Everything that we couldn't fit in. Mostly validation plots.
+%
+\end{itemize} }
 
 %
 % Set up parameter estimation problem
 %
-In the standard Bayesian GW inference approach, we assume that we are given 
-some observed waveform which is buried in noise. In order to ensure that there is 
-equal power accross all frequency bins of our signal, we ensure that 
-the noise is whitened Gaussian noise. We whiten using 
-a single detector (H1) power spectrum density derived from the Advanced 
-LIGO design sensitivity curves \cite{2016LRR....19....1A}.  Given a noisy GW waveform, we would like 
-to find an optimal procedure for retrieving some finite set of unknown GW parameters \cite{Jaranowski2012}
-. Our procedure should be able to give us an accurate estimate 
-of the parameters of our observed signal, while also accounting for the uncertainty 
-which arises from having multiple noise realizations of our observed data able to 
-be mapped to one parameter estimate.
+In the standard Bayesian \ac{GW} inference approach, we assume that we are
+given some observed waveform which is buried in noise\chris{It's a lot more
+than that. We assume a signal and a noise model. Each of which may have unknown
+parameters that we are interested in inferring (some of the unknown parameters
+are not of interest like initial phase). Each of these parameters is given a
+prior astrophysically motivated probability distribution. In our case we have
+additive noise which is usually modelled as Gaussian but in reality our data is
+not truly Gaussian.}. In order to ensure that there is equal power accross all
+frequency bins of our signal, we ensure that the noise is whitened Gaussian
+noise~\chris{this is a distraction. Whitening is irrelevent to the problem
+but it is an important aspect of the method.  Don't focus on it here.}. We
+whiten using a single detector (H1) power spectrum density derived from the
+Advanced LIGO design sensitivity curves \cite{2016LRR....19....1A}~\chris{this
+is technical and part of the method. It shouldn't be here.}. Given a noisy
+\ac{GW} waveform, we would like to find an optimal procedure for retrieving
+some finite set of unknown GW parameters \cite{Jaranowski2012}~\chris{I don't
+think this is an appropriate reference for us. }. Our procedure should be able
+to give us an accurate estimate of the parameters of our observed signal, while
+also accounting for the uncertainty which arises from having multiple noise
+realizations of our observed data able to be mapped to one parameter
+estimate.~\chris{OK, not the best start. I advise you to read the introduction
+of the LIGO PE papers and also the references therein like the original
+methiods paper from John https://arxiv.org/abs/0911.3820}
 
 %
 % Describe Bayes Theorem
 %
-According to Bayes Theorem \cite{Bayestheorem}, a posterior for a set of GW parameters can be described 
-by the following expression:
-
+According to Bayes Theorem \cite{Bayestheorem}\chris{not sure you should cite
+this.}, a posterior for a set of GW parameters can be described by the
+following expression:
+%
 \begin{equation}
     p(\theta|x) = \frac{p(x|\theta) * p(\theta)}{p(x)},
 \end{equation}
-
-where $p(\theta|x)$ is the probability of the parameters given observed data, 
-$p(x|\theta)$ is the probability of the observed data given the parameters, $p(\theta)$ 
-is the prior we put on our parameter distribution and $p(x)$ is the probability of our data. 
-We typically assume that $p(x)$ is a constant, $1$, which then reduces to the following equation:
-
+%
+\chris{ditch the multiplication symbols and dots throughout. Also label *all*
+the equations.} where $p(\theta|x)$ is the probability of the parameters given
+observed data\chris{this is the posterior}, $p(x|\theta)$ is the probability of
+the observed data given the parameters\chris{this is the likelihood},
+$p(\theta)$ is the prior we put on our parameter distribution and $p(x)$ is the
+probability of our data.  We typically assume that $p(x)$ is a constant,
+$1$,~\chris{we do not set it to 1, we simply ignore it since it is a constant
+and for PE we are interested only in the shape of the posterior distribution
+and not it's normalisation. You need to state this clearly.} which then reduces
+to the following equation:\chris{let's stop with the : stuff. Equations just
+flow from the text.}
+%
 \begin{equation}
     p(\theta|x) \propto p(x|\theta) * p(\theta),
 \end{equation}
-
-where $p(\theta|x)$ is the posterior, $p(x|\theta)$ is the likelihood and $p(\theta)$ is the prior. 
-For this study, we assume that the noise is stationary with zero mean and some constant variance 
-in each detector. Small changes in the power spectrum density over time are not considered in this analysis. 
+%
+where $p(\theta|x)$ is the posterior, $p(x|\theta)$ is the likelihood and
+$p(\theta)$ is the prior~\chris{you\'ve already said this.}.  For this study,
+we assume that the noise is stationary with zero mean and some constant
+variance in each detector~\chris{no we do not! We assume stationary Gausssian
+noise drawn from a PSD representative of the advanced LIGO detectors. However,
+there is no need to mention this here.}. Small changes in the power spectrum
+density over time are not considered in this analysis.~\chris{again, no need to
+mention this here.} 
 
 %
 % Describe nested sampling algorithm
 %
-There are several algorithms which may be used to sample from the posterior distribution 
-of astrophysical GW source parameters. The algorithm which is used in our studies is 
-the nested sampling algorithm. Nested sampling takes a multi-dimensional evidence 
-integral calculation (fully marginalized likelihood) and transforms it into a more 
-manageable 1-D integral. Where the fully marginalized likelihood is equivalent to taking 
-the integral of the likelihood and multiplying it by the prior \cite{1409.7215}.
-
-The first step of the nested sampling algorithm starts by generating an initial 
-set of live points made from the prior distribution. The likelihood for each point 
-is calculated and the point with the lowest likelihood is removed. The removed sample 
-is then replaced with a new sample which has a higher likelihood. This cycle repeats 
-itself until a predefined stopping threshold is achieved \cite{1409.7215}
-. Samples 
-from the posterior may be drawn by randomly selecting from both all current 'live' 
-points and all previously removed 'live' points. 
+There are several algorithms which may be used to sample from the posterior
+distribution of astrophysical GW source parameters~\chris{give references}. The
+algorithm which is used in our studies~\chris{which studies? This is very
+unclear.} is the nested sampling algorithm. Nested
+sampling takes a multi-dimensional evidence integral calculation (fully
+marginalized likelihood)~\chris{evidence hasn't been defined and neither has
+marginalisation.} and transforms it into a more manageable 1-D integral.
+Where the fully marginalized likelihood is equivalent to taking the integral of
+the likelihood and multiplying it by the prior~\cite{1409.7215}~\chris{the
+integral over what? also you don't integrate and then multiply by the prior}.
 
 %
-% discuss codebase which we use to generate waveforms, sampling frequency, and paramter space
+% More nested sampling description
 %
-The codebase which we use to do the Bayesian inference analysis is the Bilby inference library \cite{1811.02042}
-. Our waveforms have a duration of 1 second, sampling frequency 
-of 256Hz, fixed right ascension ($\alpha$), declination ($\delta$), inclination angle 
-($\theta_j$), polarization angle ($\psi$) and a spin of zero. We allow 5 
-parameters to vary: component masses $m_1$ and $m_2$, luminosity distance, time of coalescence and phase, 
-where phase is marginalized out. The waveform model used is 
-\texttt{IMRPhenomPv2} \cite{1809.10113} with a minimum cutoff frequency of 20Hz.
+The first step of the nested sampling algorithm starts by generating an initial
+set of live points made from the prior distribution. The likelihood for each
+point is calculated and the point with the lowest likelihood is removed. The
+removed sample is then replaced with a new sample which has a higher
+likelihood. This cycle repeats itself until a predefined stopping threshold is
+achieved \cite{1409.7215} . Samples from the posterior may be drawn by randomly
+selecting from both all current 'live' points and all previously removed 'live'
+points.~\chris{There is no need to have this in the paper. The reader simply
+needs to know what trhe posterior is, that it is currently computed via random
+sampling techniques, and it takes a long time. In the methods section you would
+clearly define all of the parameters and settings that you used for the
+comparison. In the main part of the paper you would explain why you used a
+comparison to validate your new results.}
+
+%
+% discuss codebase which we use to generate waveforms, sampling frequency, and
+% parameter space
+%
+The codebase\chris{jargon} which we use to do the Bayesian inference analysis is the Bilby
+inference library \cite{1811.02042} . Our waveforms have a duration of 1
+second, sampling frequency of 256Hz, fixed right ascension ($\alpha$),
+declination ($\delta$), inclination angle ($\theta_j$), polarization angle
+($\psi$) and a spin of zero. We allow 5 parameters to vary: component masses
+$m_1$ and $m_2$, luminosity distance, time of coalescence and phase, where
+phase is marginalized out. The waveform model used is \texttt{IMRPhenomPv2}
+\cite{1809.10113} with a minimum cutoff frequency of 20Hz.~\chris{this is all
+fine but it comes out of nowhere.}
 
 %
 % Discuss priors that we use
 %
-The priors we choose for the analysis are all fixed except for the component masses, phase, distance 
-and time of coalescence. The prior on both component masses range from 
-$35 - 50$ solar masses, the phase prior ranges from $0 - 2\pi$, the distance prior ranges from $1\textrm{Gpc} - 3\textrm{Gpc}$, and 
-the time of coalesence prior ranges from $1126259642.4 - 1126259642.6$. The nested sampling algorithm is run 
-using 1000 live points and has a predefined stopping criteria of $0.1$. The sampler takes 
-$\mathcal{O}(3 \: \textrm{minutes})$ to converge.
+The priors we choose for the analysis are all fixed~\chris{poor language.
+all priors are fixed. What you mean is that the parameters that we are not
+interested in are all being fixed (except phi). You could say that they have delta function
+priors but I wouldn't use that language either.} except for the component
+masses, phase, distance and time of coalescence.~\chris{You must understand
+that priors are not defined by their ranges. Thery are functions with shapes.
+We are using flat or uniform priors and this must be stated clearly.} The prior on both component
+masses range from $35 - 50$ solar masses, the phase prior ranges from $0 -
+2\pi$, the distance prior ranges from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the
+time of coalesence prior ranges from $1126259642.4 -
+1126259642.6$~\chris{better to simply describe this as a finite range around a
+reference time (-0.1 - 0.1) sec.}. The nested sampling algorithm is run using
+1000 live points and has a predefined stopping criteria of $0.1$~\chris{expand
+upon what the stopping criteria means. This is related to the evidence
+calculation and the tolerance on that result}. The sampler takes $\mathcal{O}(3
+\: \textrm{minutes})$ to converge~\chris{jargon. What does converge mean to the
+average Nature reader?}.
 
 %
 % Conclude bilby section
 % 
-After the nested sampler has converged, we draw samples and produce a posterior on the 
-astrophysical GW source parameters we are trying to estimate. These samples will be 
-used as our benchmark when assessing the efficiency of our machine learning approach. 
-We will now investigate whether we can reproduce the results from Bilby using CVAEs. 
+After the nested sampler has converged~\chris{jargon}, we draw
+samples~\chris{too technical with not enough explanation. The Bilby analysis
+produces posterior parameter estimates and does so by supplying the user with
+samples drawn from that distribution.} and produce a posterior on the
+astrophysical \ac{GW} source parameters we are trying to estimate. These
+samples will be used as our benchmark when assessing the efficiency of our
+machine learning approach.  We will now investigate whether we can reproduce
+the results from Bilby using CVAEs~\chris{use acronym package}. 
    
 
 %
 % Intro to machine learning section
 %
-Machine learning has featured prominently in many areas of gravitational wave research over the last few years.
-These techniques have shown to be particularly useful
-in signal detection \cite{PhysRevLett.120.141103,GEORGE201864,1904.08693}, glitch classification \cite{1706.07446,0264-9381-34-6-064003} and
-earthquake prediction \cite{Coughlin_2017}. Recently, a type of neural network
-called conditional variational autoencoders was shown to perform exceptionally well 
-when applied towards computational imaging inference \cite{1904.06264}. It is this network 
-that we base our machine learning inference algorithm off of.
+Machine learning has featured prominently in many areas of gravitational wave
+research over the last few years.  These techniques have shown to be
+particularly useful in signal detection
+\cite{PhysRevLett.120.141103,GEORGE201864,1904.08693}, glitch classification
+\cite{1706.07446,0264-9381-34-6-064003} and earthquake prediction
+\cite{Coughlin_2017}~\chris{however., have any of them actually been used in
+reality? If nkit then they have nbot been particuylarly useful but they have
+been shown to be very promising.}. Recently, a type of neural network called
+conditional variational autoencoders was shown to perform exceptionally well
+when applied towards computational imaging
+inference~\cite{1904.06264}~\chris{there must be other literature on CVAE
+applications and theory. Look in the VICI paper.}. It is this \chris{type of}
+network that we base our machine learning inference algorithm off
+of~\chris{""off of" is highly american. replace with "on".}.
 
 %
 % What is an autoencoder?
 %
-Conditional variational autoencoders are a form of variational autoencoders 
-which are conditioned on an observation. The autoencoders from which variational autoencoders 
-are derived are typically used 
-for problems involving image reconstruction and attempt to reproduce a  
-given input. An autoencoder is composed of two neural networks, an encoder 
-and a decoder \cite{LIOU20083150}. The encoder network takes as input an image, then converts 
-the input image into a (typically) lower dimensional space, what is also known as the {\it{latent space}}. 
-The latent space is then fed as input to the decoder network 
-which generates as output a reconstruction of the original input
-image to the encoder network. Through training, we hope to learn a latent space which will 
-take on the most important properties of our input training samples.  
+Conditional variational autoencoders are a form of variational autoencoders
+which are conditioned on an observation~\chris{this means nothing without
+knowledge of what an observation is}. The autoencoders from which variational
+autoencoders are derived are typically used for problems involving image
+reconstruction and attempt to reproduce a given input~\chris{too vague.  what
+does reproduce a given input mean?}. An autoencoder is composed of two neural
+networks, an encoder and a decoder~\cite{LIOU20083150}.  The encoder network
+takes as input an image~\chris{not always an image and certainly not an image
+in our case}, then converts the input image into a (typically) lower
+dimensional space, what is also known as the {\it{latent space}}. The latent
+space~\chris{be careful. The ltent space is not fed into anything. A
+representation of the data in the latent space is passed to the decoder.} is
+then fed as input to the decoder network which generates as output a
+reconstruction of the original input image to the encoder network. Through
+training, we hope to~\chris{too much of the original text from where you got
+this. we don't hope to do this at all since we don't use an AE.} learn a latent
+space which will take on the most important properties of our input training
+samples.~\chris{it might be good to give a very brief example sentence along
+the lines of "if applying an AE to an input dataset one might hope that the
+data can be accurately represented in a latent space smaller than the
+dimensionality of the input data. In this way the data can be compressed with
+little loss of fidelity". I think it's good to try to get across what an AE is
+to the reader. It will help in explaining the VAE.}  
 
 %
 % What is a variational autoencoder?
 %
-One of the few failings of an autoencoder is that they are only able to return one 
-output for any one given input. In order to produce variable estimates for 
-one given input, we need to utilize what is known as a variational autoencoder \cite{1812.04405}.
-A variational autoencoder is also composed of both an encoder and a decoder network. 
-The primary difference between a variational autoencoder and an autoencoder concerns the method by which the 
-latent space is produced. In our variant of the variational autoender, the mean ($z_{\mu}$) and the log squared 
-of the standard deviation ($z_{\log{(\sigma^{2})}}$) of the output of the encoder is calculated. We then multiply 
-the log squared of the standard deviation by a random unit Gaussian distribution ($\epsilon(0,1)$) which is 
-of the same dimension as that of the latent space.
+One of the few failings~\chris{it's not a failing. It just depends on what you
+want to do with it. We haven't yet really defined what we specifically need it
+to do so again I wouldn't use the word "failing".} of an autoencoder is that
+\chris{once trained} they are only able to return one output for any one given
+input~\chris{it isn't clear why that is the case. Maybe state that once trained
+the AE represents a deterministic algorithm that maps an input to an output.}.
+In order to produce variable estimates for one given input, we need to utilize
+what is known as a variational autoencoder~\cite{1812.04405}\chris{fine, but
+you haven't explained why you want that. Maybe best to just stay boring and
+matter-of-fact about it at this point. Simply say, and AE does this and a VAE
+does this. We will then explain why a VAE is crucial to our needs when you
+describe VItamin.}. A variational autoencoder is also composed of both an
+encoder and a decoder network. The primary difference between a variational
+autoencoder and an autoencoder concerns the method by which the latent space is
+produced. In our variant of the variational autoender, the mean ($z_{\mu}$) and
+the log squared of the standard deviation ($z_{\log{(\sigma^{2})}}$) of the
+output of the encoder is calculated. We then multiply the log squared of the
+standard deviation by a random unit Gaussian distribution ($\epsilon(0,1)$)
+which is of the same dimension as that of the latent space.~\chris{OK, I never
+liked the way you describe this part to me so here are my thoughts. At this
+point all we need to say is that the latent space encoding (from the encoder)
+is interpreted as parameters governing statistical distributions (in our case
+the means and variances of multivariate uncorrelated Gaussians). In proceeding
+to the decoder network, samples are drawn from these distributions and fed into
+the decoder therefore adding the element of variation into the process. Hence a
+particular input can have infinitely many outputs.}
 
 \begin{equation}
     z = z_{\mu} + z_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:z_calc}
 \end{equation}
+\chris{not sure we need this equation but if we do use it then we need to
+change the notation. Some of these variables have not been defined and the equation
+starts straight after a sentence has ended so nobody knows what it is (or
+means).}
 
-$\log{(\sigma^{2})}$ is then summed together 
-with the mean to produce the latent space $z$ (Eq. \ref{eq:z_calc}). The latent space is given as input 
-to the decoder network, which attempts to reconstruct the given input to 
-the encoder network. We use fully-connected layers in 
-both the decoder and the encoder networks.
+$\log{(\sigma^{2})}$ is then summed together with the mean to produce the
+latent space $z$ (Eq. \ref{eq:z_calc})~\chris{no it isn't. See my previous
+comments. The latent space is interpreted as \ldots}. The latent space is given
+as input to the decoder network, which attempts to reconstruct the given input
+to the encoder network~\chris{I'm not sure that it does do this. In a standard
+AE, yes, the loss function is usually designed to make the output match the
+input, but here we have a different loss function that is trying to do
+something else.  So don't say this since I don't think it's true.}. We use
+fully-connected layers in both the decoder and the encoder networks.~\chris{not
+a particularly smpoth way of stating this but it does need to go somewhere.}
 
 %
 % How does our 3-network set-up work?
 %
-For this study, we will use a combination of three networks; two encoder networks ($\textrm{E}_1$, $\textrm{E}_2$) 
-and one decoder network (D). The decoder network takes as input a set of latent space 
-$z$ predictions from one of the encoder networks. The decoder network samples from 
-the posterior by producing $x_{\mu}$/$x_{\log{(\sigma^{2})}}$ predictions on our parameters 
-and then applying a random unit variant Gaussian distribution $\epsilon(0,1)$.
+For this study~\chris{try not to use this kind of language. We are not doing a
+study we are making paradigm changing work. Just simply state that our network
+structure is blah...(it will also save words)}, we will use a combination of
+three networks; two encoder networks ($\textrm{E}_1$, $\textrm{E}_2$) and one
+decoder network (D).~\chris{point the reader to the appropriate figure and
+start by walking through the training approach.} The decoder network takes as
+input a set of latent space $z$ predictions~\chris{we haven't defined what z
+predictions are.} from one of the encoder networks~\chris{it clearly takes it
+from network 2}.  The decoder network samples from the posterior by producing
+$x_{\mu}$/$x_{\log{(\sigma^{2})}}$~\chris{this isn't an actual ratio is it. Be
+careful with the notation.} predictions on our parameters and then applying a
+random unit variant Gaussian distribution $\epsilon(0,1)$~\chris{this sentence
+doesn't make sense.}.
 
 \begin{equation}
     x_{\textrm{samp}} = x_{\mu} + x_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:x_calc}
 \end{equation}
+\chris{I think you have to stop putting these equations in. This is the same as
+the last one but with x and not z.}
 
 $\textrm{E}_1$ takes as 
-input a set of GW signals and produces a latent space vector $z^1$, while $\textrm{E}_2$ 
+input a set of \ac{GW} signals and produces a latent space vector $z^1$, while $\textrm{E}_2$ 
 takes as input both a set of GW signals and their associated source parameters 
 and produces a another latent space vector $z^2$.
 
+\chris{OK, here's my attempt at explaining/motivating the network design. If
+you look at the LHS of the training network (with the corrected y data arrow
+going into E2) then all that's happening is:
+\begin{itemize}
+\item $x$ and $y$ are being encoded into
+a latent space by a basic encoder. 
+\item Then the variational part samples from the
+distributions described by the latent vector
+\item the random samples go to a decoder and you get out
+the statistical description of a multivariate Gaussian (but you don't sample
+from it).
+\item The cost in this case would be computed as the negative (becuse you want
+something to minimise)
+log-likelihood of the original input x sample using the means and variances
+output from the decoder.
+\item if this was the entire network and loss function then it would learn to
+get maximise the likelihood/posterior - meaning that it would learn to predict the
+closest value of $x$ (through $x_{\mu}$) and the variation of that $x$ (through
+$x_{\sigma}$). Remeber that $x_{\mu}$ and $x_{\sigma}$ are not fixed for the
+whole dataset - so they're not modelling the spread of $x$ as a multivariate
+Gaussian - they have learned the $x_{\mu}$ and $x_{\sigma}$ for any input pair
+of $x$ and (crucially) $y$.
+\item In summary, this sub-network will simply (literally) learn the
+likelihood/posterior
+function of the data. When trained it will return a function (parameterised by
+the weights and biases) that when input parameters and data it will return the
+log-likelihood/posterior (or something proportional to it).  
+\end{itemize}
+%
+Next we have the E1 path. The aim here is, via the KL divergence, to make the
+output of E1 the same as the output of E2. However, E1 only gets given the
+data, and E2 gets the data and the parameters. The logic is that the
+distilation of the information into the latent space representation is possible
+with only the y data.
+%
+Then for the run, all you do is take the E1 encoder (whih does the same job as
+E2 but with only y data input) and follow through to the decoder output. This
+output represents the parameters of the multi-dimensional Gaussian function
+that describes the likelihood/posterior and so you simply sample from it. You
+have then generated posterior samples.
+%
+I have one concern here. Why do we really need E2? IF E1 can be trained without
+$x$ input then why can't we simpy train to minimise the cost (still computed
+using the known training $x$ values), it's just that the encoder doesn't get to
+see the $x$ values. Then you wouldn't need a KL. Could we test this? It might
+be bullshit but it would simplify our lives.
+}
+
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
-    \caption{\label{fig:network_config} This figure illustrates our neural network 
+    \caption{\label{fig:network_config}\chris{You are missing a crucial element
+here. There should be an arrow from the y data to *both* encoders in the
+training. Also, why have we made it so encoder 1 is on the right and encoder 2
+is on the left. It reads weird.} This figure illustrates our neural network 
     training/testing operations. During training, a training set of GW signals ($y$) 
     and their corresponding true parameters ($x$) are given as input to encoder 
     networks $\textrm{E}_1$ and $\textrm{E}_2$. The KL divergence (Eq. \ref{eq:kl}) 
