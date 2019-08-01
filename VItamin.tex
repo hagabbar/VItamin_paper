@@ -71,9 +71,8 @@ floatfix,
 
 \preprint{APS/123-QED}
 
-\title{Estimating Bayesian Parameter Estimation Using Conditional Variational
-Autoencoders\chris{need to have gravitational waves in the title but stay below
-15 words}}
+\title{Estimating Bayesian parameter estimation using conditional variational
+autoencoders for gravitational-wave astronomy}
 
 \author{Hunter Gabbard$^1$}
  \email{Corresponding author: h.gabbard.1@research.gla.ac.uk}
@@ -84,10 +83,11 @@ Autoencoders\chris{need to have gravitational waves in the title but stay below
 
 \affiliation{
  SUPA, School of Physics and Astronomy$^1$, \\
+ University of Glasgow, \\
+ Glasgow G12 8QQ, United Kingdom \\ \\
  School of Computing Science$^2$, \\
  University of Glasgow, \\
- Glasgow G12 8QQ, United Kingdom\chris{Probably want to have 2 seperate
-affiliations} \\
+ Glasgow G12 8QQ, United Kingdom \\
 }
 
 \date{\today}
@@ -101,7 +101,8 @@ affiliations} \\
 \acrodef{FFT}[FFT]{fast Fourier transform}
 \acrodef{CNN}[CNN]{convolutional neural network}
 \acrodef{ROC}[ROC]{receiver operator characteristic}
-
+\acrodef{LIGO}[LIGO]{advanced Laser Interferometer Gravitational wave Observatory}
+\acrodef{CVAE}[CVAE]{conditional variational autoencoder}
 %
 % Introductory paragraph describing the content of the letter
 %
@@ -117,44 +118,34 @@ affiliations} \\
 %
 % background
 %
-With the beginning of the Laser Interferometer Gravitational wave
-Observatory's (LIGO)\chris{use the acronym package for ALL acronyms.} and
+With the beginning of the \ac{LIGO} and
 Virgo's third observation run well under way, we are now in an era where
 \ac{GW} detection is commonplace~\cite{PhysRevLett.116.061102,
 PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of both detectors
-increases, we will see more many more detections on a weekly and even daily
-basis\chris{too vague. You could actually quote numbers here}.  The current
+increases, we will see upwards of 100s of \ac{GW} events per year \cite{1409.7215}.  The current
 method used to estimate the parameters of gravitational wave events is done
-using a form of\chris{a form of? } Bayesian inference~\cite{1409.7215}.
+using Bayesian inference~\cite{1409.7215}.
 %
 % rationale
 %
-Although effective~\chris{let's not mnake enemies. The Bayesian PE that is
-currently done is excellent and amazing and computes the correct result. It is
-just slow.}, Bayesian inference is a computationally expensive method which can
-take of order hours to weeks to complete when applied to a single GW
-event\chris{again, we can get the actual numbers for this and be more specific.
-Also, why does it even matter to be fast? Need to mention that the rate of
-future detections will swamp current methods *and* we desperately need accurate
-low latency PE for EM follow-up.  Current low latency methods are good but only
-an approximation and also take O(1 min) to run}. We propose the use of a
-conditional variational autoencoder (CVAE) as a computationally
-inexpensive\chris{not true. It is very expensive it's just that the cost is
-spent before the events are detected allowing rapid accurate and complete
-Bayesian results to be shared almost instantantaneously.  We need to be very
-careful here regarding what the practical bottleneck would be for an
-instantaneous PE run.} alternative to this
+Bayesian inference has been shown to be incredibly effective when 
+applied towards \ac{GW} parameter estimation. It is also computationally expensive 
+to run. When run on a single \ac{BBH} signal sampled at 4kHz, Bayesian 
+inference can take $\mathcal{O}(1.5\textrm{e}5 - 1.7\textrm{e}6\: s)$ to complete \cite{1409.7215}. 
+Over the next several years, as the detectors become more sensitive, we will 
+need to be able to alert our electromagnetic follow-up partners in a timely 
+and efficient manner. The current fastest method for doing so, \texttt{Bayestar}, 
+takes $\mathcal{O}(1\: \textrm{minute})$ to produce fast, but only approximate parameter estimates. 
+Given the deluge of signals we are expecting to see, 
+it is imperative that a more efficient low latency parameter estimation 
+method be developed. We propose the use of a \ac{CVAE} as a rapid and accurate alternative to this
 approach~\cite{1904.06264,1812.04405}. 
 %
 % results
 %
-Here we show that a CVAE~\chris{best to
-use machine learning here as opposed to an obscure acronym.} can return
-posterior estimates for any~\chris{we don't show this for *any* parameter, we
-show realistic but simplified cases. We assume that this is extendable to
-all/any parameters.} parameter of a detected \ac{GW} event on the order of less
-than $1s$~\chris{we need to measure this number.}, an immense~\chris{quantify
-this even of it's just to the nearest order of magnitude.} speed-up over
+Here we show that a machine learning algorithm can return
+posterior estimates on 4 parameters (this may be extended up to 15 parameters) of a detected \ac{GW} event on the order of less
+than $1s$~\chris{we need to measure this number.}, a 6 order of magnitude speed-up over
 current inference techniques.}
 
 \chris{
@@ -200,25 +191,41 @@ inference in other fields and how this is applicable across the sciences.
 \end{itemize} }
 
 %
+% Intro to the detection era with the LVC
+%
+With the overwhelmingly successful observation runs of O1 and O2 
+now complete, \ac{LIGO} and Virgo have produced a large 
+catalogue of \ac{GW} data covering both \ac{BBH} and {BNS} signals~\hunter{provide 
+citations mentioned in arxiv:1906.08000}. Over the next five years 
+we expect the number of detections to increase to be upwards 
+of 100s of events per year. This large increase in the number 
+of detections will put a large amount of pressure on the current \ac{GW} inference 
+methods used to perform parameter estimation.  
+
+%
+% From GW detection, to parameter estimation
+%
+Much of the \ac{LIGO} analysis effort over the past several years has been focused 
+on the detection of \ac{GW}s. This has been the primary 
+focus of many, due to the difficulty associated 
+with identifying \ac{GW} waveforms burried in 
+in large amount of noise to a high degree of certainty. The detection problem has largely 
+been solved through the use of matched template filtering\cite{0264-9381-33-21-215004}. 
+Once a \ac{GW} has been identified through matched template filtering, Bayesian inference 
+is used to extract information about the source 
+parameters of the detected \ac{GW} event.
+
+%
 % Set up parameter estimation problem
 %
 In the standard Bayesian \ac{GW} inference approach, we assume that we are
-given some observed waveform which is buried in noise\chris{It's a lot more
-than that. We assume a signal and a noise model. Each of which may have unknown
-parameters that we are interested in inferring (some of the unknown parameters
-are not of interest like initial phase). Each of these parameters is given a
-prior astrophysically motivated probability distribution. In our case we have
-additive noise which is usually modelled as Gaussian but in reality our data is
-not truly Gaussian.}. In order to ensure that there is equal power accross all
-frequency bins of our signal, we ensure that the noise is whitened Gaussian
-noise~\chris{this is a distraction. Whitening is irrelevent to the problem
-but it is an important aspect of the method.  Don't focus on it here.}. We
-whiten using a single detector (H1) power spectrum density derived from the
-Advanced LIGO design sensitivity curves \cite{2016LRR....19....1A}~\chris{this
-is technical and part of the method. It shouldn't be here.}. Given a noisy
+given both a signal model and a noise model. Both the signal and the 
+noise model may have unkown parameters we are interested in inferring. 
+Each parameter is given a prior astrophysically motivated probability 
+distribution. In our case, we have additive noise which is modelled as 
+a Gaussian (in reality, the data is not truly Gaussian). Given a noisy
 \ac{GW} waveform, we would like to find an optimal procedure for retrieving
-some finite set of unknown GW parameters \cite{Jaranowski2012}~\chris{I don't
-think this is an appropriate reference for us. }. Our procedure should be able
+some finite set of unknown GW parameters. Our procedure should be able
 to give us an accurate estimate of the parameters of our observed signal, while
 also accounting for the uncertainty which arises from having multiple noise
 realizations of our observed data able to be mapped to one parameter
@@ -229,116 +236,50 @@ methiods paper from John https://arxiv.org/abs/0911.3820}
 %
 % Describe Bayes Theorem
 %
-According to Bayes Theorem \cite{Bayestheorem}\chris{not sure you should cite
-this.}, a posterior for a set of GW parameters can be described by the
+According to Bayes Theorem, a posterior for a set of GW parameters can be described by the
 following expression:
 %
 \begin{equation}
-    p(\theta|x) = \frac{p(x|\theta) * p(\theta)}{p(x)},
+    p(x|y) = \frac{p(y|x) \cdot p(x)}{p(y)},\label{eq:bayes_theorem}
 \end{equation}
 %
-\chris{ditch the multiplication symbols and dots throughout. Also label *all*
-the equations.} where $p(\theta|x)$ is the probability of the parameters given
-observed data\chris{this is the posterior}, $p(x|\theta)$ is the probability of
-the observed data given the parameters\chris{this is the likelihood},
-$p(\theta)$ is the prior we put on our parameter distribution and $p(x)$ is the
-probability of our data.  We typically assume that $p(x)$ is a constant,
-$1$,~\chris{we do not set it to 1, we simply ignore it since it is a constant
-and for PE we are interested only in the shape of the posterior distribution
-and not it's normalisation. You need to state this clearly.} which then reduces
-to the following equation:\chris{let's stop with the : stuff. Equations just
-flow from the text.}
+where $x$ are the parameters, $y$ is the observed data, 
+$p(x|y)$ is the posterior, $p(y|x)$ is the likelihood,
+$p(x)$ is the prior we put on our parameter distribution and $p(y)$ is the
+probability of our data.  We typically ignore $p(y)$ since the term is a 
+constant and we are only interested in the shape of the posterior distribution, 
+not its normalization. Eq. \ref{eq:bayes_theorem} then reduces
+to
 %
 \begin{equation}
-    p(\theta|x) \propto p(x|\theta) * p(\theta),
+    p(x|y) \propto p(y|x) \cdot p(x).\label{eq:simplified_bayes}
 \end{equation}
-%
-where $p(\theta|x)$ is the posterior, $p(x|\theta)$ is the likelihood and
-$p(\theta)$ is the prior~\chris{you\'ve already said this.}.  For this study,
-we assume that the noise is stationary with zero mean and some constant
-variance in each detector~\chris{no we do not! We assume stationary Gausssian
-noise drawn from a PSD representative of the advanced LIGO detectors. However,
-there is no need to mention this here.}. Small changes in the power spectrum
-density over time are not considered in this analysis.~\chris{again, no need to
-mention this here.} 
-
-%
-% Describe nested sampling algorithm
-%
-There are several algorithms which may be used to sample from the posterior
-distribution of astrophysical GW source parameters~\chris{give references}. The
-algorithm which is used in our studies~\chris{which studies? This is very
-unclear.} is the nested sampling algorithm. Nested
-sampling takes a multi-dimensional evidence integral calculation (fully
-marginalized likelihood)~\chris{evidence hasn't been defined and neither has
-marginalisation.} and transforms it into a more manageable 1-D integral.
-Where the fully marginalized likelihood is equivalent to taking the integral of
-the likelihood and multiplying it by the prior~\cite{1409.7215}~\chris{the
-integral over what? also you don't integrate and then multiply by the prior}.
-
-%
-% More nested sampling description
-%
-The first step of the nested sampling algorithm starts by generating an initial
-set of live points made from the prior distribution. The likelihood for each
-point is calculated and the point with the lowest likelihood is removed. The
-removed sample is then replaced with a new sample which has a higher
-likelihood. This cycle repeats itself until a predefined stopping threshold is
-achieved \cite{1409.7215} . Samples from the posterior may be drawn by randomly
-selecting from both all current 'live' points and all previously removed 'live'
-points.~\chris{There is no need to have this in the paper. The reader simply
-needs to know what trhe posterior is, that it is currently computed via random
-sampling techniques, and it takes a long time. In the methods section you would
-clearly define all of the parameters and settings that you used for the
-comparison. In the main part of the paper you would explain why you used a
-comparison to validate your new results.}
 
 %
 % discuss codebase which we use to generate waveforms, sampling frequency, and
 % parameter space
 %
-The codebase\chris{jargon} which we use to do the Bayesian inference analysis is the Bilby
-inference library \cite{1811.02042} . Our waveforms have a duration of 1
-second, sampling frequency of 256Hz, fixed right ascension ($\alpha$),
+The suite of scripts which we use to produce the Bayesian posteriors is the \texttt{Bilby}
+inference library \cite{1811.02042}. In our analysis, we use waveforms 
+that have a duration of 1 second, sampling frequency of 256Hz, fixed right ascension ($\alpha$),
 declination ($\delta$), inclination angle ($\theta_j$), polarization angle
 ($\psi$) and a spin of zero. We allow 5 parameters to vary: component masses
 $m_1$ and $m_2$, luminosity distance, time of coalescence and phase, where
-phase is marginalized out. The waveform model used is \texttt{IMRPhenomPv2}
-\cite{1809.10113} with a minimum cutoff frequency of 20Hz.~\chris{this is all
-fine but it comes out of nowhere.}
+phase is marginalized out. The waveform model ($H$) used is \texttt{IMRPhenomPv2}
+\cite{1809.10113} with a minimum cutoff frequency of 20Hz.
 
 %
 % Discuss priors that we use
 %
-The priors we choose for the analysis are all fixed~\chris{poor language.
-all priors are fixed. What you mean is that the parameters that we are not
-interested in are all being fixed (except phi). You could say that they have delta function
-priors but I wouldn't use that language either.} except for the component
-masses, phase, distance and time of coalescence.~\chris{You must understand
-that priors are not defined by their ranges. Thery are functions with shapes.
-We are using flat or uniform priors and this must be stated clearly.} The prior on both component
-masses range from $35 - 50$ solar masses, the phase prior ranges from $0 -
+The parameters we are not interested in estimating are all fixed (except for phase). 
+A uniform prior is applied on the component masses, phase, distance and time of 
+coalescence. The prior on both component
+masses ranges from $35 - 50$ solar masses, the phase prior ranges from $0 -
 2\pi$, the distance prior ranges from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the
-time of coalesence prior ranges from $1126259642.4 -
-1126259642.6$~\chris{better to simply describe this as a finite range around a
-reference time (-0.1 - 0.1) sec.}. The nested sampling algorithm is run using
-1000 live points and has a predefined stopping criteria of $0.1$~\chris{expand
-upon what the stopping criteria means. This is related to the evidence
-calculation and the tolerance on that result}. The sampler takes $\mathcal{O}(3
-\: \textrm{minutes})$ to converge~\chris{jargon. What does converge mean to the
-average Nature reader?}.
-
-%
-% Conclude bilby section
-% 
-After the nested sampler has converged~\chris{jargon}, we draw
-samples~\chris{too technical with not enough explanation. The Bilby analysis
-produces posterior parameter estimates and does so by supplying the user with
-samples drawn from that distribution.} and produce a posterior on the
-astrophysical \ac{GW} source parameters we are trying to estimate. These
-samples will be used as our benchmark when assessing the efficiency of our
+time of coalesence prior ranges from $-0.1s - 0.1s$. The posterior samples produced 
+by \texttt{Bilby} will be used as our benchmark when assessing the efficiency of our
 machine learning approach.  We will now investigate whether we can reproduce
-the results from Bilby using CVAEs~\chris{use acronym package}. 
+the results from \texttt{Bilby} using \ac{CVAE}s. 
    
 
 %
@@ -346,18 +287,17 @@ the results from Bilby using CVAEs~\chris{use acronym package}.
 %
 Machine learning has featured prominently in many areas of gravitational wave
 research over the last few years.  These techniques have shown to be
-particularly useful in signal detection
+particularly promising in signal detection
 \cite{PhysRevLett.120.141103,GEORGE201864,1904.08693}, glitch classification
 \cite{1706.07446,0264-9381-34-6-064003} and earthquake prediction
-\cite{Coughlin_2017}~\chris{however., have any of them actually been used in
-reality? If nkit then they have nbot been particuylarly useful but they have
-been shown to be very promising.}. Recently, a type of neural network called
+\cite{Coughlin_2017}. Recently, a type of neural network called
 conditional variational autoencoders was shown to perform exceptionally well
 when applied towards computational imaging
-inference~\cite{1904.06264}~\chris{there must be other literature on CVAE
-applications and theory. Look in the VICI paper.}. It is this \chris{type of}
-network that we base our machine learning inference algorithm off
-of~\chris{""off of" is highly american. replace with "on".}.
+inference~\cite{1904.06264,NIPS2015_5775}, text to image inference \cite{}, 
+high-resolution synthetic image generation \cite{Ngyun} and the fitting 
+of incomplete heterogeneous data \cite{Nazabal}. ~\chris{there must be other literature on CVAE
+applications and theory. Look in the VICI paper.}. It is this type of
+network that we base our machine learning inference algorithm on.
 
 %
 % What is an autoencoder?
@@ -663,7 +603,7 @@ a parameter space which is consistent with the prior assumptions
 on the parameter space defined above. The only difference 
 being that all of our time of coalescence parameters are fixed 
 at $0.5s$ within the $1s$ time window. We compare our 
-VAE predictions with posteriors produced by the Bilby
+VAE predictions with posteriors produced by the \texttt{Bilby}
 inference library.
 
 %
@@ -674,15 +614,15 @@ inference library.
     \caption{\label{fig:kl_results} Histograms of 
     25 different test GW signal KL divergence values. 
     Red denotes predictions from the CVAE and blue 
-    denotes predictions from Bilby.}
+    denotes predictions from \texttt{Bilby}.}
 \end{figure}
 
 In Fig. \ref{fig:kl_results} we show histograms of KL divergence 
 values on $25$ test GW samples. The KL divergence is computed 
 $100$ times per test sample through the initialization of random splits. We compute 
 the KL divergence on CVAE results (red) by comparing CVAE predictions 
-to Bilby predictions. Our benchmark Bilby (blue) results are computed by choosing 
-random $50/50$ splits between results from the same bilby produced 
+to \texttt{Bilby} predictions. Our benchmark \texttt{Bilby} (blue) results are computed by choosing 
+random $50/50$ splits between results from the same \texttt{Bilby} produced 
 posterior. 
 
 
@@ -696,7 +636,7 @@ posterior.
     component mass 1 values. Distributions which are similar 
     will have AD values which are close to 0.
     Red denotes predictions from the CVAE and blue 
-    denotes predictions from Bilby.}
+    denotes predictions from \texttt{Bilby}.}
 \end{figure}
 
 In Fig. \ref{fig:ad_results} we show histograms of AD 
@@ -708,7 +648,7 @@ values are to zero, the more likely that the two
 distributions being compared are drawn from 
 the same distribution. As can be seen in Fig. \ref{fig:ad_results} 
 there is some overlap between the machine learning 
-predictions and our benchmark Bilby results.
+predictions and our benchmark \texttt{Bilby} results.
 
 %
 % P-P plot
@@ -742,7 +682,7 @@ shown in the blue line.
     values where 1 means $\sim{100}\%$ overlap and 0 
     means $\sim{0}\%$ overlap.
     Red denotes predictions from CVAE predictions and blue 
-    denotes predictions from Bilby.}
+    denotes predictions from \texttt{Bilby}.}
 \end{figure}
 
 %
@@ -752,8 +692,8 @@ shown in the blue line.
     \includegraphics[width=\columnwidth]{images/posteriors_13.png}
     \caption{\label{fig:lum_dist-t0_scatter} This figure illustrates 
     25 different test GW samples with $5000$ posterior samples 
-    from both Bilby and our CVAE plotted. Red denotes predictions 
-    from the CVAE and blue denotes predictions from Bilby. Luminosity 
+    from both \texttt{Bilby} and our CVAE plotted. Red denotes predictions 
+    from the CVAE and blue denotes predictions from \texttt{Bilby}. Luminosity 
     distance is plotted as a function of time of coalescence with 
     4-dimensional overlap values printed in the upper right-hand 
     portion of each subplot.}
@@ -761,14 +701,14 @@ shown in the blue line.
 
 We can further illustrate the accuracy of our machine 
 learning predictions by directly plotting the samples 
-generated by our CVAE and Bilby superimposed on each other. 
+generated by our CVAE and \texttt{Bilby} superimposed on each other. 
 In Fig. \ref{fig:1D_overlap}, we histogram predictions sampled 
-from the posterior through both Bilby (blue) and our CVAE (red). 
-As can be clearly seen, the overlap between both Bilby and 
+from the posterior through both \texttt{Bilby} (blue) and our CVAE (red). 
+As can be clearly seen, the overlap between both \texttt{Bilby} and 
 the CVAE is extremely high in the $m_1$ parameter space. Additional 
 proof of high overlap between posteriors can also be seen 
 in Fig. \ref{fig:lum_dist-t0_scatter} where 
-we plot samples from both Bilby (blue) and the CVAE (red) posteriors 
+we plot samples from both \texttt{Bilby} (blue) and the CVAE (red) posteriors 
 with luminsoity distance as a function of $t_0$. 
 
 %
@@ -808,11 +748,60 @@ Put methods in here.  If you are going to subsection it, use
 800 words and if it is less than 200 words, it can be incorporated
 into the main text.
 
-\subsection{Method subsection.}
+\subsection{Whitening}
 
-Here is a description of a specific method used.  Note that the
-subsection heading ends with a full stop (period) and that the
-command is \verb|\subsection{}| not \verb|\subsection*{}|.
+In order to ensure 
+that there is equal power accross all
+frequency bins of our signal, we ensure that the noise is whitened Gaussian
+noise. We whiten using a single detector (H1) power spectrum density derived from the
+Advanced LIGO design sensitivity curves \cite{2016LRR....19....1A}. 
+
+\subsection{Nested Sampling}
+%
+% Describe nested sampling algorithm
+%
+If we would like to find the results for a particular parameter, 
+we simply marginalize over all unwanted parameters 
+
+\begin{equation}
+    p(x_1|y) = \int dx_2 ... dx_N p(x|y).
+\end{equation}
+
+There are several algorithms which may be used to sample from the posterior
+distribution of astrophysical GW source parameters \cite{PhysRevD.64.022001,
+skilling2006,10.1111/j.1365-2966.2011.20288.x}. The
+algorithm which is used in our case is the nested sampling algorithm. Nested
+sampling takes a multi-dimensional evidence integral calculation (fully
+marginalized likelihood) and transforms it into a more manageable 1-D integral
+, where evidence is the integral of the likelihood 
+multiplied by the prior over all parameters of the model $H$ ~\cite{1409.7215}
+
+\begin{equation}
+    Z = p(y|H) = \int dx_1 ... dx_n p(y|x,H)p(x|H).\label{eq:evidence}
+\end{equation}
+
+%
+% More nested sampling description
+%
+The first step of the nested sampling algorithm starts by generating an initial
+set of live points made from the prior distribution. The likelihood for each
+point is calculated and the point with the lowest likelihood is removed. The
+removed sample is then replaced with a new sample which has a higher
+likelihood. This cycle repeats itself until a predefined stopping threshold is
+achieved \cite{1409.7215} . Samples from the posterior may be drawn by randomly
+selecting from both all current 'live' points and all previously removed 'live'
+points.
+
+The nested sampling algorithm is run using
+1000 live points and has a predefined stopping criteria of $0.1$~\chris{expand
+upon what the stopping criteria means. This is related to the evidence
+calculation and the tolerance on that result}. The sampler takes $\mathcal{O}(3
+\: \textrm{minutes})$ to converge~\chris{jargon. What does converge mean to the
+average Nature reader?}. After the nested sampler has converged~\chris{jargon}, we draw
+samples~\chris{too technical with not enough explanation. The \texttt{Bilby} analysis
+produces posterior parameter estimates and does so by supplying the user with
+samples drawn from that distribution.} and produce a posterior on the
+astrophysical \ac{GW} source parameters we are trying to estimate.
 
 %
 % acknowledge peopkle and funding agencies
