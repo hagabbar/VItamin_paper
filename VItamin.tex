@@ -293,110 +293,75 @@ particularly promising in signal detection
 \cite{Coughlin_2017}. Recently, a type of neural network called
 conditional variational autoencoders was shown to perform exceptionally well
 when applied towards computational imaging
-inference~\cite{1904.06264,NIPS2015_5775}, text to image inference \cite{}, 
-high-resolution synthetic image generation \cite{Ngyun} and the fitting 
-of incomplete heterogeneous data \cite{Nazabal}. ~\chris{there must be other literature on CVAE
-applications and theory. Look in the VICI paper.}. It is this type of
+inference~\cite{1904.06264,NIPS2015_5775}, text to image inference \cite{1512.00570}, 
+high-resolution synthetic image generation \cite{1612.00005} and the fitting 
+of incomplete heterogeneous data \cite{1807.03653}. It is this type of
 network that we base our machine learning inference algorithm on.
 
 %
 % What is an autoencoder?
 %
 Conditional variational autoencoders are a form of variational autoencoders
-which are conditioned on an observation~\chris{this means nothing without
-knowledge of what an observation is}. The autoencoders from which variational
+which are conditioned on an observation, where our observation is a 
+\ac{GW} signal $y$. The autoencoders from which variational
 autoencoders are derived are typically used for problems involving image
-reconstruction and attempt to reproduce a given input~\chris{too vague.  what
-does reproduce a given input mean?}. An autoencoder is composed of two neural
+reconstruction and/or dimensionality reduction. They essentially perform 
+a regression task whereby the autoencoder tries to predict its own given input (model the 
+indentity function). An autoencoder is composed of two neural
 networks, an encoder and a decoder~\cite{LIOU20083150}.  The encoder network
-takes as input an image~\chris{not always an image and certainly not an image
-in our case}, then converts the input image into a (typically) lower
-dimensional space, what is also known as the {\it{latent space}}. The latent
-space~\chris{be careful. The ltent space is not fed into anything. A
-representation of the data in the latent space is passed to the decoder.} is
-then fed as input to the decoder network which generates as output a
+takes as input an $n$-dimensional vector, where the number of dimensions is 
+a fixed number predefined by the user. The encoder converts 
+the input image into a (typically) lower
+dimensional space, what is also known as the {\it{latent space}}. A 
+representation of the data in the latent space is passed to 
+the decoder network which generates a
 reconstruction of the original input image to the encoder network. Through
-training, we hope to~\chris{too much of the original text from where you got
-this. we don't hope to do this at all since we don't use an AE.} learn a latent
-space which will take on the most important properties of our input training
-samples.~\chris{it might be good to give a very brief example sentence along
-the lines of "if applying an AE to an input dataset one might hope that the
-data can be accurately represented in a latent space smaller than the
-dimensionality of the input data. In this way the data can be compressed with
-little loss of fidelity". I think it's good to try to get across what an AE is
-to the reader. It will help in explaining the VAE.}  
+training, we learn a latent space which will take on the most important properties of our input training
+samples. When applying an autoencoder to some input data, 
+one hopes that the data can be represented in a latent 
+space smaller than the dimensionality of the input data. 
+In this way, the data can be compressed with little loss of fidelity.  
 
 %
 % What is a variational autoencoder?
 %
-One of the few failings~\chris{it's not a failing. It just depends on what you
-want to do with it. We haven't yet really defined what we specifically need it
-to do so again I wouldn't use the word "failing".} of an autoencoder is that
-\chris{once trained} they are only able to return one output for any one given
-input~\chris{it isn't clear why that is the case. Maybe state that once trained
-the AE represents a deterministic algorithm that maps an input to an output.}.
-In order to produce variable estimates for one given input, we need to utilize
-what is known as a variational autoencoder~\cite{1812.04405}\chris{fine, but
-you haven't explained why you want that. Maybe best to just stay boring and
-matter-of-fact about it at this point. Simply say, and AE does this and a VAE
-does this. We will then explain why a VAE is crucial to our needs when you
-describe VItamin.}. A variational autoencoder is also composed of both an
+%Autoencoders, once trained, represent a deterministic algorithm which 
+%maps only one given input to one output. If we would like to produce 
+%multiple variable estimates for one given input, we need to utilize
+% a variational autoencoder~\cite{1812.04405}
+A variational autoencoder ~\cite{1812.04405} is also composed of both an
 encoder and a decoder network. The primary difference between a variational
 autoencoder and an autoencoder concerns the method by which the latent space is
 produced. In our variant of the variational autoender, the mean ($z_{\mu}$) and
 the log squared of the standard deviation ($z_{\log{(\sigma^{2})}}$) of the
-output of the encoder is calculated. We then multiply the log squared of the
-standard deviation by a random unit Gaussian distribution ($\epsilon(0,1)$)
-which is of the same dimension as that of the latent space.~\chris{OK, I never
-liked the way you describe this part to me so here are my thoughts. At this
-point all we need to say is that the latent space encoding (from the encoder)
-is interpreted as parameters governing statistical distributions (in our case
-the means and variances of multivariate uncorrelated Gaussians). In proceeding
-to the decoder network, samples are drawn from these distributions and fed into
-the decoder therefore adding the element of variation into the process. Hence a
-particular input can have infinitely many outputs.}
+output of the encoder is calculated. These are interpreted as parameters 
+governing statistical distributions (in our case the means and variances of 
+multivariant Gaussians). In proceeding to the decoder network, 
+samples are drawn from these distributions ($z$) and fed 
+into the decoder, therefore adding an element of variation into the process. 
+Thus a particular input can have infinitely many outputs. In both the 
+decoder and the encoder networks we use fully-connected layers.
 
-\begin{equation}
-    z = z_{\mu} + z_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:z_calc}
-\end{equation}
-\chris{not sure we need this equation but if we do use it then we need to
-change the notation. Some of these variables have not been defined and the equation
-starts straight after a sentence has ended so nobody knows what it is (or
-means).}
-
-$\log{(\sigma^{2})}$ is then summed together with the mean to produce the
-latent space $z$ (Eq. \ref{eq:z_calc})~\chris{no it isn't. See my previous
-comments. The latent space is interpreted as \ldots}. The latent space is given
-as input to the decoder network, which attempts to reconstruct the given input
-to the encoder network~\chris{I'm not sure that it does do this. In a standard
-AE, yes, the loss function is usually designed to make the output match the
-input, but here we have a different loss function that is trying to do
-something else.  So don't say this since I don't think it's true.}. We use
-fully-connected layers in both the decoder and the encoder networks.~\chris{not
-a particularly smpoth way of stating this but it does need to go somewhere.}
+% latent space expression
+%\begin{equation}
+%    z = z_{\mu} + z_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:z_calc}
+%\end{equation}
 
 %
 % How does our 3-network set-up work?
 %
-For this study~\chris{try not to use this kind of language. We are not doing a
-study we are making paradigm changing work. Just simply state that our network
-structure is blah...(it will also save words)}, we will use a combination of
-three networks; two encoder networks ($\textrm{E}_1$, $\textrm{E}_2$) and one
-decoder network (D).~\chris{point the reader to the appropriate figure and
-start by walking through the training approach.} The decoder network takes as
-input a set of latent space $z$ predictions~\chris{we haven't defined what z
-predictions are.} from one of the encoder networks~\chris{it clearly takes it
-from network 2}.  The decoder network samples from the posterior by producing
-$x_{\mu}$/$x_{\log{(\sigma^{2})}}$~\chris{this isn't an actual ratio is it. Be
-careful with the notation.} predictions on our parameters and then applying a
-random unit variant Gaussian distribution $\epsilon(0,1)$~\chris{this sentence
-doesn't make sense.}.
+We use a combination of three networks; two encoder networks ($\textrm{E}_1$, $\textrm{E}_2$) and one
+decoder network (D) (see Fig. \ref{fig:network_config}). The decoder network takes as
+input a set of latent space $z$ predictions from encoder network $\textrm{E}_2$. 
+The decoder produces mean  
+($x_{\mu}$) and log standard deviation squared predictions 
+($x_{\log{(\sigma^{2})}}$) describing a random multivariant Gaussian. Posteriors are 
+produced by simply sampling from this multivariant Gaussian distribution.
 
-\begin{equation}
-    x_{\textrm{samp}} = x_{\mu} + x_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:x_calc}
-\end{equation}
-\chris{I think you have to stop putting these equations in. This is the same as
-the last one but with x and not z.}
+% decoder parameter prediction expression
+%\begin{equation}
+%    x_{\textrm{samp}} = x_{\mu} + x_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:x_calc}
+%\end{equation}
 
 $\textrm{E}_1$ takes as 
 input a set of \ac{GW} signals and produces a latent space vector $z^1$, while $\textrm{E}_2$ 
@@ -406,31 +371,6 @@ and produces a another latent space vector $z^2$.
 \chris{OK, here's my attempt at explaining/motivating the network design. If
 you look at the LHS of the training network (with the corrected y data arrow
 going into E2) then all that's happening is:
-\begin{itemize}
-\item $x$ and $y$ are being encoded into
-a latent space by a basic encoder. 
-\item Then the variational part samples from the
-distributions described by the latent vector
-\item the random samples go to a decoder and you get out
-the statistical description of a multivariate Gaussian (but you don't sample
-from it).
-\item The cost in this case would be computed as the negative (becuse you want
-something to minimise)
-log-likelihood of the original input x sample using the means and variances
-output from the decoder.
-\item if this was the entire network and loss function then it would learn to
-get maximise the likelihood/posterior - meaning that it would learn to predict the
-closest value of $x$ (through $x_{\mu}$) and the variation of that $x$ (through
-$x_{\sigma}$). Remeber that $x_{\mu}$ and $x_{\sigma}$ are not fixed for the
-whole dataset - so they're not modelling the spread of $x$ as a multivariate
-Gaussian - they have learned the $x_{\mu}$ and $x_{\sigma}$ for any input pair
-of $x$ and (crucially) $y$.
-\item In summary, this sub-network will simply (literally) learn the
-likelihood/posterior
-function of the data. When trained it will return a function (parameterised by
-the weights and biases) that when input parameters and data it will return the
-log-likelihood/posterior (or something proportional to it).  
-\end{itemize}
 %
 Next we have the E1 path. The aim here is, via the KL divergence, to make the
 output of E1 the same as the output of E2. However, E1 only gets given the
@@ -443,12 +383,6 @@ E2 but with only y data input) and follow through to the decoder output. This
 output represents the parameters of the multi-dimensional Gaussian function
 that describes the likelihood/posterior and so you simply sample from it. You
 have then generated posterior samples.
-%
-I have one concern here. Why do we really need E2? IF E1 can be trained without
-$x$ input then why can't we simpy train to minimise the cost (still computed
-using the known training $x$ values), it's just that the encoder doesn't get to
-see the $x$ values. Then you wouldn't need a KL. Could we test this? It might
-be bullshit but it would simplify our lives.
 }
 
 \begin{figure}
@@ -476,16 +410,23 @@ is on the left. It reads weird.} This figure illustrates our neural network
 %
 % Training procedure
 %
-Training is performed through a series of 3 steps illustrated in \ref{fig:network_config}. 
-In step 1 encoder-1 is given $y_t$ GW training samples and returns as output mean
-latent space $z^{y}_{\mu}$. Then in step 2, encoder-2 takes a combination of $(x_{t},y_{t})$ 
-and returns $z^{x,y}_{\mu}$. The K-L divergence between both $z^{y}_{\mu}$ and $z^{x,y}_{\mu}$ is 
-computed and minimized in order to ensure that both distributions are consistent with each other. 
-We finally sample from $z^{x,y}_{\mu}$ using a unitvariant Gaussian distribution 
-in order to get a set of $z^{x,y}$ samples. These $z^{x,y}$ samples are combined with 
-a set of $y_t$ training samples and fed as input to our decoder network, which attempts 
-to reconstruct $x_t$ and outputs a mean predicted $x_{\mu}$. A cost function is then 
-computed between $x_{\mu}$ and $x_t$ and is minimized.
+Training is performed through a series of several steps illustrated in Fig. \ref{fig:network_config}. 
+$\textrm{E}_1$ is given a set of training \ac{GW} signals ($y_t$) and encodes $y_t$ into 
+latent space $z^{1}_{\mu,\sigma}$. $\textrm{E}_2$ takes a combination of $(x_{t},y_{t})$ 
+and is encoded into a latent space described by $z^{2}_{\mu,\sigma}$. 
+We then sample from a multivariant Gaussian distrubtion whose mean and standard 
+deviation are described by $z^{2}_{\mu,\sigma}$. These samples, along with $y_t$, then go 
+to the decoder in order to get out a statistical description of another 
+multivariant Gaussian distribution ($x_{\mu,\sigma}$). A cost function is then 
+computed between $x_{\mu,\sigma}$ and the corresponding training parameters ($x_t$) and is minimized. 
+Essentially, the cost function is used to learn how to predict the
+closest value of $x$ (through $x_{\mu}$) and the variation of that $x$ (through
+$x_{\sigma}$). Recall that $x_{\mu}$ and $x_{\sigma}$ are not fixed for the
+whole dataset - so they're not modelling the spread of $x$ as a multivariate
+Gaussian - they have learned the $x_{\mu}$ and $x_{\sigma}$ for any input pair
+of $x$ and (crucially) $y$.
+Additionally, the K-L divergence between both $z^{1}_{\mu,\sigma}$ and $z^{2}_{\mu,\sigma}$ is 
+computed and minimized in order to ensure that both distributions are consistent with each other.
 
 %
 % Brief introduction to loss functions used in the neural networks
