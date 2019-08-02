@@ -465,41 +465,27 @@ and train. Also drop the epsilon term on the run panel.}}
 %
 % Training procedure
 %
-\chris{The cost function needs to go before this since the network is entirely
-defined by the calculations required for the cost. As you desxribe each step
-you can refer back to the relevant function (see the methods section where I
-made an attempt at this)} Training is performed through a series of several
-steps illustrated in Fig.~\ref{fig:network_config}. \chris{don't start a
-sentence with a variable} $\textrm{E}_1$ is given a set of training \ac{GW}
-signals ($y_t$) and encodes $y_t$~\chris{I don't think we have to distinguish
-between $y$ and $y_t$ (also $x$ and $x_t$) in the paper - it's a bit confusing
-having so many variants of different variables.} into latent space
-$z^{1}_{\mu,\sigma}$.  \chris{Mathematically, the encoder networks (and the
-decoder) are computing the first 2 central moments for each dimension of a
-multivarite Gaussian. It is standard to simply label these as $\mu_{j}$ where
-$j$ is the order of the moment ($j=1$ is the mean and $j=2$ is the variance. I
-therefore think that we can replace $z^{1}_{\mu,\sigma}$ with $\mu_{z_{1}}$.
-Then the actual random variable drawn from them would be called $z_{1}$. Having
-superscripts looks like it's been squared.} \chris{Don't start a sentence with
-a variable} $\textrm{E}_2$ takes a combination of $(x_{t},y_{t})$ and is
-encoded into a latent space described by $z^{2}_{\mu,\sigma}$.  We then sample
-from a multivariant Gaussian distrubtion whose mean and standard deviation are
-described by $z^{2}_{\mu,\sigma}$. These samples, along with $y_t$, then go to
+Training is performed through a series of several
+steps illustrated in Fig.~\ref{fig:network_config}. Encoder $\textrm{E}_1$ is given a set of training \ac{GW}
+signals ($y$) and encodes $y$ into latent space
+$\mu^{j}_{1}$, where $\mu^{j}_{1}$ is composed of the first 2 central moments for 
+each dimension of a multivariate Gaussian and $j$ is the order of the moment 
+($j=1$ is the mean and $j=2$ is the variance). Encoder $\textrm{E}_2$ takes a combination of $(x,y)$ and is
+encoded into a latent space described by $\mu^{j}_{2}$.  We then sample
+from a multivariate Gaussian distribution whose mean and standard deviation are
+described by $\mu^{j}_{2}$. These samples, along with $y$, then go to
 the decoder in order to get out a statistical description of another
-multivariant Gaussian distribution ($x_{\mu,\sigma}$). A cost function is then
-computed between $x_{\mu,\sigma}$ and the corresponding training parameters
-($x_t$) and is minimized.  Essentially, the cost function is used to learn how
-to predict the closest value of $x$ (through $x_{\mu}$) and the variation of
-that $x$ (through $x_{\sigma}$). Recall~\chris{I'm not sure the reader should
-recall anything.} that $x_{\mu}$ and $x_{\sigma}$ are not fixed for the whole
+multivariate Gaussian distribution ($\mu^{1}_x$). A cost function is then
+computed between $\mu^{1}_x$ and the corresponding training parameters
+($x$) and is minimized.  Essentially, the cost function is used to learn how
+to predict the closest value of $x$ (through $\mu^{1}_x$) and the variation of
+that $x$ (through $\mu^{2}_x$). \ac{GW} Parameter predictions $\mu^{1}_x$ and $\mu^{2}_x$ are not fixed for the whole
 dataset - so they're not modelling the spread of $x$ as a multivariate Gaussian
-- they have learned the $x_{\mu}$ and $x_{\sigma}$ for any input pair of $x$
-  and (crucially) $y$. Additionally, the K-L divergence between both
-$z^{1}_{\mu,\sigma}$ and $z^{2}_{\mu,\sigma}$~\chris{technically the KL is
-computed between the distributions described by those parameters. Again, by
-discussing this after the cost function derivation you can easily refer to
-this.} is computed and minimized in order to ensure that both distributions are
-consistent with each other.
+- they have learned the $\mu^{1}_x$ and $\mu^{2}_x$ for any input pair of $x$
+  and (crucially) $y$. Additionally, the K-L divergence between the 
+  distributions described by $\mu^{j}_1$ and $\mu^{j}_2$ is computed and minimized in order to ensure that both distributions are
+consistent with each other. For further details on training and the full 
+derivation of the loss functions, see methods subsection \textit{Loss function derivation}.
 
 
 
@@ -519,12 +505,13 @@ consistent with each other.
 % Test procedure
 %
 After training has completed, we simply feed encoder-1 our test 
-GW signals $y_{test}$. We take the output from encoder-1 $z^{y}_{\mu}$ 
-and sample from a univariant Gaussian distribution in order to get 
-a set of $z^{y}$ samples. Our $z^{y}$ samples are then combined with our 
-test GW signals $y_{test}$ and fed as input to our pre-trained decoder 
-network. The decoder network returns a set of mean $x_{\mu}$ predictions 
-from which we sample from a Gaussian distribution in order to get 
+GW signals $y$. We take the output from encoder-1 $\mu^{j}_1$ 
+and sample from a multivariate Gaussian distribution described by 
+$\mu^{j}_1$ in order to get 
+a set of $z_{1}$ samples. Our $z_{1}$ samples are then combined with our 
+test GW signals $y_{\textrm{test}}$ and fed as input to our pre-trained decoder 
+network. The decoder network returns a set of mean $\mu^{1}_x$ predictions 
+from which we sample from a multivariate Gaussian distribution in order to get 
 our final posterior samples.
 
 %
@@ -552,17 +539,13 @@ model ($h$) used is
 %
 % Discuss priors that we use
 %
-\chris{Again, this stuff all goes in the results section later on.} The
-parameters we are not interested in estimating are all fixed (except for
+The parameters we are not interested in estimating are all fixed (except for
 phase). A uniform prior is applied on the component masses, phase, distance and
 time of coalescence. The prior on both component masses ranges from $35 - 50$
 solar masses, the phase prior ranges from $0 - 2\pi$, the distance prior ranges
 from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the time of coalesence prior ranges
 from $-0.1$---$0.1$ sec. The posterior samples produced by \texttt{Bilby} will
-be used as our benchmark when assessing the efficiency~\chris{not just our
-efficiency, also quality} of our machine learning approach. We will now
-investigate whether we can reproduce the results from \texttt{Bilby} using
-\ac{CVAE}s~\chris{we will do this in the results section}.
+be used as our benchmark when assessing the efficiency and quality of our machine learning approach.
 
 We present results from $25$ test cases of GWs produced from 
 a parameter space which is consistent with the prior assumptions  
@@ -571,8 +554,6 @@ being that all of our time of coalescence parameters are fixed
 at $0.5s$ within the $1s$ time window. We compare our 
 VAE predictions with posteriors produced by the \texttt{Bilby}
 inference library.
-
-
 
 %
 % K-L divergence results
@@ -716,7 +697,7 @@ Put methods in here.  If you are going to subsection it, use
 800 words and if it is less than 200 words, it can be incorporated
 into the main text.
 
-\subsection{Whitening}
+\subsection{Whitening} \label{whiten_sec}
 
 In order to ensure 
 that there is equal power accross all
@@ -724,7 +705,7 @@ frequency bins of our signal, we ensure that the noise is whitened Gaussian
 noise. We whiten using a single detector (H1) power spectrum density derived from the
 Advanced LIGO design sensitivity curves \cite{2016LRR....19....1A}. 
 
-\subsection{Nested Sampling}
+\subsection{Nested Sampling} \label{nested_sec}
 %
 % Describe nested sampling algorithm
 %
@@ -771,7 +752,7 @@ produces posterior parameter estimates and does so by supplying the user with
 samples drawn from that distribution.} and produce a posterior on the
 astrophysical \ac{GW} source parameters we are trying to estimate.
 
-\subsection{Loss function derivation}
+\subsection{Loss function derivation} \label{lossDer_sec}
 
 This section is to be rephrased into appropriate language but for now I will
 add my interpretation of the loss function and the design of the network.
