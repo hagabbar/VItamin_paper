@@ -192,6 +192,9 @@ inference in other fields and how this is applicable across the sciences.
 %
 \end{itemize} }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INTRODUCTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Intro to the detection era with the LVC
 %
@@ -489,50 +492,71 @@ consistent with each other.
 %
 % Brief introduction to loss functions used in the neural networks
 %
-In order for our variational autoencoders to learn anything, we need a metric by which 
-we can assess the effectivness of our three networks. This is done by computing 
-a loss function which minimizes the difference 
-between predictions on the posterior with respect to the truth (cost function) and the Kullback-Leibler divergence 
-between latent space distributions $z_1$ and $z_2$. 
+\chris{please move this to before the description of the network. I would start
+by simply saying that we wish to be able to make a numerical function that can
+simulate the target distribution (the posterior). We therefore start with the
+cross-entropy (see the methods section) \ldots and we then arrive at the cost
+function.}
+In order for our variational autoencoders to learn anything, we need a metric
+by which we can assess the effectivness of our three networks. This is done by
+computing a loss function which minimizes the difference between predictions on
+the posterior with respect to the truth (cost function) and the
+Kullback-Leibler divergence between latent space distributions $z_1$ and $z_2$. 
 
 %
 % Cost function
 %
-The cost function is constructed by first defining a normalization factor
-
+The cost function is constructed by first defining a normalization
+factor\chris{it's not really the first thing we have to understand though is
+it. It's just the first thing that gets computed. Try to draw a distinction
+between the functions that we have to compute and the specific ways in which
+they are implemented in the code. The reader does not care about the latter.}
+%
 \begin{equation}
     f_{\textrm{norm}} = 0.5 \cdot \log(c + \exp(x_{\sigma})) - 0.5 \cdot \log(2\pi),
 \end{equation}
-
-where $c$ is a small constant and $x_{\sigma}$ are standard deviation predictions 
-on the source paramters from the decoder network given latent space predictions 
-from encoder-2 ($z_2$) and training GW sigals ($y_{t}$). We then 
+%
+where $c$ is a small constant~\chris{things like the small constant are not
+important for understanding how this all works so I wouldn't mention it at all.}
+and $x_{\sigma}$ are standard deviation predictions on the source paramters
+from the decoder network given latent space predictions from encoder-2
+($z_2$\chris{be careful with what you call things.  The latent space
+predictions from encoder 2 are actually means and variances NOT the random
+draws from the latent space.}) and training GW sigals ($y_{t}$). We then
 compute 
-
+%
 \begin{equation}
     x_{\textrm{diff}} = (x^{z,y}_{\mu} - x_{\textrm{train}})^{2},
 \end{equation}
-
-where $x^{z,y}_{\mu}$ are the predicted mean parameters from the decoder network 
-and $x_{\textrm{train}}$ are the true training parameters we are 
-trying to predict. A Gaussian likelihood is computed and summed over
-
+%
+\chris{again, this is just part of the cost calculation and the reader doesn't
+need to know how it's broken up in the code.} where $x^{z,y}_{\mu}$ are the
+predicted mean parameters from the decoder network and
+$x_{\textrm{train}}$~\chris{notation consistency. Is it $x$, $x_t$ or
+$x_{\text{train}}$? I recokon just $x$.} are the true training parameters we
+are trying to predict. A Gaussian likelihood is computed and summed~\chris{OK,
+not quite true and probably my fault for saying that it was. The whole thing is
+just how it's derived from the starting point (the cross-entropy) and we maybe
+shouldn't read more into it.} over
+%
 \begin{equation}
     \textrm{cost} = - \sum (-\frac{x_{\textrm{diff}}}{2c \cdot 
     x^{z^{x,y_{\textrm{train}}}_{\sigma},y_{\textrm{train}}}_{\sigma^{2}}} + f_{\textrm{norm}}),\label{eq:cost}
 \end{equation}
-
-where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are standard deviation squared predictions from the 
-decoder network.
-
+%
+\chris{OK, so I think the last 3 equations can go. However, for reference, try
+to set the correct parenthesis sizes using "\\left" and "\\right" and get rid of
+the "\\cdot".} where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are
+standard deviation squared predictions from the decoder network.
 
 %
 % KL divergence
 %
-The K-L divergence is computed in order to train 
-encoder-1 and encoder-2 to produce consistant latent space 
-distributions. This is done by computing 
-
+The K-L divergence is computed in order to train encoder-1 and
+encoder-2~\chris{be consistent with the notation, is it $E_{1}$, encoder 1 or
+encoder-1?} to produce consistant latent space distributions. This is done by
+computing 
+%
 \begin{equation}
     \begin{split}
     \textrm{KL-div} = \sum(\log{z^{y}_{\sigma}}-\log{z^{x,y}_{\sigma}} \\
@@ -540,89 +564,145 @@ distributions. This is done by computing
     -\frac{1}{2}),\label{eq:kl}
     \end{split}
 \end{equation}
+%
+\chris{If this goes in the paper then it's too technical to not go in the
+methods. I also wrote up this expression (but in a less code-motivated way)
+later on. In general try to sort out your latex formatting (brackets,
+multiplication signs, exponentials.} where $z^{y}_{\sigma}$ is the predicted
+latent space standard deviation from $\textrm{E}_1$, $z^{x,y}_{\sigma}$ is the
+predicted latent space standard deviation from $\textrm{E}_2$, $c$ is a small
+constant, $z^{x,y}_{\sigma^{2}}$ is the predicted latent space standard
+deviation squared from $\textrm{E}_2$, $z^{y}_{\sigma^{2}}$ is the predicted
+latent space standard deviation squared from $\textrm{E}_1$, $z^{x,y}_{\mu}$ is
+the mean latent space from $\textrm{E}_2$ and $z^{y}_{\mu}$ is the mean latent
+space from $\textrm{E}_1$.~\chris{a lot of this is repeated what you've already
+said and what I've said later on. It all needs to be distilled and located in
+the right place.}
 
-where $z^{y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_1$, 
-$z^{x,y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_2$, 
-$c$ is a small constant, $z^{x,y}_{\sigma^{2}}$ is the predicted latent space 
-standard deviation squared from $\textrm{E}_2$, $z^{y}_{\sigma^{2}}$ is the predicted 
-latent space standard deviation squared from $\textrm{E}_1$, $z^{x,y}_{\mu}$ is the 
-mean latent space from $\textrm{E}_2$ and $z^{y}_{\mu}$ is the mean latent space 
-from $\textrm{E}_1$.
-
-The mean of the summation in equation \ref{eq:cost}, $\overline{\textrm{cost}}$, 
-is then summed together with the mean of the summation in equation \ref{eq:kl}, 
-$\overline{\textrm{KL-div}}$ to 
-get our final loss function
-
-\begin{equation}
-    \textrm{loss} = \overline{\textrm{KL-div}} + \overline{\textrm{cost}}.
+The mean of the summation in equation \ref{eq:cost},
+$\overline{\textrm{cost}}$, is then summed together with the mean~\chris{the
+mean over what? In reality this is over a batch but to describe that you need
+to have defined a batch and that starts to get technical. Best to state the
+loss function (or refer to it) and at some point mention that in practise
+things are performed in batches as is standard in ML training or neural nets.
+At that point also briefly mention the code fixed parameters like learning
+rate, etc...} of the summation in equation \ref{eq:kl},
+$\overline{\textrm{KL-div}}$ to get our final loss function
+%
+\begin{equation} 
+\textrm{loss} = \overline{\textrm{KL-div}} + \overline{\textrm{cost}}.  
 \end{equation}
-
-This loss is then backpropogated through all three networks 
-(encoder-1, encoder-2, decoder) and repeated per batch of 
-training samples for a pre-defined number of iterations. For our 
-purposes, we found that $\sim3\textrm{e}6$ training iterations and 
-a batch size of $128$ training samples were sufficient. A total 
-of $1\textrm{e}6$ training samples were used. We additionally 
-ensure that an inifinite number of noise realizations are effectively employed. This 
-is done by adding a new unique set of random whitened noise to noise-free 
-versions of our training samples for every new batch that the networks 
-see. Each neural network is three layers deep, has $2048$ neurons, a latent 
-space size of $64$ with $50\%$ dropout applied to each layer of each network.
+%
+\chris{This should be clear from the derivation of the loss function so no need
+to break it down this far.} This loss is then backpropogated through all three
+networks (encoder-1, encoder-2, decoder) and repeated per batch of training
+samples for a pre-defined number of iterations. For our purposes, we found that
+$\sim3\textrm{e}6$ training iterations and a batch size of $128$ training
+samples were sufficient. A total of $1\textrm{e}6$ training samples were used.
+We additionally ensure that an \chris{effectively} infinite number of noise
+realizations are employed~\chris{be more accurate here. We have the ability to
+generate an infinite number of noise realisations but in practice all we do is
+ensure that every training sample used has a unique noise realisation despite
+having a finite number actual waveforms.}. This is done by adding a new unique
+set of random whitened noise to noise-free versions of our training samples for
+every new batch that the networks see. Each neural network is three layers
+deep, has $2048$ neurons, a latent space size of $64$ with $50\%$ dropout
+applied to each layer of each network.~\chris{I think that the technical
+details of the may or may not end up in the methids section (maybe).}
 
 %
 % loss plot
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/losses_logscale.png}
-    \caption{\label{fig:loss_log} Loss plot with the cost, KL, 
-    and total loss values plotted as a function of the total 
-    number of training iterations. We can conclude that our 
-    neural networks have converged to their optimal state 
-    when the slope of our loss curves are close to zero.}
+    \caption{\label{fig:loss_log} Loss plot with the cost, KL, and total loss
+values plotted as a function of the total number of training iterations. We can
+conclude that our neural networks have converged to their optimal state when
+the slope of our loss curves are close to zero.~\chris{OK, this is the
+definition of vague. You don't need to discuss training stopping criteria in
+the caption, you siply have to describe what is being plotted. As a general
+rule for all captions leave the interpretation of the results to the main
+paper. Regarding the plot content, first you need to plot this with x-axis log
+scale and y-axis linear scale and also not mess with the signs of the
+components. Clearly the comb-like pattern has to be removed somehow - I know
+that you'll just do the whole thing again without intermediate plotting. Place
+the legend in a more appropriate corner.}} 
 \end{figure}
 
 %
 % Test procedure
 %
-After training has completed, we simply feed encoder-1 our test 
-GW signals $y_{test}$. We take the output from encoder-1 $z^{y}_{\mu}$ 
-and sample from a univariant Gaussian distribution in order to get 
-a set of $z^{y}$ samples. Our $z^{y}$ samples are then combined with our 
-test GW signals $y_{test}$ and fed as input to our pre-trained decoder 
-network. The decoder network returns a set of mean $x_{\mu}$ predictions 
-from which we sample from a Gaussian distribution in order to get 
-our final posterior samples.
+After training has completed, we simply feed encoder-1 our test GW signals
+$y_{test}$. We take the output from encoder-1 $z^{y}_{\mu}$ and sample from a
+univariant Gaussian distribution in order to get a set of $z^{y}$ samples. Our
+$z^{y}$ samples are then combined with our test GW signals $y_{test}$ and fed
+as input to our pre-trained decoder network. The decoder network returns a set
+of mean $x_{\mu}$ predictions from which we sample from a Gaussian distribution
+in order to get our final posterior samples.~\chris{see if this is aligned with
+my similar text in the methods. You should refer back to the definition of the
+parameterised distribution $r(x|y)$ (Eq.~\ref{eq:latent_model}) which is what
+this procedure is designed to model. You should also make it slightly more
+practical - this is the process that you use when you actually have a trained
+network and you want to run on some real data. What would you do in that case?
+How do you get to actual samples.}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% RESULTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Results
+% Intro to the results - what are we trying to do?
 %
-We present results from $25$ test cases of GWs produced from 
-a parameter space which is consistent with the prior assumptions  
-on the parameter space defined above. The only difference 
-being that all of our time of coalescence parameters are fixed 
-at $0.5s$ within the $1s$ time window. We compare our 
-VAE predictions with posteriors produced by the \texttt{Bilby}
-inference library.
+We present results from $25$ test cases of \acp{GW} produced from a parameter space
+which is consistent with the prior assumptions on the parameter space defined
+above.~\chris{Don't define the parameter space above, define it here and not
+before.} The only difference being that all of our time of coalescence
+parameters are fixed at $0.5s$~\chris{put the s or sec outside of the mathmode}
+within the $1s$ time window~\chris{why do we do this? If we mention it then we
+need to motivate it}. We compare our \ac{CVAE} predictions with posteriors
+produced by the \texttt{Bilby} inference library.\chris{As a results
+introduction paragraph this needs work. You need to state what your aims are
+(to provide a comparison between the existing known-to-be-optimal method and
+our new one). Then I would go on to state that you produce comparison
+posteriors from both methods and give key (not too technical) details about how
+these are generated.}
 
 %
 % K-L divergence results
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/hist-kl_0.png}
-    \caption{\label{fig:kl_results} Histograms of 
-    25 different test GW signal KL divergence values. 
-    Red denotes predictions from the CVAE and blue 
-    denotes predictions from \texttt{Bilby}.}
+    \caption{\label{fig:kl_results} Histograms of 25 different test GW signal
+KL divergence values.  Red denotes predictions from the CVAE and blue denotes
+predictions from \texttt{Bilby}.~\chris{OK, practical plotting comments first.
+We can't have 5x5 results shown here. You need to fix the font sizes and
+probably use a log scale on the y-axis. The bins sizes are too small in most
+histograms (try to use 100 bins across the complete range in each plot). Only
+use one central x-axis label (not one for every plot). Also add a central
+y-axis label stating $p(\text{KL})$. For the caption you need to provide more
+details of what is being shown. You don't get multiple KL values for a given
+pair of posteriors so how did you generate this? Now, in general - what to do
+about showing the KL values? Here's what I suggest. I think we need to do $N$
+test sets where $N>25$ but 25 will suffice for now. For each of these cases you
+need to run Bilby with all the different samplers and each sampler run twice.
+Then you can make a single plot showing the histogram (made from $N$
+realisations) of KL values. You would have a histogram from each sampler vs
+every other sampler (so 3 samplers plus VItamin makes 4 which results in 10
+histograms). When  you do one sampler against itself you use the 2nd run. There
+would be no bootstrapping. What do you think?}}
 \end{figure}
 
-In Fig. \ref{fig:kl_results} we show histograms of KL divergence 
-values on $25$ test GW samples. The KL divergence is computed 
-$100$ times per test sample through the initialization of random splits. We compute 
-the KL divergence on CVAE results (red) by comparing CVAE predictions 
-to \texttt{Bilby} predictions. Our benchmark \texttt{Bilby} (blue) results are computed by choosing 
-random $50/50$ splits between results from the same \texttt{Bilby} produced 
-posterior. 
+In Fig. \ref{fig:kl_results} we show histograms of KL divergence values on $25$
+test GW samples. The KL divergence is computed $100$ times per test sample
+through the initialization of random splits. We compute the KL divergence on
+\ac{CVAE} results (red) by comparing \ac{CVAE} predictions to \texttt{Bilby}
+predictions. Our benchmark \texttt{Bilby} (blue) results are computed by
+choosing random $50/50$ splits between results from the same \texttt{Bilby}
+produced posterior.~\chris{I think this text will need to change based on
+changing the KL plot (see caption comments). In general though, looking at the
+results themselves it's clear that we're not too far away from overlapping
+distributions in most cases. I guess it depends on how much we push. Is there
+any correlation between the 2 obviously overlapping test cases and their signal
+properties?}
 
 
 %
@@ -630,24 +710,24 @@ posterior.
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/hist-ad_0.png}
-    \caption{\label{fig:ad_results} Histograms of 
-    25 different test GW signal Anderson-Darling (AD) statistic 
-    component mass 1 values. Distributions which are similar 
-    will have AD values which are close to 0.
-    Red denotes predictions from the CVAE and blue 
-    denotes predictions from \texttt{Bilby}.}
+    \caption{\label{fig:ad_results} Histograms of 25 different test GW signal
+Anderson-Darling (AD) statistic component mass 1 values. Distributions which
+are similar will have AD values which are close to 0.  Red denotes predictions
+from the \ac{CVAE} and blue denotes predictions from
+\texttt{Bilby}.~\chris{Please see the suggested changes in
+Fig.~\ref{fig:kl_results} and apply the same here. Results wise this doesn't
+look too bad and a bit more tuning might get everything to overlap in a nicer
+looking way.}}
 \end{figure}
 
-In Fig. \ref{fig:ad_results} we show histograms of AD 
-statistic results computed over $100$ iterations per test sample. 
-The AD statistic is a 1-dimensional figure of merit, 
-so Fig. \ref{fig:ad_results} only illustrate results 
-from predictions on $m_1$. The closer AD statistic 
-values are to zero, the more likely that the two 
-distributions being compared are drawn from 
-the same distribution. As can be seen in Fig. \ref{fig:ad_results} 
-there is some overlap between the machine learning 
-predictions and our benchmark \texttt{Bilby} results.
+\chris{This is as far as I have got today.} In Fig. \ref{fig:ad_results} we
+show histograms of AD statistic results computed over $100$ iterations per test
+sample.  The AD statistic is a 1-dimensional figure of merit, so Fig.
+\ref{fig:ad_results} only illustrate results from predictions on $m_1$. The
+closer AD statistic values are to zero, the more likely that the two
+distributions being compared are drawn from the same distribution. As can be
+seen in Fig. \ref{fig:ad_results} there is some overlap between the machine
+learning predictions and our benchmark \texttt{Bilby} results.
 
 %
 % P-P plot
@@ -710,6 +790,9 @@ in Fig. \ref{fig:lum_dist-t0_scatter} where
 we plot samples from both \texttt{Bilby} (blue) and the CVAE (red) posteriors 
 with luminsoity distance as a function of $t_0$. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CONCLUSIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Conclusions
 %
