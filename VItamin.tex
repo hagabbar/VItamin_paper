@@ -88,6 +88,9 @@ autoencoders for gravitational-wave astronomy}
 \acrodef{ELBO}[ELBO]{evidence lower bound}
 \acrodef{LIGO}[LIGO]{advanced Laser Interferometer Gravitational wave Observatory}
 \acrodef{CVAE}[CVAE]{conditional variational autoencoder}
+\acrodef{AD}[AD]{Anderson-Darling}
+\acrodef{KS}[KS]{Kolmogorov-Smirnoff}
+\acrodef{KL}[KL]{Kullback–Leibler}
 
 %
 % Introductory paragraph describing the content of the letter
@@ -610,7 +613,9 @@ set of random whitened noise to noise-free versions of our training samples for
 every new batch that the networks see. Each neural network is three layers
 deep, has $2048$ neurons, a latent space size of $64$ with $50\%$ dropout
 applied to each layer of each network.~\chris{I think that the technical
-details of the may or may not end up in the methids section (maybe).}
+details of the may or may not end up in the methids section (maybe). Also, we
+need to have a reasonable answer to how we decide to stop training - simple
+question - difficult to answer scientifically.}
 
 %
 % loss plot
@@ -704,7 +709,7 @@ be used as our benchmark when assessing the efficiency and quality of our machin
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/hist-kl_0.png}
     \caption{\label{fig:kl_results} Histograms of 25 different test GW signal
-KL divergence values.  Red denotes predictions from the CVAE and blue denotes
+\ac{KL} divergence values.  Red denotes predictions from the CVAE and blue denotes
 predictions from \texttt{Bilby}.~\chris{OK, practical plotting comments first.
 We can't have 5x5 results shown here. You need to fix the font sizes and
 probably use a log scale on the y-axis. The bins sizes are too small in most
@@ -722,9 +727,9 @@ every other sampler (so 3 samplers plus VItamin makes 4 which results in 10
 histograms). When  you do one sampler against itself you use the 2nd run. There
 would be no bootstrapping. What do you think?}}
 \end{figure}
-
-In Fig. \ref{fig:kl_results} we show histograms of KL divergence values on $25$
-test GW samples. The KL divergence is computed $100$ times per test sample
+%
+In Fig. \ref{fig:kl_results} we show histograms of \ac{KL} divergence values on $25$
+test GW samples. The \ac{KL} divergence is computed $100$ times per test sample
 through the initialization of random splits. We compute the KL divergence on
 \ac{CVAE} results (red) by comparing \ac{CVAE} predictions to \texttt{Bilby}
 predictions. Our benchmark \texttt{Bilby} (blue) results are computed by
@@ -736,9 +741,8 @@ distributions in most cases. I guess it depends on how much we push. Is there
 any correlation between the 2 obviously overlapping test cases and their signal
 properties?}
 
-
 %
-% A-D results
+% AD results
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/hist-ad_0.png}
@@ -749,114 +753,196 @@ from the \ac{CVAE} and blue denotes predictions from
 \texttt{Bilby}.~\chris{Please see the suggested changes in
 Fig.~\ref{fig:kl_results} and apply the same here. Results wise this doesn't
 look too bad and a bit more tuning might get everything to overlap in a nicer
-looking way.}}
+looking way. Also, the x-axis label is wrong.}}
 \end{figure}
-
-\chris{This is as far as I have got today.} In Fig. \ref{fig:ad_results} we
-show histograms of AD statistic results computed over $100$ iterations per test
-sample.  The AD statistic is a 1-dimensional figure of merit, so Fig.
-\ref{fig:ad_results} only illustrate results from predictions on $m_1$. The
-closer AD statistic values are to zero, the more likely that the two
-distributions being compared are drawn from the same distribution. As can be
-seen in Fig. \ref{fig:ad_results} there is some overlap between the machine
-learning predictions and our benchmark \texttt{Bilby} results.
+%
+In Fig.~\ref{fig:ad_results} we show histograms of \ac{AD} statistic results
+computed over $100$ iterations per test sample.  The \ac{AD} statistic is a
+1-dimensional figure of merit, so Fig.~\ref{fig:ad_results} only illustrate
+results from predictions on $m_1$.~\chris{but why only $m_{1}$? If there is a
+reson then state it.} The closer \ac{AD} statistic values are to zero, the more
+likely that the two distributions being compared are drawn from the same
+distribution~\chris{2 distributions can't be drawn from the same distribution.
+Check your language.}. As can be seen in Fig.~\ref{fig:ad_results} there is
+some overlap between the machine learning predictions and our benchmark
+\texttt{Bilby} results.~\chris{hopefully if/when we improve the results the AD,
+KL, and KS statsistics will all be reasonably overlapping and we can say a bit
+more about it.}
 
 %
 % P-P plot
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/latest_pp_plot.png}
-    \caption{\label{fig:pp_plot} P-p plot 
-    using $100$ unique test samples and $5000$
-    posterior sample predictions per test sample. 
-    The x axis denotes the theoretical cummulative 
-    distribution whereas the y axis denotes 
-    the predicted cummulative distribution.}
+    \caption{\label{fig:pp_plot} P-P plot using $100$ unique test samples and
+$5000$ posterior sample predictions per test sample.  The x-axis denotes the
+theoretical cummulative distribution whereas the y-axis denotes the predicted
+cummulative distribution.~\chris{we might have to work on the description of
+the axes - maybe use the same notation that has been used in the GW PE papers
+that include p-p plots. Obviously this plot is quite worrying but I can't see
+why you get these results looking at the test data posterior comparison. Can
+you please check the p-p plot code - you should run it on the Bilby samples as
+a reference anyway. To make the plot more interesting you could also plot
+curves from each of the different bilby samplers (since you'll have to run
+those anyway). Also, try to make the plot square - there is supposed to be a
+symmetry between the axes.}} 
 \end{figure}
-
-In order to show that our results are consistent with the 
-truth, we have additionally plotted probability-probability (p-p) 
-plots in Fig. \ref{fig:pp_plot}. On the y axis is plotted the predicted 
-cummulative distribution and on the x axis is plotted the theorectical 
-distribution. Perfect alignment with the truth is illustrated by the 
-black dashed diagonal line, while our empirical alignment is 
-shown in the blue line. 
+%
+In order to show that our results are consistent with the truth, we have
+additionally plotted probability-probability (p-p) plots in
+Fig.~\ref{fig:pp_plot}. On the y axis is plotted the predicted cummulative
+distribution and on the x axis is plotted the theorectical distribution.
+Perfect alignment with the truth~\chris{No, a diagonal p-p plot is only
+possible with infinite data but consistent with diagonal is indicative that the
+Bayesian probability distributions are consistent with the frequentist
+interpretation - that the truth will lie inside the $X\%$ probability contour
+with a frequency of $X\%$ of the time.} is illustrated by the black dashed
+diagonal line, while our empirical alignment is shown in the blue
+line.~\chris{as mentioned in the figure caption comments, please add p-p plot
+curves for the other samplers run on the same test data.} 
 
 %
 % 1-D overlap results
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/latest-1d_0.png}
-    \caption{\label{fig:1D_overlap} Histograms of 
-    25 different test GW signal component mass 1 values. 
-    Numbers in the upper right-hand corner denote overlap 
-    values where 1 means $\sim{100}\%$ overlap and 0 
-    means $\sim{0}\%$ overlap.
-    Red denotes predictions from CVAE predictions and blue 
-    denotes predictions from \texttt{Bilby}.}
+    \caption{\label{fig:1D_overlap} Histograms of 25 different test GW signal
+component mass 1 values.  Numbers in the upper right-hand corner denote overlap
+values where 1 means $\sim{100}\%$ overlap and 0 means $\sim{0}\%$
+overlap.~\chris{we shouldn't use overlaps unless we define how they're
+calculated in the text. I think that overlaps are not something we need at this
+point. Don't remove them yet since they are still useful to us but they should
+be removed from the final plots.} Red denotes predictions from CVAE predictions
+and blue denotes predictions from \texttt{Bilby}.~\chris{the 1 and 2D posterior
+plots should be represented as a corner plot for a single test data realisation
+- this plot should span 2 columns - it is our primary plot. Also the way in
+which the bilby and VItamin samples are overlayed needs to be changed. Now that
+the overlap is so good we need to be able to see how good it really is. Can I
+ask that the bilby results be represented as contours (68,90,95\%) and the
+VItamin results be shown as samples OR also as contours. If both are contours
+then the VItamin contours should be filled and the bilby contours should just
+be lines (VItamin in blue and bilby in red I think). Whatever colours are used
+then they should be consistent throughout the paper.}}
 \end{figure}
-
 %
 % 2D scatter plot
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/posteriors_13.png}
-    \caption{\label{fig:lum_dist-t0_scatter} This figure illustrates 
-    25 different test GW samples with $5000$ posterior samples 
-    from both \texttt{Bilby} and our CVAE plotted. Red denotes predictions 
-    from the CVAE and blue denotes predictions from \texttt{Bilby}. Luminosity 
-    distance is plotted as a function of time of coalescence with 
-    4-dimensional overlap values printed in the upper right-hand 
-    portion of each subplot.}
+\caption{\label{fig:lum_dist-t0_scatter} This figure illustrates 25 different
+test GW samples with $5000$ posterior samples from both \texttt{Bilby} and our
+CVAE plotted. Red denotes predictions from the CVAE and blue denotes
+predictions from \texttt{Bilby}. Luminosity distance is plotted as a function
+of time of coalescence with 4-dimensional overlap values printed in the upper
+right-hand portion of each subplot.\chris{see Fig.~\ref{fig:1D_overlap} caption
+for comments}}
 \end{figure}
+%
+We can further illustrate the accuracy of our machine learning predictions by
+directly plotting the samples generated by our CVAE and \texttt{Bilby}
+superimposed on each other.  In Fig. \ref{fig:1D_overlap}, we histogram
+predictions sampled from the posterior through both \texttt{Bilby} (blue) and
+our CVAE (red).  As can be clearly seen, the overlap between both
+\texttt{Bilby} and the CVAE is extremely high in the $m_1$ parameter space.
+Additional proof of high overlap between posteriors can also be seen in Fig.
+\ref{fig:lum_dist-t0_scatter} where we plot samples from both \texttt{Bilby}
+(blue) and the CVAE (red) posteriors with luminsoity distance as a function of
+$t_0$. 
 
-We can further illustrate the accuracy of our machine 
-learning predictions by directly plotting the samples 
-generated by our CVAE and \texttt{Bilby} superimposed on each other. 
-In Fig. \ref{fig:1D_overlap}, we histogram predictions sampled 
-from the posterior through both \texttt{Bilby} (blue) and our CVAE (red). 
-As can be clearly seen, the overlap between both \texttt{Bilby} and 
-the CVAE is extremely high in the $m_1$ parameter space. Additional 
-proof of high overlap between posteriors can also be seen 
-in Fig. \ref{fig:lum_dist-t0_scatter} where 
-we plot samples from both \texttt{Bilby} (blue) and the CVAE (red) posteriors 
-with luminsoity distance as a function of $t_0$. 
+\chris{One more thing to add, especially if the other KL, AD, and PP plots
+aren't convincing, is a plot displaying 1D confidence bounds compared between
+bilby and VItamin. Imagine a plot with the x-axis as distance and the y-axis
+steps through test data with increasing true distance. for each test data you
+plot 2 error bars horizontally (one for bilby and one for VItamin) spanning the
+range of 90\% confidence. You would hopefully get nearly identical pairs of
+errorbars stacked vertically. Technically you could do this for all parameters
+(and you should) but we might only put one of the plots in the paper (if at
+all).}
+
+\chris{Also, what about the speed argument? We need to have a final number for
+how long it takes to train our network including the time it takes to generate
+the data. We then need (easy to get) numbers for how fast it takes to generate
+samples from the trained network - this is crucial and we need to see if the
+post-generation pruning of the parameter space slows us down. All of this needs
+to be compared fairly apples-to-apples with the bilby runs on the same data. We
+have to be very careful in equating our speed to that of real runs at full
+timing resolution because we will be criticised for being unfair. If we have
+time (which is unlikely) then it would be good to be able to answer questions
+like, how does the training and sample generation speed scale with length of
+data or network complexity.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONCLUSIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Conclusions
+% recap and main result
 %
-In this letter we have demonstrated that we 
-are able to reproduce, to a high degree of accuracy, posteriors 
-generated from Bayesian inference using machine learning. This 
-is accomplished through the use of variational autoencoders 
-trained on over 1 million whitened simulated gravitational 
-wave signals. By building a neural network model which, 
-when trained, can reproduce the true posterior in less than a 
-second, we have demonstrated that neural networks 
-can achieve the same sensitivity as that of Bayesian 
-inference.
+\chris{We may be limited in words at this point but it might be good to
+reiterate (briefly) the challenges faced in PE for the GW field. Then go on to
+say what we've shown.} In this letter we have demonstrated that we are able to
+reproduce, to a high degree of accuracy~\chris{we will be careful with this
+phrasing}, posteriors \chris{probability distributions} generated from Bayesian
+inference using machine learning. This is accomplished through the use of
+variational autoencoders trained on over 1 million~\chris{the numbers are
+irrelvent at this stage - especially if you're not going to mention all of the
+other equally important ones.} whitened~\chris{whitening is not important - all
+approaches use whitening, it is a technicallity to only be mentioned in
+passing.} simulated \ac{GW} signals. By building a neural network model which,
+when trained, can reproduce the true posterior in less than a second~\chris{we
+will verify and firm-up this number - especially since its problem dependent.},
+we have demonstrated that neural networks can achieve the same
+sensitivity~\chris{there isn't really any sensitivity here - it's not a search.
+It's more like quality of results or optimality.} as that of \chris{the trusted
+benchmark of} Bayesian inference.
 
-The significance of achieving similar sensitivities 
-to Bayesian inference is most evident in the 
-orders of magnitude speed-up in performance. The increase
-in speed will help the LIGO-Virgo-Kagra calibration 
-alert our electromagnetic follow-up partners with 
-minimum latency.
+%
+% discuss the near term CBC implications and why this is a game-changer
+%
+The significance of achieving similar sensitivities~\chris{not sensitivities}
+to Bayesian inference is most evident in the orders of magnitude speed-up in
+performance~\chris{more like orders of magnitude gains in speed - the
+performance is idemtical (hopefully).}. The increase in speed will help the
+LIGO-Virgo-Kagra calibration alert our electromagnetic follow-up partners with
+minimum latency.~\chris{you need to expand upon this a bit more - mention
+GW170817, catching prompt EM emission with super-fast PE estimates, this will
+highlight the fact that we haven't shown the sky inference. The estimated
+future detections for BNS (give numbers) will currently swamp our computer
+resources. Whilst BBH are relatvely easy we will also be swamped with far more
+of these. Our approach will provide (potentially) full-PE on BBH signals in
+seconds on a single GPU. Also the trained pipeline is incredibly portable - 1
+saved network and a small script to feed in new data - anyone can get results.
+Also talk about priors and how although the analysis assumes priors, we can
+train boxes to essentially produce samples from the likelihood - people can
+then resample from them according to their own prior choices.} 
 
-Our work can further be expanded upon by including 
-a variety of other GW sources such as Neutron star - 
-black hole (NSBH) and binary neutron star (BNS) mergers 
-at higher sampling frequencies. We have yet to demonstrate 
-the effectivness of our method on additional parameters 
-such as sky location and inclination angle, the benefits of which 
-would be best realized in an end-to-end inference pipeline. 
-Such a pipeline would be of great importance as the detectors 
-increase up to their full potential design sensitivities.
+%
+% future work, current limitations and prospects
+%
+\chris{You need to be upfront about the corners that we've cut and the work
+that needs to be done. Why are we doing a low sample rate? Why are we limiting
+the mass space? Why did we only do 1 detector? Is there any reason we can't do
+all of those things in the near future? What about the things that we want to
+do that are extra to the normal - like dealing with non-Gaussian noise (we
+could train on real detector data) - we wouldn't be affected by the type of
+glitch that delayed the confirmed detection and analysis of GW170817- our
+results wouldn't technically depend on our choices of whitening whereas current
+methods do. } Our work can further be expanded upon by including a variety of
+other \ac{GW} sources such as Neutron star - black hole (NSBH)~\chris{no need
+for an acronym if it's only ever used once.} and \ac{BNS} mergers at higher
+sampling frequencies. We have yet to demonstrate the effectivness of our method
+on additional parameters such as sky location and inclination angle, the
+benefits of which would be best realized in an end-to-end inference pipeline.
+Such a pipeline would be of great importance as the detectors increase up to
+their full potential design sensitivities.~\chris{nice but think bigger - this
+or something like it will form the basis of PE for the next 20 years.}
 
+\chris{Whether there is another paragraph or not, end on a postive note.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% METHODS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methods}
+%
 Put methods in here.  If you are going to subsection it, use
 \verb|\subsection| commands.  Methods section should be less than
 800 words and if it is less than 200 words, it can be incorporated
@@ -1111,7 +1197,7 @@ machine-learning working groups. The authors also gratefully acknowledge the
 Science and Technology Facilities Council of the United Kingdom. CM and SH are
 supported by the Science and Technology Research Council (grant
 No.~ST/~L000946/1) and the European Cooperation in Science and Technology
-(COST) action CA17137.
+(COST) action CA17137.\chris{Thank NVidia!}
 
 %% Here is the endmatter stuff: Supplementary Info, etc.
 %% Use \item's to separate, default label is "Acknowledgements"
