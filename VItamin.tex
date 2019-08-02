@@ -61,8 +61,8 @@ floatfix,
 %    Francesco Tonolini$^2$, \& Roderick Murray-Smith$^2$}
 
 %% ----- comment commands for each of us
-\newcommand{\chris}[1]{\textbf{\textcolor{green}{CHRIS: #1}}}
-\newcommand{\francesco}[1]{\textbf{\textcolor{red}{FRANCESCO: #1}}}
+\newcommand{\chris}[1]{\textcolor{red}{CHRIS: #1}}
+\newcommand{\francesco}[1]{\textbf{\textcolor{green}{FRANCESCO: #1}}}
 \newcommand{\hunter}[1]{\textbf{\textcolor{blue}{HUNTER: #1}}}
 \newcommand{\siong}[1]{\textbf{\textcolor{cyan}{SIONG: #1}}}
 \newcommand{\rod}[1]{\textbf{\textcolor{yellow}{ROD: #1}}}
@@ -245,104 +245,130 @@ following expression:
     p(x|y) = \frac{p(y|x) \cdot p(x)}{p(y)},\label{eq:bayes_theorem}
 \end{equation}
 %
-where $x$ are the parameters, $y$ is the observed data, 
-$p(x|y)$ is the posterior, $p(y|x)$ is the likelihood,
-$p(x)$ is the prior we put on our parameter distribution and $p(y)$ is the
-probability of our data.  We typically ignore $p(y)$ since the term is a 
-constant and we are only interested in the shape of the posterior distribution, 
-not its normalization. Eq. \ref{eq:bayes_theorem} then reduces
-to
+\chris{remove the $\cdot$ everywhere.} where $x$ are the parameters, $y$ is the
+observed data, $p(x|y)$ is the posterior, $p(y|x)$ is the likelihood, $p(x)$ is
+the prior we put on our parameter distribution and $p(y)$ is the probability of
+our data \chris{known as the Bayesian evidence or the marginal ikelihood}. We
+typically ignore $p(y)$ since the term is a constant and we are only interested
+in the shape of the posterior distribution, not its normalization. Eq.
+\ref{eq:bayes_theorem} then reduces to
 %
-\begin{equation}
-    p(x|y) \propto p(y|x) \cdot p(x).\label{eq:simplified_bayes}
+\begin{equation}\label{eq:simplified_bayes} 
+p(x|y) \propto p(y|x) \cdot p(x).
 \end{equation}
 
 %
 % discuss codebase which we use to generate waveforms, sampling frequency, and
 % parameter space
 %
-The suite of scripts which we use to produce the Bayesian posteriors is the \texttt{Bilby}
-inference library \cite{1811.02042}. In our analysis, we use waveforms 
-that have a duration of 1 second, sampling frequency of 256Hz, fixed right ascension ($\alpha$),
-declination ($\delta$), inclination angle ($\theta_j$), polarization angle
-($\psi$) and a spin of zero. We allow 5 parameters to vary: component masses
-$m_1$ and $m_2$, luminosity distance, time of coalescence and phase, where
-phase is marginalized out. The waveform model ($H$) used is \texttt{IMRPhenomPv2}
-\cite{1809.10113} with a minimum cutoff frequency of 20Hz.
+\chris{This paragrpah belongs in the results section - after we've introduced
+everything.} The suite of scripts which we use to produce the Bayesian
+posteriors is the \texttt{Bilby} inference library~\cite{1811.02042}. In our
+analysis, we use waveforms that have a duration of 1 second, sampling frequency
+of 256Hz, fixed~\chris{remember your readers, say things like sky position in
+addition to RA and dec} right ascension ($\alpha$), declination ($\delta$),
+inclination angle ($\theta_j$), polarization angle ($\psi$) and a spin of zero.
+We allow 5 parameters to vary: component masses $m_1$ and $m_2$, luminosity
+distance, time of coalescence and phase, where phase is marginalized
+out~\chris{too vague!  This part is crucially important and allows us to show
+how nuisance parameters can (if desired) be marginalised out in the training
+procedure rather than afterwards. Bilby on the other hand has to explore the
+initial phase space when doing it's full inference - we do not.}. The waveform
+model ($H$~\chris{I wouldn't use capital $H$ for this, why not standard $h$?
+Also, do we even need to give it a variable?}) used is
+\texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
+20Hz.
 
 %
 % Discuss priors that we use
 %
-The parameters we are not interested in estimating are all fixed (except for phase). 
-A uniform prior is applied on the component masses, phase, distance and time of 
-coalescence. The prior on both component
-masses ranges from $35 - 50$ solar masses, the phase prior ranges from $0 -
-2\pi$, the distance prior ranges from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the
-time of coalesence prior ranges from $-0.1s - 0.1s$. The posterior samples produced 
-by \texttt{Bilby} will be used as our benchmark when assessing the efficiency of our
-machine learning approach.  We will now investigate whether we can reproduce
-the results from \texttt{Bilby} using \ac{CVAE}s. 
+\chris{Again, this stuff all goes in the results section later on.} The
+parameters we are not interested in estimating are all fixed (except for
+phase). A uniform prior is applied on the component masses, phase, distance and
+time of coalescence. The prior on both component masses ranges from $35 - 50$
+solar masses, the phase prior ranges from $0 - 2\pi$, the distance prior ranges
+from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the time of coalesence prior ranges
+from $-0.1$---$0.1$ sec. The posterior samples produced by \texttt{Bilby} will
+be used as our benchmark when assessing the efficiency~\chris{not just our
+efficiency, also quality} of our machine learning approach. We will now
+investigate whether we can reproduce the results from \texttt{Bilby} using
+\ac{CVAE}s~\chris{we will do this in the results section}. 
    
 
 %
 % Intro to machine learning section
 %
 Machine learning has featured prominently in many areas of gravitational wave
-research over the last few years.  These techniques have shown to be
+research over the last few years. These techniques have shown to be
 particularly promising in signal detection
-\cite{PhysRevLett.120.141103,GEORGE201864,1904.08693}, glitch classification
+\cite{PhysRevLett.120.141103,GEORGE201864,1904.08693}~\chris{maybe we should
+put George first in this list}, glitch classification
 \cite{1706.07446,0264-9381-34-6-064003} and earthquake prediction
-\cite{Coughlin_2017}. Recently, a type of neural network called
-conditional variational autoencoders was shown to perform exceptionally well
-when applied towards computational imaging
-inference~\cite{1904.06264,NIPS2015_5775}, text to image inference \cite{1512.00570}, 
-high-resolution synthetic image generation \cite{1612.00005} and the fitting 
-of incomplete heterogeneous data \cite{1807.03653}. It is this type of
-network that we base our machine learning inference algorithm on.
+\cite{Coughlin_2017}. Recently, a type of neural network called conditional
+variational autoencoders was shown to perform exceptionally well when applied
+towards computational imaging inference~\cite{1904.06264,NIPS2015_5775}, text
+to image inference \cite{1512.00570}, high-resolution synthetic image
+generation \cite{1612.00005} and the fitting of incomplete heterogeneous data
+\cite{1807.03653}. It is this type of network that we base our machine learning
+inference algorithm on.~\chris{maybe mention that you are going to focus on a
+specific area for this - parameter estimation, specifically training a machine
+to reproduce the Bayesian posterior which is known to be the optimal result.}
 
 %
 % What is an autoencoder?
 %
-Conditional variational autoencoders are a form of variational autoencoders
-which are conditioned on an observation, where our observation is a 
-\ac{GW} signal $y$. The autoencoders from which variational
-autoencoders are derived are typically used for problems involving image
-reconstruction and/or dimensionality reduction. They essentially perform 
-a regression task whereby the autoencoder tries to predict its own given input (model the 
-indentity function). An autoencoder is composed of two neural
-networks, an encoder and a decoder~\cite{LIOU20083150}.  The encoder network
-takes as input an $n$-dimensional vector, where the number of dimensions is 
-a fixed number predefined by the user. The encoder converts 
-the input image into a (typically) lower
-dimensional space, what is also known as the {\it{latent space}}. A 
-representation of the data in the latent space is passed to 
-the decoder network which generates a
-reconstruction of the original input image to the encoder network. Through
-training, we learn a latent space which will take on the most important properties of our input training
-samples. When applying an autoencoder to some input data, 
-one hopes that the data can be represented in a latent 
-space smaller than the dimensionality of the input data. 
-In this way, the data can be compressed with little loss of fidelity.  
+Conditional variational autoencoders are a form of variational autoencoder
+which are conditioned on an observation, where in our case the observation is a
+\ac{GW} signal $y$\chris{at some point we need to be more specific about what
+$y$ is - timeseries, spectroram, etc..}. The autoencoders from which
+variational autoencoders are derived are typically used for problems involving
+image reconstruction and/or dimensionality reduction. They essentially perform
+a regression task whereby the autoencoder tries to predict its own given input
+(model the indentity function)\chris{but... that sounds too easy. Just have 1
+layer with the same number of neurons as the input. That sentence will throw
+the reader.}. An autoencoder is composed of two neural networks, an encoder and
+a decoder~\cite{LIOU20083150}. The encoder network takes as input an
+$n$-dimensional vector, where the number of dimensions is a fixed number
+predefined by the user. The encoder converts the input image~\chris{theres
+hould be no references to images in this paper - just data} into a (typically)
+lower dimensional space, what is also known as the {\it{latent space}}. A
+representation of the data in the latent space is passed to the decoder network
+which generates a reconstruction of the original input image to the encoder
+network. Through training, we learn a latent space~\chris{do we actually "learn
+a space", don't we really learn how to efficently represent a dataset within a
+lower dimensional latent space - these are different things. Try to be clear
+and correct in each statement.} which will take on the most important
+properties of our input training samples. When applying an autoencoder to some
+input data, one hopes that the data can be represented in a latent space
+smaller than the dimensionality of the input data.  In this way, the data can
+be compressed with little loss of fidelity.~\chris{so it's at this point that
+you would say the network has learned the identity function BUT in the process
+it managed to compress the data. So I see where this can be used for
+dimensionality reduction but what about image reconstruction?} 
 
 %
 % What is a variational autoencoder?
 %
-%Autoencoders, once trained, represent a deterministic algorithm which 
-%maps only one given input to one output. If we would like to produce 
-%multiple variable estimates for one given input, we need to utilize
-% a variational autoencoder~\cite{1812.04405}
+%Autoencoders, once trained, represent a deterministic algorithm which maps
+%only one given input to one output. If we would like to produce multiple
+%variable estimates for one given input, we need to utilize a variational
+%autoencoder~\cite{1812.04405}
 A variational autoencoder ~\cite{1812.04405} is also composed of both an
 encoder and a decoder network. The primary difference between a variational
 autoencoder and an autoencoder concerns the method by which the latent space is
 produced. In our variant of the variational autoender, the mean ($z_{\mu}$) and
-the log squared of the standard deviation ($z_{\log{(\sigma^{2})}}$) of the
-output of the encoder is calculated. These are interpreted as parameters 
-governing statistical distributions (in our case the means and variances of 
-multivariant Gaussians). In proceeding to the decoder network, 
-samples are drawn from these distributions ($z$) and fed 
-into the decoder, therefore adding an element of variation into the process. 
-Thus a particular input can have infinitely many outputs. In both the 
-decoder and the encoder networks we use fully-connected layers.
+the log squared of the standard deviation
+($z_{\log{(\sigma^{2})}}$)~\chris{just say the first 2 central moments of the
+distribution and use the notation I've suggested $\mu_{z}$. There should be NO
+mention of the log of the squared sigma at any point. That is too technical and
+not relevent.} of the output of the encoder is calculated. These are
+interpreted as parameters governing statistical distributions (in our case the
+means and variances of multivariant Gaussians). In proceeding to the decoder
+network, samples are drawn from these distributions ($z$) and fed into the
+decoder, therefore adding an element of variation into the process.  Thus a
+particular input can have infinitely many outputs. In both the decoder and the
+encoder networks we use fully-connected layers~\chris{although this is not a
+constraint, you can use any trainable network archetecture.}.
 
 % latent space expression
 %\begin{equation}
@@ -352,23 +378,25 @@ decoder and the encoder networks we use fully-connected layers.
 %
 % How does our 3-network set-up work?
 %
-We use a combination of three networks; two encoder networks ($\textrm{E}_1$, $\textrm{E}_2$) and one
-decoder network (D) (see Fig. \ref{fig:network_config}). The decoder network takes as
-input a set of latent space $z$ predictions from encoder network $\textrm{E}_2$. 
-The decoder produces mean  
-($x_{\mu}$) and log standard deviation squared predictions 
-($x_{\log{(\sigma^{2})}}$) describing a random multivariant Gaussian. Posteriors are 
-produced by simply sampling from this multivariant Gaussian distribution.
+We use a combination of three networks; two encoder networks ($\textrm{E}_1$,
+$\textrm{E}_2$) and one decoder network (D) (see Fig.
+\ref{fig:network_config}). The decoder network takes as input a set of latent
+space $z$ predictions from encoder network $\textrm{E}_2$.  The decoder
+produces mean ($x_{\mu}$) and log standard deviation squared predictions
+($x_{\log{(\sigma^{2})}}$) describing a random multivariant Gaussian.
+Posteriors are produced by simply sampling from this multivariant Gaussian
+distribution~\chris{I'm not sure if this paragraph has been superceded by new
+text. In any case it's not very detailed.}.
 
 % decoder parameter prediction expression
 %\begin{equation}
 %    x_{\textrm{samp}} = x_{\mu} + x_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:x_calc}
 %\end{equation}
 
-$\textrm{E}_1$ takes as 
-input a set of \ac{GW} signals and produces a latent space vector $z^1$, while $\textrm{E}_2$ 
-takes as input both a set of GW signals and their associated source parameters 
-and produces a another latent space vector $z^2$.
+$\textrm{E}_1$ takes as input a set of \ac{GW} signals and produces a latent
+space vector $z^1$, while $\textrm{E}_2$ takes as input both a set of GW
+signals and their associated source parameters and produces another latent
+space vector $z^2$.
 
 \chris{OK, here's my attempt at explaining/motivating the network design. If
 you look at the LHS of the training network (with the corrected y data arrow
@@ -392,43 +420,71 @@ have then generated posterior samples.
     \caption{\label{fig:network_config}\chris{You are missing a crucial element
 here. There should be an arrow from the y data to *both* encoders in the
 training. Also, why have we made it so encoder 1 is on the right and encoder 2
-is on the left. It reads weird.} This figure illustrates our neural network 
-    training/testing operations. During training, a training set of GW signals ($y$) 
-    and their corresponding true parameters ($x$) are given as input to encoder 
-    networks $\textrm{E}_1$ and $\textrm{E}_2$. The KL divergence (Eq. \ref{eq:kl}) 
-    is computed between mean latent space predictions from both encoder networks ($z^1_{\mu},z^2_{\mu}$)
-    . $z^2_{\mu}$ is then summed togther with $z_{\log{(\sigma^{2})}} \cdot \epsilon(0,1)$ 
-    and given as input to the decoder network. The decoder network predicts $x_{\mu}$ 
-    and compares $x_{\mu}$ to the initial training parameters $x$ using Eq. \ref{eq:cost}. 
-    After having trained our networks, we test using only $\textrm{E}_1$ and the decoder. 
-    A set of test GW signals is given as input to $\textrm{E}_1$ in order to 
-    produce a set of $z^1_{\mu}$ predictions. We apply Eq. \ref{eq:z_calc} to 
-    get $z$ latent samples. Our $z$ latent space samples are given 
-    as input to our decoder network along with our initial test GW signals 
-    to get a set of $x_{\mu}$ predictions. We finally apply Eq. \ref{eq:x_calc} 
-    to get a set of $x_\textrm{samp}$ samples.}
+is on the left. It reads weird.} This figure illustrates our neural network
+training/testing operations. During training, a training set of GW signals
+($y$) and their corresponding true parameters ($x$) are given as input to
+encoder networks $\textrm{E}_1$ and $\textrm{E}_2$. The KL divergence (Eq.
+\ref{eq:kl}) is computed between mean latent space predictions from both
+encoder networks ($z^1_{\mu},z^2_{\mu}$) .\chris{Don't start a sentence with a
+variable} $z^2_{\mu}$ is then summed togther with $z_{\log{(\sigma^{2})}} \cdot
+\epsilon(0,1)$\chris{we need a better way to define and describe the process of
+sampling from a multivariate Gaussian. I don't like the epsilon notation - it's
+too computer sciencey.} and given as input to the decoder network. The decoder
+network predicts $x_{\mu}$ and compares $x_{\mu}$ to the initial training
+parameters $x$ using Eq. \ref{eq:cost}. After having trained our networks, we
+test using only $\textrm{E}_1$ and the decoder. A set of test GW signals is
+given as input to $\textrm{E}_1$ in order to produce a set of $z^1_{\mu}$
+predictions.  We apply Eq. \ref{eq:z_calc} to get $z$ latent samples. Our $z$
+latent space samples are given as input to our decoder network along with our
+initial test GW signals to get a set of $x_{\mu}$ predictions. We finally apply
+Eq.  \ref{eq:x_calc} to get a set of $x_\textrm{samp}$ samples.\chris{I like
+this level of caption detail. I think we could be more consistent with the
+symbols in the diagram. Triangles are denoting encoder and decoder networks.
+How about circles denoting loss/cost functions? Please sort out the fonts, it
+would be far better if they were consistent with the paper, and "train" is
+still squashed. Also can you please make the Run and Train common elements line
+up with each other vertically? Also make the notation consistent between run
+and train. Also drop the epsilon term on the run panel.}} 
 \end{figure}
 
 %
 % Training procedure
 %
-Training is performed through a series of several steps illustrated in Fig. \ref{fig:network_config}. 
-$\textrm{E}_1$ is given a set of training \ac{GW} signals ($y_t$) and encodes $y_t$ into 
-latent space $z^{1}_{\mu,\sigma}$. $\textrm{E}_2$ takes a combination of $(x_{t},y_{t})$ 
-and is encoded into a latent space described by $z^{2}_{\mu,\sigma}$. 
-We then sample from a multivariant Gaussian distrubtion whose mean and standard 
-deviation are described by $z^{2}_{\mu,\sigma}$. These samples, along with $y_t$, then go 
-to the decoder in order to get out a statistical description of another 
-multivariant Gaussian distribution ($x_{\mu,\sigma}$). A cost function is then 
-computed between $x_{\mu,\sigma}$ and the corresponding training parameters ($x_t$) and is minimized. 
-Essentially, the cost function is used to learn how to predict the
-closest value of $x$ (through $x_{\mu}$) and the variation of that $x$ (through
-$x_{\sigma}$). Recall that $x_{\mu}$ and $x_{\sigma}$ are not fixed for the
-whole dataset - so they're not modelling the spread of $x$ as a multivariate
-Gaussian - they have learned the $x_{\mu}$ and $x_{\sigma}$ for any input pair
-of $x$ and (crucially) $y$.
-Additionally, the K-L divergence between both $z^{1}_{\mu,\sigma}$ and $z^{2}_{\mu,\sigma}$ is 
-computed and minimized in order to ensure that both distributions are consistent with each other.
+\chris{The cost function needs to go before this since the network is entirely
+defined by the calculations required for the cost. As you desxribe each step
+you can refer back to the relevant function (see the methods section where I
+made an attempt at this)} Training is performed through a series of several
+steps illustrated in Fig.~\ref{fig:network_config}. \chris{don't start a
+sentence with a variable} $\textrm{E}_1$ is given a set of training \ac{GW}
+signals ($y_t$) and encodes $y_t$~\chris{I don't think we have to distinguish
+between $y$ and $y_t$ (also $x$ and $x_t$) in the paper - it's a bit confusing
+having so many variants of different variables.} into latent space
+$z^{1}_{\mu,\sigma}$.  \chris{Mathematically, the encoder networks (and the
+decoder) are computing the first 2 central moments for each dimension of a
+multivarite Gaussian. It is standard to simply label these as $\mu_{j}$ where
+$j$ is the order of the moment ($j=1$ is the mean and $j=2$ is the variance. I
+therefore think that we can replace $z^{1}_{\mu,\sigma}$ with $\mu_{z_{1}}$.
+Then the actual random variable drawn from them would be called $z_{1}$. Having
+superscripts looks like it's been squared.} \chris{Don't start a sentence with
+a variable} $\textrm{E}_2$ takes a combination of $(x_{t},y_{t})$ and is
+encoded into a latent space described by $z^{2}_{\mu,\sigma}$.  We then sample
+from a multivariant Gaussian distrubtion whose mean and standard deviation are
+described by $z^{2}_{\mu,\sigma}$. These samples, along with $y_t$, then go to
+the decoder in order to get out a statistical description of another
+multivariant Gaussian distribution ($x_{\mu,\sigma}$). A cost function is then
+computed between $x_{\mu,\sigma}$ and the corresponding training parameters
+($x_t$) and is minimized.  Essentially, the cost function is used to learn how
+to predict the closest value of $x$ (through $x_{\mu}$) and the variation of
+that $x$ (through $x_{\sigma}$). Recall~\chris{I'm not sure the reader should
+recall anything.} that $x_{\mu}$ and $x_{\sigma}$ are not fixed for the whole
+dataset - so they're not modelling the spread of $x$ as a multivariate Gaussian
+- they have learned the $x_{\mu}$ and $x_{\sigma}$ for any input pair of $x$
+  and (crucially) $y$. Additionally, the K-L divergence between both
+$z^{1}_{\mu,\sigma}$ and $z^{2}_{\mu,\sigma}$~\chris{technically the KL is
+computed between the distributions described by those parameters. Again, by
+discussing this after the cost function derivation you can easily refer to
+this.} is computed and minimized in order to ensure that both distributions are
+consistent with each other.
 
 %
 % Brief introduction to loss functions used in the neural networks
