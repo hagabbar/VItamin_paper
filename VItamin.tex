@@ -1,6 +1,5 @@
 %% Template for a preprint Letter or Article for submission
 %% to the journal Nature.
-%% Written by Peter Czoschke, 26 February 2004
 %%
 
 \documentclass[%
@@ -37,11 +36,7 @@ floatfix,
 \usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{hyperref}
-%\addbibresource{references.bib}
-%\linenumbers % Commence numbering lines
-%\usepackage{hyperref}% add hypertext capabilities
-%\usepackage[mathlines]{lineno}% Enable numbering of text and display math
-%\linenumbers\relax % Commence numbering lines
+
 \hypersetup{
 %--- fill inside borders ---
   colorlinks=true,        % false: boxed links; true: colored links
@@ -49,19 +44,8 @@ floatfix,
   citecolor=cyan,         % color of links to bibliography
 }
 
-%% make sure you have the nature.cls and naturemag.bst files where
-%% LaTeX can find them
-
-%\bibliographystyle{authortitle}
-
-%% Notice placement of commas and superscripts and use of &
-%% in the author list
-
-%\author{Hunter Gabbard$^{1}$, Ik Siong Heng$^1$, Chris Messenger$^1$, \\
-%    Francesco Tonolini$^2$, \& Roderick Murray-Smith$^2$}
-
 %% ----- comment commands for each of us
-\newcommand{\chris}[1]{\textcolor{red}{CHRIS: #1}}
+\newcommand{\chris}[1]{\textbf{\textcolor{red}{CHRIS: #1}}}
 \newcommand{\francesco}[1]{\textbf{\textcolor{green}{FRANCESCO: #1}}}
 \newcommand{\hunter}[1]{\textbf{\textcolor{blue}{HUNTER: #1}}}
 \newcommand{\siong}[1]{\textbf{\textcolor{cyan}{SIONG: #1}}}
@@ -197,12 +181,11 @@ inference in other fields and how this is applicable across the sciences.
 %
 With the overwhelmingly successful observation runs of O1 and O2 
 now complete, \ac{LIGO} and Virgo have produced a large 
-catalogue of \ac{GW} data covering both \ac{BBH} and {BNS} signals~\hunter{provide 
-citations mentioned in arxiv:1906.08000}. Over the next five years 
+catalogue of \ac{GW} data covering both \ac{BBH} and {BNS} signals\cite{1811.12907}. Over the next five years 
 we expect the number of detections to increase to be upwards 
-of 100s of events per year. This large increase in the number 
-of detections will put a large amount of pressure on the current \ac{GW} inference 
-methods used to perform parameter estimation.  
+of $\sim180$ BNS and $\sim400$ BBH events per year \cite{1304.0670,1811.12907}. This large influx in the number 
+of detections will put an increased amount of pressure on the current \ac{GW} inference 
+methods used for parameter estimation.  
 
 %
 % From GW detection, to parameter estimation
@@ -210,7 +193,7 @@ methods used to perform parameter estimation.
 Much of the \ac{LIGO} analysis effort over the past several years has been focused 
 on the detection of \ac{GW}s. This has been the primary 
 focus of many, due to the difficulty associated 
-with identifying \ac{GW} waveforms burried in 
+with identifying \ac{GW} waveforms buried in 
 in large amount of noise to a high degree of certainty. The detection problem has largely 
 been solved through the use of matched template filtering\cite{0264-9381-33-21-215004}. 
 Once a \ac{GW} has been identified through matched template filtering, Bayesian inference 
@@ -222,7 +205,7 @@ parameters of the detected \ac{GW} event.
 %
 In the standard Bayesian \ac{GW} inference approach, we assume that we are
 given both a signal model and a noise model. Both the signal and the 
-noise model may have unkown parameters we are interested in inferring. 
+noise model may have unknown parameters we are interested in inferring. 
 Each parameter is given a prior astrophysically motivated probability 
 distribution. In our case, we have additive noise which is modelled as 
 a Gaussian (in reality, the data is not truly Gaussian). Given a noisy
@@ -231,9 +214,7 @@ some finite set of unknown GW parameters. Our procedure should be able
 to give us an accurate estimate of the parameters of our observed signal, while
 also accounting for the uncertainty which arises from having multiple noise
 realizations of our observed data able to be mapped to one parameter
-estimate.~\chris{OK, not the best start. I advise you to read the introduction
-of the LIGO PE papers and also the references therein like the original
-methiods paper from John https://arxiv.org/abs/0911.3820}
+estimate.
 
 %
 % Describe Bayes Theorem
@@ -242,109 +223,61 @@ According to Bayes Theorem, a posterior for a set of GW parameters can be descri
 following expression:
 %
 \begin{equation}
-    p(x|y) = \frac{p(y|x) \cdot p(x)}{p(y)},\label{eq:bayes_theorem}
+    p(x|y) = \frac{p(y|x) p(x)}{p(y)},\label{eq:bayes_theorem}
 \end{equation}
 %
-\chris{remove the $\cdot$ everywhere.} where $x$ are the parameters, $y$ is the
+where $x$ are the parameters, $y$ is the
 observed data, $p(x|y)$ is the posterior, $p(y|x)$ is the likelihood, $p(x)$ is
 the prior we put on our parameter distribution and $p(y)$ is the probability of
-our data \chris{known as the Bayesian evidence or the marginal ikelihood}. We
+our data, known as the Bayesian evidence or the marginal likelihood. We
 typically ignore $p(y)$ since the term is a constant and we are only interested
 in the shape of the posterior distribution, not its normalization. Eq.
 \ref{eq:bayes_theorem} then reduces to
 %
 \begin{equation}\label{eq:simplified_bayes} 
-p(x|y) \propto p(y|x) \cdot p(x).
-\end{equation}
-
-%
-% discuss codebase which we use to generate waveforms, sampling frequency, and
-% parameter space
-%
-\chris{This paragrpah belongs in the results section - after we've introduced
-everything.} The suite of scripts which we use to produce the Bayesian
-posteriors is the \texttt{Bilby} inference library~\cite{1811.02042}. In our
-analysis, we use waveforms that have a duration of 1 second, sampling frequency
-of 256Hz, fixed~\chris{remember your readers, say things like sky position in
-addition to RA and dec} right ascension ($\alpha$), declination ($\delta$),
-inclination angle ($\theta_j$), polarization angle ($\psi$) and a spin of zero.
-We allow 5 parameters to vary: component masses $m_1$ and $m_2$, luminosity
-distance, time of coalescence and phase, where phase is marginalized
-out~\chris{too vague!  This part is crucially important and allows us to show
-how nuisance parameters can (if desired) be marginalised out in the training
-procedure rather than afterwards. Bilby on the other hand has to explore the
-initial phase space when doing it's full inference - we do not.}. The waveform
-model ($H$~\chris{I wouldn't use capital $H$ for this, why not standard $h$?
-Also, do we even need to give it a variable?}) used is
-\texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
-20Hz.
-
-%
-% Discuss priors that we use
-%
-\chris{Again, this stuff all goes in the results section later on.} The
-parameters we are not interested in estimating are all fixed (except for
-phase). A uniform prior is applied on the component masses, phase, distance and
-time of coalescence. The prior on both component masses ranges from $35 - 50$
-solar masses, the phase prior ranges from $0 - 2\pi$, the distance prior ranges
-from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the time of coalesence prior ranges
-from $-0.1$---$0.1$ sec. The posterior samples produced by \texttt{Bilby} will
-be used as our benchmark when assessing the efficiency~\chris{not just our
-efficiency, also quality} of our machine learning approach. We will now
-investigate whether we can reproduce the results from \texttt{Bilby} using
-\ac{CVAE}s~\chris{we will do this in the results section}. 
+p(x|y) \propto p(y|x) p(x).
+\end{equation} 
    
-
 %
 % Intro to machine learning section
 %
 Machine learning has featured prominently in many areas of gravitational wave
 research over the last few years. These techniques have shown to be
 particularly promising in signal detection
-\cite{PhysRevLett.120.141103,GEORGE201864,1904.08693}~\chris{maybe we should
-put George first in this list}, glitch classification
+\cite{GEORGE201864,PhysRevLett.120.141103,1904.08693}, glitch classification
 \cite{1706.07446,0264-9381-34-6-064003} and earthquake prediction
 \cite{Coughlin_2017}. Recently, a type of neural network called conditional
 variational autoencoders was shown to perform exceptionally well when applied
 towards computational imaging inference~\cite{1904.06264,NIPS2015_5775}, text
 to image inference \cite{1512.00570}, high-resolution synthetic image
 generation \cite{1612.00005} and the fitting of incomplete heterogeneous data
-\cite{1807.03653}. It is this type of network that we base our machine learning
-inference algorithm on.~\chris{maybe mention that you are going to focus on a
-specific area for this - parameter estimation, specifically training a machine
-to reproduce the Bayesian posterior which is known to be the optimal result.}
+\cite{1807.03653}. It is this type of machine learning network that 
+we will utilize to reproduce the Bayesian posterior, which is known to be 
+the optimal result.
 
 %
 % What is an autoencoder?
 %
 Conditional variational autoencoders are a form of variational autoencoder
 which are conditioned on an observation, where in our case the observation is a
-\ac{GW} signal $y$\chris{at some point we need to be more specific about what
-$y$ is - timeseries, spectroram, etc..}. The autoencoders from which
+\ac{GW} 1-dimensional time series signal $y$. The autoencoders from which
 variational autoencoders are derived are typically used for problems involving
 image reconstruction and/or dimensionality reduction. They essentially perform
 a regression task whereby the autoencoder tries to predict its own given input
-(model the indentity function)\chris{but... that sounds too easy. Just have 1
-layer with the same number of neurons as the input. That sentence will throw
-the reader.}. An autoencoder is composed of two neural networks, an encoder and
-a decoder~\cite{LIOU20083150}. The encoder network takes as input an
+(model the identity function) through a limited distilled version of the input 
+parameter space. An autoencoder is composed of two neural networks, an encoder and a decoder~\cite{LIOU20083150}. The encoder network takes as input an
 $n$-dimensional vector, where the number of dimensions is a fixed number
-predefined by the user. The encoder converts the input image~\chris{theres
-hould be no references to images in this paper - just data} into a (typically)
-lower dimensional space, what is also known as the {\it{latent space}}. A
+predefined by the user. The encoder converts the input $n$-dimensional vector into a (typically) lower dimensional space, what is also known as the {\it{latent space}}. A
 representation of the data in the latent space is passed to the decoder network
-which generates a reconstruction of the original input image to the encoder
-network. Through training, we learn a latent space~\chris{do we actually "learn
-a space", don't we really learn how to efficently represent a dataset within a
-lower dimensional latent space - these are different things. Try to be clear
-and correct in each statement.} which will take on the most important
-properties of our input training samples. When applying an autoencoder to some
+which generates a reconstruction of the original input data to the encoder
+network. Through training, we learn a how to efficiently represent 
+a dataset within a lower dimensional latent space which will take on the most important properties of our input training samples. When applying an autoencoder to some
 input data, one hopes that the data can be represented in a latent space
 smaller than the dimensionality of the input data.  In this way, the data can
-be compressed with little loss of fidelity.~\chris{so it's at this point that
-you would say the network has learned the identity function BUT in the process
-it managed to compress the data. So I see where this can be used for
-dimensionality reduction but what about image reconstruction?} 
+be compressed with little loss of fidelity. Training continues by passing 
+the learned latent space from the encoder to the decoder network, 
+whereby the decoder tries to predict the input data given initially 
+to the encoder network. The decoder then learns to decode or reconstruct the latent space back to its original form (the input data). 
 
 %
 % What is a variational autoencoder?
@@ -356,19 +289,15 @@ dimensionality reduction but what about image reconstruction?}
 A variational autoencoder ~\cite{1812.04405} is also composed of both an
 encoder and a decoder network. The primary difference between a variational
 autoencoder and an autoencoder concerns the method by which the latent space is
-produced. In our variant of the variational autoender, the mean ($z_{\mu}$) and
-the log squared of the standard deviation
-($z_{\log{(\sigma^{2})}}$)~\chris{just say the first 2 central moments of the
-distribution and use the notation I've suggested $\mu_{z}$. There should be NO
-mention of the log of the squared sigma at any point. That is too technical and
-not relevent.} of the output of the encoder is calculated. These are
+produced. In our variant of the variational autoender, the first two central 
+moments of the encoder output distribution are calculated ($\mu_{z}$). These are
 interpreted as parameters governing statistical distributions (in our case the
 means and variances of multivariant Gaussians). In proceeding to the decoder
 network, samples are drawn from these distributions ($z$) and fed into the
 decoder, therefore adding an element of variation into the process.  Thus a
 particular input can have infinitely many outputs. In both the decoder and the
-encoder networks we use fully-connected layers~\chris{although this is not a
-constraint, you can use any trainable network archetecture.}.
+encoder networks we use fully-connected layers (although this is not a
+constraint, any trainable network architecture may be used).
 
 % latent space expression
 %\begin{equation}
@@ -376,17 +305,91 @@ constraint, you can use any trainable network archetecture.}.
 %\end{equation}
 
 %
-% How does our 3-network set-up work?
+% Brief introduction to loss functions used in the neural networks
 %
-We use a combination of three networks; two encoder networks ($\textrm{E}_1$,
+We use a combination of three fully-connected networks; two encoder networks ($\textrm{E}_1$,
 $\textrm{E}_2$) and one decoder network (D) (see Fig.
-\ref{fig:network_config}). The decoder network takes as input a set of latent
-space $z$ predictions from encoder network $\textrm{E}_2$.  The decoder
-produces mean ($x_{\mu}$) and log standard deviation squared predictions
-($x_{\log{(\sigma^{2})}}$) describing a random multivariant Gaussian.
-Posteriors are produced by simply sampling from this multivariant Gaussian
-distribution~\chris{I'm not sure if this paragraph has been superceded by new
-text. In any case it's not very detailed.}.
+\ref{fig:network_config}). In order for our variational autoencoders to learn anything, we need a metric by which 
+we can assess the effectiveness of our three networks. This is done by computing 
+a loss function which minimizes the difference 
+between predictions on the posterior with respect to the truth (cost function) and the Kullback-Leibler divergence 
+between latent space distributions from $\textrm{E}_1$ ($z_1$) and 
+$\textrm{E}_2$ ($z_2$). 
+
+%
+% Cost function
+%
+The cost function is constructed by first defining a normalization factor
+
+\begin{equation}
+    f_{\textrm{norm}} = 0.5 \log(c + \exp(x_{\sigma})) - 0.5 \log(2\pi),
+\end{equation}
+
+where $c$ is a small constant and $x_{\sigma}$ are standard deviation predictions 
+on the source paramters from the decoder network given latent space predictions 
+from encoder-2 ($z_2$) and training GW sigals ($y_{t}$). We then 
+compute 
+
+\begin{equation}
+    x_{\textrm{diff}} = (x^{z,y}_{\mu} - x_{\textrm{train}})^{2},
+\end{equation}
+
+where $x^{z,y}_{\mu}$ are the predicted mean parameters from the decoder network 
+and $x_{\textrm{train}}$ are the true training parameters we are 
+trying to predict. A Gaussian likelihood is computed and summed over
+
+\begin{equation}
+    \textrm{cost} = - \sum (-\frac{x_{\textrm{diff}}}{2c  
+    x^{z^{x,y_{\textrm{train}}}_{\sigma},y_{\textrm{train}}}_{\sigma^{2}}} + f_{\textrm{norm}}),\label{eq:cost}
+\end{equation}
+
+where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are standard deviation squared predictions from the 
+decoder network.
+
+
+%
+% KL divergence
+%
+The K-L divergence is computed in order to train 
+encoder-1 and encoder-2 to produce consistant latent space 
+distributions. This is done by computing 
+
+\begin{equation}
+    \begin{split}
+    \textrm{KL-div} = \sum(\log{z^{y}_{\sigma}}-\log{z^{x,y}_{\sigma}} \\
+    +\frac{\exp{(\log{z^{x,y}_{\sigma^{2}}+c)}}+(z^{x,y}_{\mu}-z^{y}_{\mu})^{2}}{2*\exp{(z^{y}_{\sigma^{2}}})}
+    -\frac{1}{2}),\label{eq:kl}
+    \end{split}
+\end{equation}
+
+where $z^{y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_1$, 
+$z^{x,y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_2$, 
+$c$ is a small constant, $z^{x,y}_{\sigma^{2}}$ is the predicted latent space 
+standard deviation squared from $\textrm{E}_2$, $z^{y}_{\sigma^{2}}$ is the predicted 
+latent space standard deviation squared from $\textrm{E}_1$, $z^{x,y}_{\mu}$ is the 
+mean latent space from $\textrm{E}_2$ and $z^{y}_{\mu}$ is the mean latent space 
+from $\textrm{E}_1$.
+
+The mean of the summation in equation \ref{eq:cost}, $\overline{\textrm{cost}}$, 
+is then summed together with the mean of the summation in equation \ref{eq:kl}, 
+$\overline{\textrm{KL-div}}$ to 
+get our final loss function
+
+\begin{equation}
+    \textrm{loss} = \overline{\textrm{KL-div}} + \overline{\textrm{cost}}.
+\end{equation}
+
+This loss is then backpropogated through all three networks 
+(encoder-1, encoder-2, decoder) and repeated per batch of 
+training samples for a pre-defined number of iterations. For our 
+purposes, we found that $\sim3\textrm{e}6$ training iterations and 
+a batch size of $128$ training samples were sufficient. A total 
+of $1\textrm{e}6$ training samples were used. We additionally 
+ensure that an inifinite number of noise realizations are effectively employed. This 
+is done by adding a new unique set of random whitened noise to noise-free 
+versions of our training samples for every new batch that the networks 
+see. Each neural network is three layers deep, has $2048$ neurons, a latent 
+space size of $64$ with $50\%$ dropout applied to each layer of each network.
 
 % decoder parameter prediction expression
 %\begin{equation}
@@ -397,6 +400,18 @@ $\textrm{E}_1$ takes as input a set of \ac{GW} signals and produces a latent
 space vector $z^1$, while $\textrm{E}_2$ takes as input both a set of GW
 signals and their associated source parameters and produces another latent
 space vector $z^2$.
+
+%
+% How does our 3-network set-up work?
+%
+The decoder network takes as input a set of latent
+space $z$ predictions from encoder network $\textrm{E}_2$.  The decoder
+produces mean ($x_{\mu}$) and log standard deviation squared predictions
+($x_{\log{(\sigma^{2})}}$) describing a random multivariant Gaussian.
+Posteriors are produced by simply sampling from this multivariant Gaussian
+distribution~\chris{I'm not sure if this paragraph has been superceded by new
+text. In any case it's not very detailed.}.
+
 
 \chris{OK, here's my attempt at explaining/motivating the network design. If
 you look at the LHS of the training network (with the corrected y data arrow
@@ -486,89 +501,7 @@ discussing this after the cost function derivation you can easily refer to
 this.} is computed and minimized in order to ensure that both distributions are
 consistent with each other.
 
-%
-% Brief introduction to loss functions used in the neural networks
-%
-In order for our variational autoencoders to learn anything, we need a metric by which 
-we can assess the effectivness of our three networks. This is done by computing 
-a loss function which minimizes the difference 
-between predictions on the posterior with respect to the truth (cost function) and the Kullback-Leibler divergence 
-between latent space distributions $z_1$ and $z_2$. 
 
-%
-% Cost function
-%
-The cost function is constructed by first defining a normalization factor
-
-\begin{equation}
-    f_{\textrm{norm}} = 0.5 \cdot \log(c + \exp(x_{\sigma})) - 0.5 \cdot \log(2\pi),
-\end{equation}
-
-where $c$ is a small constant and $x_{\sigma}$ are standard deviation predictions 
-on the source paramters from the decoder network given latent space predictions 
-from encoder-2 ($z_2$) and training GW sigals ($y_{t}$). We then 
-compute 
-
-\begin{equation}
-    x_{\textrm{diff}} = (x^{z,y}_{\mu} - x_{\textrm{train}})^{2},
-\end{equation}
-
-where $x^{z,y}_{\mu}$ are the predicted mean parameters from the decoder network 
-and $x_{\textrm{train}}$ are the true training parameters we are 
-trying to predict. A Gaussian likelihood is computed and summed over
-
-\begin{equation}
-    \textrm{cost} = - \sum (-\frac{x_{\textrm{diff}}}{2c \cdot 
-    x^{z^{x,y_{\textrm{train}}}_{\sigma},y_{\textrm{train}}}_{\sigma^{2}}} + f_{\textrm{norm}}),\label{eq:cost}
-\end{equation}
-
-where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are standard deviation squared predictions from the 
-decoder network.
-
-
-%
-% KL divergence
-%
-The K-L divergence is computed in order to train 
-encoder-1 and encoder-2 to produce consistant latent space 
-distributions. This is done by computing 
-
-\begin{equation}
-    \begin{split}
-    \textrm{KL-div} = \sum(\log{z^{y}_{\sigma}}-\log{z^{x,y}_{\sigma}} \\
-    +\frac{\exp{(\log{z^{x,y}_{\sigma^{2}}+c)}}+(z^{x,y}_{\mu}-z^{y}_{\mu})^{2}}{2*\exp{(z^{y}_{\sigma^{2}}})}
-    -\frac{1}{2}),\label{eq:kl}
-    \end{split}
-\end{equation}
-
-where $z^{y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_1$, 
-$z^{x,y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_2$, 
-$c$ is a small constant, $z^{x,y}_{\sigma^{2}}$ is the predicted latent space 
-standard deviation squared from $\textrm{E}_2$, $z^{y}_{\sigma^{2}}$ is the predicted 
-latent space standard deviation squared from $\textrm{E}_1$, $z^{x,y}_{\mu}$ is the 
-mean latent space from $\textrm{E}_2$ and $z^{y}_{\mu}$ is the mean latent space 
-from $\textrm{E}_1$.
-
-The mean of the summation in equation \ref{eq:cost}, $\overline{\textrm{cost}}$, 
-is then summed together with the mean of the summation in equation \ref{eq:kl}, 
-$\overline{\textrm{KL-div}}$ to 
-get our final loss function
-
-\begin{equation}
-    \textrm{loss} = \overline{\textrm{KL-div}} + \overline{\textrm{cost}}.
-\end{equation}
-
-This loss is then backpropogated through all three networks 
-(encoder-1, encoder-2, decoder) and repeated per batch of 
-training samples for a pre-defined number of iterations. For our 
-purposes, we found that $\sim3\textrm{e}6$ training iterations and 
-a batch size of $128$ training samples were sufficient. A total 
-of $1\textrm{e}6$ training samples were used. We additionally 
-ensure that an inifinite number of noise realizations are effectively employed. This 
-is done by adding a new unique set of random whitened noise to noise-free 
-versions of our training samples for every new batch that the networks 
-see. Each neural network is three layers deep, has $2048$ neurons, a latent 
-space size of $64$ with $50\%$ dropout applied to each layer of each network.
 
 %
 % loss plot
@@ -597,6 +530,40 @@ our final posterior samples.
 %
 % Results
 %
+
+%
+% discuss codebase which we use to generate waveforms, sampling frequency, and
+% parameter space
+%
+The suite of scripts which we use to produce the Bayesian
+posteriors is the \texttt{Bilby} inference library~\cite{1811.02042}. In our
+analysis, we use waveforms that have a duration of 1 second, sampling frequency
+of 256Hz, fixed sky position (right ascension ($\alpha$), declination ($\delta$)), inclination angle ($\theta_j$), polarization angle ($\psi$) and a spin of zero.
+We allow 5 parameters to vary: component masses $m_1$ and $m_2$, luminosity
+distance, time of coalescence and phase, where phase is marginalized
+out. It should be noted that nuisance parameters can (if desired) be 
+marginalized out in the machine learning training procedure itself, rather 
+than after training. \texttt{Bilby} on the other hand must explore the initial 
+phase space when performing full inference. The waveform
+model ($h$) used is
+\texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
+20Hz.
+
+%
+% Discuss priors that we use
+%
+\chris{Again, this stuff all goes in the results section later on.} The
+parameters we are not interested in estimating are all fixed (except for
+phase). A uniform prior is applied on the component masses, phase, distance and
+time of coalescence. The prior on both component masses ranges from $35 - 50$
+solar masses, the phase prior ranges from $0 - 2\pi$, the distance prior ranges
+from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the time of coalesence prior ranges
+from $-0.1$---$0.1$ sec. The posterior samples produced by \texttt{Bilby} will
+be used as our benchmark when assessing the efficiency~\chris{not just our
+efficiency, also quality} of our machine learning approach. We will now
+investigate whether we can reproduce the results from \texttt{Bilby} using
+\ac{CVAE}s~\chris{we will do this in the results section}.
+
 We present results from $25$ test cases of GWs produced from 
 a parameter space which is consistent with the prior assumptions  
 on the parameter space defined above. The only difference 
@@ -604,6 +571,8 @@ being that all of our time of coalescence parameters are fixed
 at $0.5s$ within the $1s$ time window. We compare our 
 VAE predictions with posteriors produced by the \texttt{Bilby}
 inference library.
+
+
 
 %
 % K-L divergence results
@@ -773,10 +742,10 @@ algorithm which is used in our case is the nested sampling algorithm. Nested
 sampling takes a multi-dimensional evidence integral calculation (fully
 marginalized likelihood) and transforms it into a more manageable 1-D integral
 , where evidence is the integral of the likelihood 
-multiplied by the prior over all parameters of the model $H$ ~\cite{1409.7215}
+multiplied by the prior over all parameters of the model $h$ ~\cite{1409.7215}
 
 \begin{equation}
-    Z = p(y|H) = \int dx_1 ... dx_n p(y|x,H)p(x|H).\label{eq:evidence}
+    Z = p(y|h) = \int dx_1 ... dx_n p(y|x,h)p(x|h).\label{eq:evidence}
 \end{equation}
 
 %
