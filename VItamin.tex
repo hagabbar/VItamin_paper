@@ -506,30 +506,16 @@ simply repeating this procedure with the same input data many times over
 %
 % Intro to the results - what are we trying to do?
 %
-We present results from $25$ test cases of \acp{GW} produced from a parameter space
-which is consistent with the prior assumptions on the parameter space defined
-above.~\chris{Don't define the parameter space above, define it here and not
-before.} The only difference being that all of our time of coalescence
-parameters are fixed at $0.5s$~\chris{put the s or sec outside of the mathmode}
-within the $1s$ time window~\chris{why do we do this? If we mention it then we
-need to motivate it}. We compare our \ac{CVAE} predictions with posteriors
-produced by the \texttt{Bilby} inference library.\chris{As a results
-introduction paragraph this needs work. You need to state what your aims are
-(to provide a comparison between the existing known-to-be-optimal method and
-our new one). Then I would go on to state that you produce comparison
-posteriors from both methods and give key (not too technical) details about how
-these are generated.}
-
-
-%
-% discuss codebase which we use to generate waveforms, sampling frequency, and
-% parameter space
-%
-The suite of scripts which we use to produce the Bayesian
-posteriors is the \texttt{Bilby} inference library~\cite{1811.02042}. In our
-analysis, we use waveforms that have a duration of 1 second, sampling frequency
-of 256Hz, fixed sky position (right ascension ($\alpha$), declination ($\delta$)), inclination angle ($\theta_j$), polarization angle ($\psi$) and a spin of zero.
-We allow 5 parameters to vary: component masses $m_1$ and $m_2$, luminosity
+We present results on $25$ \ac{GW} test waveforms using machine learning 
+(\ac{CVAE}s). Posteriors produced by the \texttt{Bilby} inference library~\cite{1811.02042} are used as a benchmark 
+in order to asses the efficiency and quality of our machine learning approach 
+with the existing most optimal method for posterior sampling. We apply a prior on both component masses which ranges from $35 - 50$
+solar masses, a phase prior from $0 - 2\pi$, a distance prior from  $1\textrm{Gpc} - 3\textrm{Gpc}$, and a time of coalesence prior from
+from $-0.1$---$0.1$s. All time of coalescence test set
+parameters are fixed at $0.5$s
+within the $1$s time window~\chris{why do we do this? If we mention it then we
+need to motivate it}. The parameters we are not interested in estimating are all fixed (except for phase). we use waveforms that have a duration of 1 second, sampling frequency
+of 256Hz, fixed sky position (right ascension ($\alpha$), declination ($\delta$)), inclination angle ($\theta_j$), polarization angle ($\psi$) and a spin of zero. We allow 5 parameters to vary: component masses $m_1$ and $m_2$, luminosity
 distance, time of coalescence and phase, where phase is marginalized
 out. It should be noted that nuisance parameters can (if desired) be 
 marginalized out in the machine learning training procedure itself, rather 
@@ -537,18 +523,16 @@ than after training. \texttt{Bilby} on the other hand must explore the initial
 phase space when performing full inference. The waveform
 model ($h$) used is
 \texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
-20Hz.
+20Hz. \ac{CVAE} posterior results are produced by passing our $25$ \ac{GW} 
+waveforms as input to a pre-trained \ac{CVAE} decoder and sampling until we have 
+generated $\sim5000$ posterior samples per parameter, per \ac{GW} signal 
+\texttt{Bilby} is passed the same $25$ \ac{GW} test waveforms and we randomly sample $\sim5000$ samples from \texttt{Bilby} posteriors to be used as our benchmark.
+
 
 %
-% Discuss priors that we use
+% discuss codebase which we use to generate waveforms, sampling frequency, and
+% parameter space
 %
-The parameters we are not interested in estimating are all fixed (except for
-phase). A uniform prior is applied on the component masses, phase, distance and
-time of coalescence. The prior on both component masses ranges from $35 - 50$
-solar masses, the phase prior ranges from $0 - 2\pi$, the distance prior ranges
-from $1\textrm{Gpc} - 3\textrm{Gpc}$, and the time of coalesence prior ranges
-from $-0.1$---$0.1$ sec. The posterior samples produced by \texttt{Bilby} will
-be used as our benchmark when assessing the efficiency and quality of our machine learning approach.
 
 %
 % K-L divergence results
@@ -1040,11 +1024,12 @@ determined.
 %
 We would like to acknowledge valuable input from the LIGO-Virgo Collaboration
 specifically from {\textbf{someone}}, and the parameter estimation and
-machine-learning working groups. The authors also gratefully acknowledge the
+machine-learning working groups. We thank Nvidia for the generous 
+donation of a Tesla V-100 GPU. The authors also gratefully acknowledge the
 Science and Technology Facilities Council of the United Kingdom. CM and SH are
 supported by the Science and Technology Research Council (grant
 No.~ST/~L000946/1) and the European Cooperation in Science and Technology
-(COST) action CA17137.\chris{Thank NVidia!}
+(COST) action CA17137.
 
 %% Here is the endmatter stuff: Supplementary Info, etc.
 %% Use \item's to separate, default label is "Acknowledgements"
