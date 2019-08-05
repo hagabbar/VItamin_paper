@@ -296,7 +296,7 @@ A variational autoencoder ~\cite{1812.04405} is also composed of both an
 encoder and a decoder network. The primary difference between a variational
 autoencoder and an autoencoder concerns the method by which the latent space is
 produced. In our variant of the variational autoender, the first two central 
-moments of the encoder output distribution are calculated ($\mu_{z}$). These are
+moments of the encoder output distribution are calculated ($\mu$). These are
 interpreted as parameters governing statistical distributions (in our case the
 means and variances of multivariant Gaussians). In proceeding to the decoder
 network, samples are drawn from these distributions ($z$) and fed into the
@@ -313,159 +313,30 @@ constraint, any trainable network architecture may be used).
 %
 % Brief introduction to loss functions used in the neural networks
 %
-We use a combination of three fully-connected networks; two encoder networks ($\textrm{E}_1$,
+We wish to be able to make a numerical function that can
+simulate a target distribution (the posterior for \ac{GW} parameters). This is done through a 
+combination of three fully-connected networks; two encoder networks ($\textrm{E}_1$,
 $\textrm{E}_2$) and one decoder network (D) (see Fig.
 \ref{fig:network_config}). In order for our variational autoencoders to learn anything, we need a metric by which 
-we can assess the effectiveness of our three networks. This is done by computing 
-a loss function which minimizes the difference 
-between predictions on the posterior with respect to the truth (cost function) and the Kullback-Leibler divergence 
+we can assess the effectiveness of our three networks. We therefore start with a cross-entropy which minimizes the difference between predicted samples from the posterior with respect to the truth and we then arrive at a cost function 
+(see the methods section). We additionally minimize the Kullback-Leibler divergence 
 between latent space distributions from $\textrm{E}_1$ ($z_1$) and 
 $\textrm{E}_2$ ($z_2$). 
 
-%
-% Cost function
-%
-The cost function is constructed by first defining a normalization factor
-
-\begin{equation}
-    f_{\textrm{norm}} = 0.5 \log(c + \exp(x_{\sigma})) - 0.5 \log(2\pi),
-\end{equation}
-
-where $c$ is a small constant and $x_{\sigma}$ are standard deviation predictions 
-on the source paramters from the decoder network given latent space predictions 
-from encoder-2 ($z_2$) and training GW sigals ($y_{t}$). We then 
-compute 
-
-\begin{equation}
-    x_{\textrm{diff}} = (x^{z,y}_{\mu} - x_{\textrm{train}})^{2},
-\end{equation}
-
-where $x^{z,y}_{\mu}$ are the predicted mean parameters from the decoder network 
-and $x_{\textrm{train}}$ are the true training parameters we are 
-trying to predict. A Gaussian likelihood is computed and summed over
-
-\begin{equation}
-    \textrm{cost} = - \sum (-\frac{x_{\textrm{diff}}}{2c  
-    x^{z^{x,y_{\textrm{train}}}_{\sigma},y_{\textrm{train}}}_{\sigma^{2}}} + f_{\textrm{norm}}),\label{eq:cost}
-\end{equation}
-
-where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are standard deviation squared predictions from the 
-decoder network.
-
-
-%
-% KL divergence
-%
-The K-L divergence is computed in order to train 
-encoder-1 and encoder-2 to produce consistant latent space 
-distributions. This is done by computing 
-
-\begin{equation}
-    \begin{split}
-    \textrm{KL-div} = \sum(\log{z^{y}_{\sigma}}-\log{z^{x,y}_{\sigma}} \\
-    +\frac{\exp{(\log{z^{x,y}_{\sigma^{2}}+c)}}+(z^{x,y}_{\mu}-z^{y}_{\mu})^{2}}{2*\exp{(z^{y}_{\sigma^{2}}})}
-    -\frac{1}{2}),\label{eq:kl}
-    \end{split}
-\end{equation}
-
-where $z^{y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_1$, 
-$z^{x,y}_{\sigma}$ is the predicted latent space standard deviation from $\textrm{E}_2$, 
-$c$ is a small constant, $z^{x,y}_{\sigma^{2}}$ is the predicted latent space 
-standard deviation squared from $\textrm{E}_2$, $z^{y}_{\sigma^{2}}$ is the predicted 
-latent space standard deviation squared from $\textrm{E}_1$, $z^{x,y}_{\mu}$ is the 
-mean latent space from $\textrm{E}_2$ and $z^{y}_{\mu}$ is the mean latent space 
-from $\textrm{E}_1$.
-
-The mean of the summation in equation \ref{eq:cost}, $\overline{\textrm{cost}}$, 
-is then summed together with the mean of the summation in equation \ref{eq:kl}, 
-$\overline{\textrm{KL-div}}$ to 
-get our final loss function
-
-\begin{equation}
-    \textrm{loss} = \overline{\textrm{KL-div}} + \overline{\textrm{cost}}.
-\end{equation}
-
-This loss is then backpropogated through all three networks 
-(encoder-1, encoder-2, decoder) and repeated per batch of 
-training samples for a pre-defined number of iterations. For our 
-purposes, we found that $\sim3\textrm{e}6$ training iterations and 
-a batch size of $128$ training samples were sufficient. A total 
-of $1\textrm{e}6$ training samples were used. We additionally 
-ensure that an inifinite number of noise realizations are effectively employed. This 
-is done by adding a new unique set of random whitened noise to noise-free 
-versions of our training samples for every new batch that the networks 
-see. Each neural network is three layers deep, has $2048$ neurons, a latent 
-space size of $64$ with $50\%$ dropout applied to each layer of each network.
-
-% decoder parameter prediction expression
-%\begin{equation}
-%    x_{\textrm{samp}} = x_{\mu} + x_{\log{(\sigma^{2})}} \cdot \epsilon(0,1).\label{eq:x_calc}
-%\end{equation}
-
-$\textrm{E}_1$ takes as input a set of \ac{GW} signals and produces a latent
-space vector $z^1$, while $\textrm{E}_2$ takes as input both a set of GW
-signals and their associated source parameters and produces another latent
-space vector $z^2$.
-
-%
-% How does our 3-network set-up work?
-%
-The decoder network takes as input a set of latent
-space $z$ predictions from encoder network $\textrm{E}_2$.  The decoder
-produces mean ($x_{\mu}$) and log standard deviation squared predictions
-($x_{\log{(\sigma^{2})}}$) describing a random multivariant Gaussian.
-Posteriors are produced by simply sampling from this multivariant Gaussian
-distribution~\chris{I'm not sure if this paragraph has been superceded by new
-text. In any case it's not very detailed.}.
-
-
-\chris{OK, here's my attempt at explaining/motivating the network design. If
-you look at the LHS of the training network (with the corrected y data arrow
-going into E2) then all that's happening is:
-%
-Next we have the E1 path. The aim here is, via the KL divergence, to make the
-output of E1 the same as the output of E2. However, E1 only gets given the
-data, and E2 gets the data and the parameters. The logic is that the
-distilation of the information into the latent space representation is possible
-with only the y data.
-%
-Then for the run, all you do is take the E1 encoder (whih does the same job as
-E2 but with only y data input) and follow through to the decoder output. This
-output represents the parameters of the multi-dimensional Gaussian function
-that describes the likelihood/posterior and so you simply sample from it. You
-have then generated posterior samples.
-}
-
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
-    \caption{\label{fig:network_config}\chris{You are missing a crucial element
-here. There should be an arrow from the y data to *both* encoders in the
-training. Also, why have we made it so encoder 1 is on the right and encoder 2
+    \caption{\label{fig:network_config}\chris{Why have we made it so encoder 1 is on the right and encoder 2
 is on the left. It reads weird.} This figure illustrates our neural network
 training/testing operations. During training, a training set of GW signals
 ($y$) and their corresponding true parameters ($x$) are given as input to
 encoder networks $\textrm{E}_1$ and $\textrm{E}_2$. The KL divergence (Eq.
-\ref{eq:kl}) is computed between mean latent space predictions from both
-encoder networks ($z^1_{\mu},z^2_{\mu}$) .\chris{Don't start a sentence with a
-variable} $z^2_{\mu}$ is then summed togther with $z_{\log{(\sigma^{2})}} \cdot
-\epsilon(0,1)$\chris{we need a better way to define and describe the process of
-sampling from a multivariate Gaussian. I don't like the epsilon notation - it's
-too computer sciencey.} and given as input to the decoder network. The decoder
-network predicts $x_{\mu}$ and compares $x_{\mu}$ to the initial training
-parameters $x$ using Eq. \ref{eq:cost}. After having trained our networks, we
-test using only $\textrm{E}_1$ and the decoder. A set of test GW signals is
-given as input to $\textrm{E}_1$ in order to produce a set of $z^1_{\mu}$
-predictions.  We apply Eq. \ref{eq:z_calc} to get $z$ latent samples. Our $z$
-latent space samples are given as input to our decoder network along with our
-initial test GW signals to get a set of $x_{\mu}$ predictions. We finally apply
-Eq.  \ref{eq:x_calc} to get a set of $x_\textrm{samp}$ samples.\chris{I like
-this level of caption detail. I think we could be more consistent with the
-symbols in the diagram. Triangles are denoting encoder and decoder networks.
-How about circles denoting loss/cost functions? Please sort out the fonts, it
-would be far better if they were consistent with the paper, and "train" is
-still squashed. Also can you please make the Run and Train common elements line
-up with each other vertically? Also make the notation consistent between run
-and train. Also drop the epsilon term on the run panel.}} 
+\ref{eq:kl}) is computed between the moments of latent space predictions from both
+encoder networks ($\mu^{j}_{1},\mu^{j}_{2}$). We then sample from a multivariate Gaussian whose mean and variances are defined by $\mu^{j}_{2}$. These samples are given as input to the decoder network. We take the first two moments $\mu^{j}_x$ of the predictions 
+from the decoder network, along with our training parameters $x$ and compute a cost function Eq. \ref{eq:cost}. After having trained our networks, we
+test using only $\textrm{E}_1$ and the decoder. Using the $\textrm{E}_1$ encoder (which is similar to $\textrm{E}_2$ but uses only $y$ data input) latent space 
+predictions are given to the decoder which returns an output. This output represents the parameters of the mult-dimensional Gaussian function
+that describes the likelihood/posterior and so we simply sample from it. We 
+then have a generated set of posterior samples.} 
 \end{figure}
 
 %
@@ -493,129 +364,108 @@ dataset - so they're not modelling the spread of $x$ as a multivariate Gaussian
 consistent with each other. For further details on training and the full 
 derivation of the loss functions, see methods subsection \textit{Loss function derivation}.
 
-
-%
-% Brief introduction to loss functions used in the neural networks
-%
-\chris{please move this to before the description of the network. I would start
-by simply saying that we wish to be able to make a numerical function that can
-simulate the target distribution (the posterior). We therefore start with the
-cross-entropy (see the methods section) \ldots and we then arrive at the cost
-function.}
-In order for our variational autoencoders to learn anything, we need a metric
-by which we can assess the effectivness of our three networks. This is done by
-computing a loss function which minimizes the difference between predictions on
-the posterior with respect to the truth (cost function) and the
-Kullback-Leibler divergence between latent space distributions $z_1$ and $z_2$. 
-
 %
 % Cost function
 %
-The cost function is constructed by first defining a normalization
-factor\chris{it's not really the first thing we have to understand though is
-it. It's just the first thing that gets computed. Try to draw a distinction
-between the functions that we have to compute and the specific ways in which
-they are implemented in the code. The reader does not care about the latter.}
+%The cost function is constructed by first defining a normalization
+%factor\chris{it's not really the first thing we have to understand though is
+%it. It's just the first thing that gets computed. Try to draw a distinction
+%between the functions that we have to compute and the specific ways in which
+%they are implemented in the code. The reader does not care about the latter.}
 %
-\begin{equation}
-    f_{\textrm{norm}} = 0.5 \cdot \log(c + \exp(x_{\sigma})) - 0.5 \cdot \log(2\pi),
-\end{equation}
+%\begin{equation}
+%    f_{\textrm{norm}} = 0.5 \log(c + \exp(x_{\sigma})) - 0.5 \log(2\pi),
+%\end{equation}
 %
-where $c$ is a small constant~\chris{things like the small constant are not
-important for understanding how this all works so I wouldn't mention it at all.}
-and $x_{\sigma}$ are standard deviation predictions on the source paramters
-from the decoder network given latent space predictions from encoder-2
-($z_2$\chris{be careful with what you call things.  The latent space
-predictions from encoder 2 are actually means and variances NOT the random
-draws from the latent space.}) and training GW sigals ($y_{t}$). We then
-compute 
+%where $c$ is a small constant~\chris{things like the small constant are not
+%important for understanding how this all works so I wouldn't mention it at all.}
+%and $x_{\sigma}$ are standard deviation predictions on the source paramters
+%from the decoder network given latent space predictions from encoder-2
+%($z_2$\chris{be careful with what you call things.  The latent space
+%predictions from encoder 2 are actually means and variances NOT the random
+%draws from the latent space.}) and training GW sigals ($y_{t}$). We then
+%compute 
 %
-\begin{equation}
-    x_{\textrm{diff}} = (x^{z,y}_{\mu} - x_{\textrm{train}})^{2},
-\end{equation}
+%\begin{equation}
+%    x_{\textrm{diff}} = (x^{z,y}_{\mu} - x_{\textrm{train}})^{2},
+%\end{equation}
 %
-\chris{again, this is just part of the cost calculation and the reader doesn't
-need to know how it's broken up in the code.} where $x^{z,y}_{\mu}$ are the
-predicted mean parameters from the decoder network and
-$x_{\textrm{train}}$~\chris{notation consistency. Is it $x$, $x_t$ or
-$x_{\text{train}}$? I recokon just $x$.} are the true training parameters we
-are trying to predict. A Gaussian likelihood is computed and summed~\chris{OK,
-not quite true and probably my fault for saying that it was. The whole thing is
-just how it's derived from the starting point (the cross-entropy) and we maybe
-shouldn't read more into it.} over
+%\chris{again, this is just part of the cost calculation and the reader doesn't
+%need to know how it's broken up in the code.} where $x^{z,y}_{\mu}$ are the
+%predicted mean parameters from the decoder network and
+%$x_{\textrm{train}}$~\chris{notation consistency. Is it $x$, $x_t$ or
+%$x_{\text{train}}$? I recokon just $x$.} are the true training parameters we
+%are trying to predict. A Gaussian likelihood is computed and summed~\chris{OK,
+%not quite true and probably my fault for saying that it was. The whole thing is
+%just how it's derived from the starting point (the cross-entropy) and we maybe
+%shouldn't read more into it.} over
 %
-\begin{equation}
-    \textrm{cost} = - \sum (-\frac{x_{\textrm{diff}}}{2c \cdot 
-    x^{z^{x,y_{\textrm{train}}}_{\sigma},y_{\textrm{train}}}_{\sigma^{2}}} + f_{\textrm{norm}}),\label{eq:cost}
-\end{equation}
+%\begin{equation}
+%    \textrm{cost} = - \sum (-\frac{x_{\textrm{diff}}}{2c  
+%    x^{z^{x,y_{\textrm{train}}}_{\sigma},y_{\textrm{train}}}_{\sigma^{2}}} + %f_{\textrm{norm}}),\label{eq:cost}
+%\end{equation}
 %
-\chris{OK, so I think the last 3 equations can go. However, for reference, try
-to set the correct parenthesis sizes using "\\left" and "\\right" and get rid of
-the "\\cdot".} where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are
-standard deviation squared predictions from the decoder network.
+%\chris{OK, so I think the last 3 equations can go. However, for reference, try
+%to set the correct parenthesis sizes using "\\left" and "\\right" and get rid of
+%the "\\cdot".} where $x^{z^{x,y_{train}}_{\sigma},y_{train}}_{\sigma^{2}}$ are
+%standard deviation squared predictions from the decoder network.
 
 %
 % KL divergence
 %
-The K-L divergence is computed in order to train encoder-1 and
-encoder-2~\chris{be consistent with the notation, is it $E_{1}$, encoder 1 or
-encoder-1?} to produce consistant latent space distributions. This is done by
-computing 
+%The K-L divergence is computed in order to train encoder-1 and
+%encoder-2~\chris{be consistent with the notation, is it $E_{1}$, encoder 1 or
+%encoder-1?} to produce consistant latent space distributions. This is done by
+%computing 
 %
-\begin{equation}
-    \begin{split}
-    \textrm{KL-div} = \sum(\log{z^{y}_{\sigma}}-\log{z^{x,y}_{\sigma}} \\
-    +\frac{\exp{(\log{z^{x,y}_{\sigma^{2}}+c)}}+(z^{x,y}_{\mu}-z^{y}_{\mu})^{2}}{2*\exp{(z^{y}_{\sigma^{2}}})}
-    -\frac{1}{2}),\label{eq:kl}
-    \end{split}
-\end{equation}
+%\begin{equation}
+%    \begin{split}
+%    \textrm{KL-div} = \sum(\log{z^{y}_{\sigma}}-\log{z^{x,y}_{\sigma}} \\
+%    +\frac{\exp{(\log{z^{x,y}_{\sigma^{2}}+c)}}+(z^{x,y}_{\mu}-z^{y}_{\mu})^{2}}{2*\exp{(z^{y}_{\sigma^{2}}})}
+%    -\frac{1}{2}),\label{eq:kl}
+%    \end{split}
+%\end{equation}
 %
-\chris{If this goes in the paper then it's too technical to not go in the
-methods. I also wrote up this expression (but in a less code-motivated way)
-later on. In general try to sort out your latex formatting (brackets,
-multiplication signs, exponentials.} where $z^{y}_{\sigma}$ is the predicted
-latent space standard deviation from $\textrm{E}_1$, $z^{x,y}_{\sigma}$ is the
-predicted latent space standard deviation from $\textrm{E}_2$, $c$ is a small
-constant, $z^{x,y}_{\sigma^{2}}$ is the predicted latent space standard
-deviation squared from $\textrm{E}_2$, $z^{y}_{\sigma^{2}}$ is the predicted
-latent space standard deviation squared from $\textrm{E}_1$, $z^{x,y}_{\mu}$ is
-the mean latent space from $\textrm{E}_2$ and $z^{y}_{\mu}$ is the mean latent
-space from $\textrm{E}_1$.~\chris{a lot of this is repeated what you've already
-said and what I've said later on. It all needs to be distilled and located in
-the right place.}
+%\chris{If this goes in the paper then it's too technical to not go in the
+%methods. I also wrote up this expression (but in a less code-motivated way)
+%later on. In general try to sort out your latex formatting (brackets,
+%multiplication signs, exponentials.} where $z^{y}_{\sigma}$ is the predicted
+%latent space standard deviation from $\textrm{E}_1$, $z^{x,y}_{\sigma}$ is the
+%predicted latent space standard deviation from $\textrm{E}_2$, $c$ is a small
+%constant, $z^{x,y}_{\sigma^{2}}$ is the predicted latent space standard
+%deviation squared from $\textrm{E}_2$, $z^{y}_{\sigma^{2}}$ is the predicted
+%latent space standard deviation squared from $\textrm{E}_1$, $z^{x,y}_{\mu}$ is
+%the mean latent space from $\textrm{E}_2$ and $z^{y}_{\mu}$ is the mean latent
+%space from $\textrm{E}_1$.~\chris{a lot of this is repeated what you've already
+%said and what I've said later on. It all needs to be distilled and located in
+%the right place.}
 
-The mean of the summation in equation \ref{eq:cost},
-$\overline{\textrm{cost}}$, is then summed together with the mean~\chris{the
-mean over what? In reality this is over a batch but to describe that you need
-to have defined a batch and that starts to get technical. Best to state the
-loss function (or refer to it) and at some point mention that in practise
-things are performed in batches as is standard in ML training or neural nets.
-At that point also briefly mention the code fixed parameters like learning
-rate, etc...} of the summation in equation \ref{eq:kl},
-$\overline{\textrm{KL-div}}$ to get our final loss function
+%The mean of the summation in equation \ref{eq:cost},
+%$\overline{\textrm{cost}}$, is then summed together with the mean~\chris{the
+%mean over what? In reality this is over a batch but to describe that you need
+%to have defined a batch and that starts to get technical. Best to state the
+%loss function (or refer to it) and at some point mention that in practise
+%things are performed in batches as is standard in ML training or neural nets.
+%At that point also briefly mention the code fixed parameters like learning
+%rate, etc...} of the summation in equation \ref{eq:kl},
+%$\overline{\textrm{KL-div}}$ to get our final loss function.
 %
-\begin{equation} 
-\textrm{loss} = \overline{\textrm{KL-div}} + \overline{\textrm{cost}}.  
-\end{equation}
 %
-\chris{This should be clear from the derivation of the loss function so no need
-to break it down this far.} This loss is then backpropogated through all three
-networks (encoder-1, encoder-2, decoder) and repeated per batch of training
-samples for a pre-defined number of iterations. For our purposes, we found that
-$\sim3\textrm{e}6$ training iterations and a batch size of $128$ training
-samples were sufficient. A total of $1\textrm{e}6$ training samples were used.
-We additionally ensure that an \chris{effectively} infinite number of noise
-realizations are employed~\chris{be more accurate here. We have the ability to
-generate an infinite number of noise realisations but in practice all we do is
-ensure that every training sample used has a unique noise realisation despite
-having a finite number actual waveforms.}. This is done by adding a new unique
-set of random whitened noise to noise-free versions of our training samples for
-every new batch that the networks see. Each neural network is three layers
+
+The losses computed from the KL divergence and the cost function are summed and then backpropogated through all three
+networks (encoder-1, encoder-2, decoder). As is standard practice in the 
+machine learning literature, the loss is computed over a batch of training 
+samples and repeated for a pre-defined number of iterations. For our purposes, we found that
+$\sim3\textrm{e}6$ training iterations, a batch size of $128$ training samples
+samples and a learning rate of $1\textrm{e}-4$ was sufficient. We used a total of $1\textrm{e}6$ training samples in order to adequately cover the whole 
+parameter space.
+We additionally ensure that an (effectively) infinite number of noise
+realizations are employed by making sure that every training sample used has a unique noise realisation despite only having a finite number of waveforms. 
+Each neural network is three layers
 deep, has $2048$ neurons, a latent space size of $64$ with $50\%$ dropout
-applied to each layer of each network.~\chris{I think that the technical
-details of the may or may not end up in the methids section (maybe). Also, we
-need to have a reasonable answer to how we decide to stop training - simple
-question - difficult to answer scientifically.}
+applied to each layer of each network. Training is considered complete when 
+the loss from both the KL and the cost functions have slopes which 
+are generally consistent with zero.
 
 %
 % loss plot
@@ -639,19 +489,16 @@ the legend in a more appropriate corner.}}
 %
 % Test procedure
 %
-After training has completed, we simply feed encoder-1 our test GW signals
-$y_{test}$. We take the output from encoder-1 $z^{y}_{\mu}$ and sample from a
-univariant Gaussian distribution in order to get a set of $z^{y}$ samples. Our
-$z^{y}$ samples are then combined with our test GW signals $y_{test}$ and fed
+After training has completed, we simply feed $\textrm{E}_1$ our test GW signals
+$y$. We take the output from $\textrm{E}_1$, and draw latent space samples 
+$z_1$. Our
+$z_1$ samples are then combined with our test GW signals $y$ and fed
 as input to our pre-trained decoder network. The decoder network returns a set
-of mean $x_{\mu}$ predictions from which we sample from a Gaussian distribution
-in order to get our final posterior samples.~\chris{see if this is aligned with
-my similar text in the methods. You should refer back to the definition of the
-parameterised distribution $r(x|y)$ (Eq.~\ref{eq:latent_model}) which is what
-this procedure is designed to model. You should also make it slightly more
-practical - this is the process that you use when you actually have a trained
-network and you want to run on some real data. What would you do in that case?
-How do you get to actual samples.}
+of moments $\mu^{j}_1$ which describe a multivariate Gaussian distribution.
+We may then draw random $x$ realisations from that function and is representative of posterior samples from the target
+distribution $p(x|y)$. The entire distribution may be represented by 
+simply repeating this procedure with the same input data many times over  
+(see Eq.~\ref{eq:latent_model}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
