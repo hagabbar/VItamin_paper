@@ -511,10 +511,7 @@ We present results on $25$ \ac{GW} test waveforms using machine learning
 in order to asses the efficiency and quality of our machine learning approach 
 with the existing most optimal method for posterior sampling. We apply a prior on both component masses which ranges from $35 - 50$
 solar masses, a phase prior from $0 - 2\pi$, a distance prior from  $1\textrm{Gpc} - 3\textrm{Gpc}$, and a time of coalesence prior from
-from $-0.1$---$0.1$s. All time of coalescence test set
-parameters are fixed at $0.5$s
-within the $1$s time window~\chris{why do we do this? If we mention it then we
-need to motivate it}. The parameters we are not interested in estimating are all fixed (except for phase). we use waveforms that have a duration of 1 second, sampling frequency
+from $-0.1$---$0.1$s. The parameters we are not interested in estimating are all fixed (except for phase). we use waveforms that have a duration of 1 second, sampling frequency
 of 256Hz, fixed sky position (right ascension ($\alpha$), declination ($\delta$)), inclination angle ($\theta_j$), polarization angle ($\psi$) and a spin of zero. We allow 5 parameters to vary: component masses $m_1$ and $m_2$, luminosity
 distance, time of coalescence and phase, where phase is marginalized
 out. It should be noted that nuisance parameters can (if desired) be 
@@ -538,67 +535,53 @@ generated $\sim5000$ posterior samples per parameter, per \ac{GW} signal
 % K-L divergence results
 %
 \begin{figure}
-    \includegraphics[width=\columnwidth]{images/hist-kl_0.png}
-    \caption{\label{fig:kl_results} Histograms of 25 different test GW signal
-\ac{KL} divergence values.  Red denotes predictions from the CVAE and blue denotes
-predictions from \texttt{Bilby}.~\chris{OK, practical plotting comments first.
-We can't have 5x5 results shown here. You need to fix the font sizes and
-probably use a log scale on the y-axis. The bins sizes are too small in most
-histograms (try to use 100 bins across the complete range in each plot). Only
-use one central x-axis label (not one for every plot). Also add a central
-y-axis label stating $p(\text{KL})$. For the caption you need to provide more
-details of what is being shown. You don't get multiple KL values for a given
-pair of posteriors so how did you generate this? Now, in general - what to do
-about showing the KL values? Here's what I suggest. I think we need to do $N$
-test sets where $N>25$ but 25 will suffice for now. For each of these cases you
-need to run Bilby with all the different samplers and each sampler run twice.
-Then you can make a single plot showing the histogram (made from $N$
-realisations) of KL values. You would have a histogram from each sampler vs
-every other sampler (so 3 samplers plus VItamin makes 4 which results in 10
-histograms). When  you do one sampler against itself you use the 2nd run. There
-would be no bootstrapping. What do you think?}}
+    \includegraphics[width=\columnwidth]{images/hist-kl.png}
+    \caption{\label{fig:kl_results} We plot the KL divergence values 
+    of three independent samplers against each other over the same 25 \ac{GW} 
+    test waveforms. Divergence are computing by comparing posterior 
+    distributions between independent sampler posteriors. The posterior 
+    is computed for each of the 25 \ac{GW} waveforms using every sampler 
+    twice. A multi-dimensional KL divergence is then computed 
+    between all samplers 
+    with every other sampler (including themselves) over all 25 \ac{GW} 
+    test cases. The resulting KL divergence values are 
+    then plotted as overlapping histograms 
+    above, with each color demonstrating a different sampler combination. 
+    Both the y and x axis are log scaled for readability.}
 \end{figure}
 %
-In Fig. \ref{fig:kl_results} we show histograms of \ac{KL} divergence values on $25$
-test GW samples. The \ac{KL} divergence is computed $100$ times per test sample
-through the initialization of random splits. We compute the KL divergence on
-\ac{CVAE} results (red) by comparing \ac{CVAE} predictions to \texttt{Bilby}
-predictions. Our benchmark \texttt{Bilby} (blue) results are computed by
-choosing random $50/50$ splits between results from the same \texttt{Bilby}
-produced posterior.~\chris{I think this text will need to change based on
-changing the KL plot (see caption comments). In general though, looking at the
-results themselves it's clear that we're not too far away from overlapping
-distributions in most cases. I guess it depends on how much we push. Is there
-any correlation between the 2 obviously overlapping test cases and their signal
-properties?}
+In Fig. \ref{fig:kl_results} we show histograms of \ac{KL} divergence values 
+using $25$ test GW samples and three independent samplers (\ac{CVAE}, 
+\texttt{dynesty}, \texttt{emcee}). Each independent sampler is run twice 
+on the same test set to produce a set of posteriors. We compute the KL divergence of each sampler with itself and all other samplers over 25 
+\ac{GW} test samples. Results are binned in a histogram with each color 
+denoting sampler combinations.
 
 %
 % AD results
 %
-\begin{figure}
-    \includegraphics[width=\columnwidth]{images/hist-ad_0.png}
-    \caption{\label{fig:ad_results} Histograms of 25 different test GW signal
-Anderson-Darling (AD) statistic component mass 1 values. Distributions which
-are similar will have AD values which are close to 0.  Red denotes predictions
-from the \ac{CVAE} and blue denotes predictions from
-\texttt{Bilby}.~\chris{Please see the suggested changes in
-Fig.~\ref{fig:kl_results} and apply the same here. Results wise this doesn't
-look too bad and a bit more tuning might get everything to overlap in a nicer
-looking way. Also, the x-axis label is wrong.}}
-\end{figure}
+%\begin{figure}
+%    \includegraphics[width=\columnwidth]{images/hist-ad_0.png}
+%    \caption{\label{fig:ad_results} Histograms of 25 different test GW signal
+%Anderson-Darling (AD) statistic component mass 1 values. Distributions which
+%are similar will have AD values which are close to 0.  Red denotes predictions
+%from the \ac{CVAE} and blue denotes predictions from
+%\texttt{Bilby}.~\chris{Please see the suggested changes in
+%Fig.~\ref{fig:kl_results} and apply the same here. Results wise this doesn't
+%look too bad and a bit more tuning might get everything to overlap in a nicer
+%looking way. Also, the x-axis label is wrong.}}
+%\end{figure}
 %
-In Fig.~\ref{fig:ad_results} we show histograms of \ac{AD} statistic results
-computed over $100$ iterations per test sample.  The \ac{AD} statistic is a
-1-dimensional figure of merit, so Fig.~\ref{fig:ad_results} only illustrate
-results from predictions on $m_1$.~\chris{but why only $m_{1}$? If there is a
-reson then state it.} The closer \ac{AD} statistic values are to zero, the more
-likely that the two distributions being compared are drawn from the same
-distribution~\chris{2 distributions can't be drawn from the same distribution.
-Check your language.}. As can be seen in Fig.~\ref{fig:ad_results} there is
-some overlap between the machine learning predictions and our benchmark
-\texttt{Bilby} results.~\chris{hopefully if/when we improve the results the AD,
-KL, and KS statsistics will all be reasonably overlapping and we can say a bit
-more about it.}
+%In Fig.~\ref{fig:ad_results} we show histograms of \ac{AD} statistic results
+%computed over $100$ iterations per test sample.  The \ac{AD} statistic is a
+%1-dimensional figure of merit, so Fig.~\ref{fig:ad_results} only illustrate
+%results from predictions on $m_1$ here as an example, but provide results from other parameters in the methods section.~\hunter{attach other plots.} The closer \ac{AD} statistic values are to zero, the more
+%likely that the two sets of samples being compared are drawn from the same
+%distribution. As can be seen in Fig.~\ref{fig:ad_results} there is
+%some overlap between the machine learning predictions and our benchmark
+%\texttt{Bilby} results.~\chris{hopefully if/when we improve the results the AD,
+%KL, and KS statsistics will all be reasonably overlapping and we can say a bit
+%more about it.}
 
 %
 % P-P plot
@@ -621,53 +604,39 @@ symmetry between the axes.}}
 %
 In order to show that our results are consistent with the truth, we have
 additionally plotted probability-probability (p-p) plots in
-Fig.~\ref{fig:pp_plot}. On the y axis is plotted the predicted cummulative
-distribution and on the x axis is plotted the theorectical distribution.
-Perfect alignment with the truth~\chris{No, a diagonal p-p plot is only
-possible with infinite data but consistent with diagonal is indicative that the
-Bayesian probability distributions are consistent with the frequentist
-interpretation - that the truth will lie inside the $X\%$ probability contour
-with a frequency of $X\%$ of the time.} is illustrated by the black dashed
-diagonal line, while our empirical alignment is shown in the blue
-line.~\chris{as mentioned in the figure caption comments, please add p-p plot
+Fig.~\ref{fig:pp_plot}. On the y axis is plotted the predicted cumulative
+distribution and on the x axis is plotted the theoretical distribution.
+Predictions from the \ac{CVAE} consistent with the black dashed diagonal 
+line is indicative that the Bayesian probability distributions are 
+consistent with the frequentest interpretation - that the truth will 
+lie inside the $X\%$ probability contour with a frequency of $X\%$ of the time.  We plot empirical results as those represented in the blue line.~\chris{as mentioned in the figure caption comments, please add p-p plot
 curves for the other samplers run on the same test data.} 
 
 %
 % 1-D overlap results
 %
 \begin{figure}
-    \includegraphics[width=\columnwidth]{images/latest-1d_0.png}
+    \includegraphics[width=\columnwidth]{images/corner_testcase0.png}
     \caption{\label{fig:1D_overlap} Histograms of 25 different test GW signal
 component mass 1 values.  Numbers in the upper right-hand corner denote overlap
 values where 1 means $\sim{100}\%$ overlap and 0 means $\sim{0}\%$
-overlap.~\chris{we shouldn't use overlaps unless we define how they're
-calculated in the text. I think that overlaps are not something we need at this
-point. Don't remove them yet since they are still useful to us but they should
-be removed from the final plots.} Red denotes predictions from CVAE predictions
-and blue denotes predictions from \texttt{Bilby}.~\chris{the 1 and 2D posterior
-plots should be represented as a corner plot for a single test data realisation
-- this plot should span 2 columns - it is our primary plot. Also the way in
-which the bilby and VItamin samples are overlayed needs to be changed. Now that
-the overlap is so good we need to be able to see how good it really is. Can I
-ask that the bilby results be represented as contours (68,90,95\%) and the
-VItamin results be shown as samples OR also as contours. If both are contours
-then the VItamin contours should be filled and the bilby contours should just
-be lines (VItamin in blue and bilby in red I think). Whatever colours are used
-then they should be consistent throughout the paper.}}
+overlap. Red denotes predictions from CVAE predictions
+and blue denotes predictions from \texttt{Bilby}. \hunter{Need to rewrite 
+this figure description.}}
 \end{figure}
 %
 % 2D scatter plot
 %
-\begin{figure}
-    \includegraphics[width=\columnwidth]{images/posteriors_13.png}
-\caption{\label{fig:lum_dist-t0_scatter} This figure illustrates 25 different
-test GW samples with $5000$ posterior samples from both \texttt{Bilby} and our
-CVAE plotted. Red denotes predictions from the CVAE and blue denotes
-predictions from \texttt{Bilby}. Luminosity distance is plotted as a function
-of time of coalescence with 4-dimensional overlap values printed in the upper
-right-hand portion of each subplot.\chris{see Fig.~\ref{fig:1D_overlap} caption
-for comments}}
-\end{figure}
+%\begin{figure}
+%    \includegraphics[width=\columnwidth]{images/posteriors_13.png}
+%\caption{\label{fig:lum_dist-t0_scatter} This figure illustrates 25 different
+%test GW samples with $5000$ posterior samples from both \texttt{Bilby} and our
+%CVAE plotted. Red denotes predictions from the CVAE and blue denotes
+%predictions from \texttt{Bilby}. Luminosity distance is plotted as a function
+%of time of coalescence with 4-dimensional overlap values printed in the upper
+%right-hand portion of each subplot.\chris{see Fig.~\ref{fig:1D_overlap} caption
+%for comments}}
+%\end{figure}
 %
 We can further illustrate the accuracy of our machine learning predictions by
 directly plotting the samples generated by our CVAE and \texttt{Bilby}
