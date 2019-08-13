@@ -78,8 +78,10 @@ autoencoders for gravitational-wave astronomy}
 
 \maketitle
 
-\acrodef{GW}[GW]{gravi	tational wave}
+\acrodef{GW}[GW]{gravitational wave}
 \acrodef{BBH}[BBH]{binary black hole}
+\acrodef{EM}[EM]{electromagnetic}
+\acrodef{BNS}[BNS]{binary neutron star}
 \acrodef{SNR}[SNR]{signal-to-noise ratio}
 \acrodef{PSD}[PSD]{power spectral density}
 \acrodef{FFT}[FFT]{fast Fourier transform}
@@ -122,7 +124,7 @@ applied towards \ac{GW} parameter estimation. It is also computationally expensi
 to run. When run on a single \ac{BBH} signal sampled at 4kHz, Bayesian 
 inference can take $\mathcal{O}(1.5\textrm{e}5 - 1.7\textrm{e}6\: s)$ to complete \cite{1409.7215}. 
 Over the next several years, as the detectors become more sensitive, we will 
-need to be able to alert our electromagnetic follow-up partners in a timely 
+need to be able to alert our \ac{EM} follow-up partners in a timely 
 and efficient manner. The current fastest method for doing so, \texttt{Bayestar}, 
 takes $\mathcal{O}(1\: \textrm{minute})$ to produce fast, but only approximate parameter estimates. 
 Given the deluge of signals we are expecting to see, 
@@ -187,9 +189,9 @@ inference in other fields and how this is applicable across the sciences.
 %
 With the overwhelmingly successful observation runs of O1 and O2 
 now complete, \ac{LIGO} and Virgo have produced a large 
-catalogue of \ac{GW} data covering both \ac{BBH} and {BNS} signals\cite{1811.12907}. Over the next five years 
+catalogue of \ac{GW} data covering both \ac{BBH} and \ac{BNS} signals\cite{1811.12907}. Over the next five years 
 we expect the number of detections to increase to be upwards 
-of $\sim180$ BNS and $\sim400$ BBH events per year \cite{1304.0670,1811.12907}. This large influx in the number 
+of $\sim180$ \ac{BNS} and $\sim400$ BBH events per year \cite{1304.0670,1811.12907}. This large influx in the number 
 of detections will put an increased amount of pressure on the current \ac{GW} inference 
 methods used for parameter estimation.  
 
@@ -471,19 +473,15 @@ are generally consistent with zero.
 % loss plot
 %
 \begin{figure}
-    \includegraphics[width=\columnwidth]{images/losses_logscale.png}
-    \caption{\label{fig:loss_log} Loss plot with the cost, KL, and total loss
-values plotted as a function of the total number of training iterations. We can
-conclude that our neural networks have converged to their optimal state when
-the slope of our loss curves are close to zero.~\chris{OK, this is the
-definition of vague. You don't need to discuss training stopping criteria in
-the caption, you siply have to describe what is being plotted. As a general
-rule for all captions leave the interpretation of the results to the main
-paper. Regarding the plot content, first you need to plot this with x-axis log
-scale and y-axis linear scale and also not mess with the signs of the
-components. Clearly the comb-like pattern has to be removed somehow - I know
-that you'll just do the whole thing again without intermediate plotting. Place
-the legend in a more appropriate corner.}} 
+    \includegraphics[width=\columnwidth]{images/inv_losses_log.png}
+    \caption{\label{fig:loss_log} We plot here three loss curves; the cost  
+    function loss (blue), KL (orange) and total loss (green). The cost  
+    loss and KL are both derived in the methods section and the total 
+    loss is simply a summation of the two. We plot the value of each 
+    loss as a function of the log of the number of training 
+    iterations where 
+    one iteration is defined as a training session over one batch 
+    of signals.} 
 \end{figure}
 
 %
@@ -617,12 +615,14 @@ curves for the other samplers run on the same test data.}
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/corner_testcase0.png}
-    \caption{\label{fig:1D_overlap} Histograms of 25 different test GW signal
-component mass 1 values.  Numbers in the upper right-hand corner denote overlap
-values where 1 means $\sim{100}\%$ overlap and 0 means $\sim{0}\%$
-overlap. Red denotes predictions from CVAE predictions
-and blue denotes predictions from \texttt{Bilby}. \hunter{Need to rewrite 
-this figure description.}}
+    \caption{\label{fig:corner_plot} Plotted above is a corner plot illustrating the 
+    overlap between posteriors from our benchmark (\texttt{Bilby}) and predictions 
+    from our machine learning approach. We plot samples from the posterior of each 
+    parameter against all other parameters for one \ac{GW} test case. One dimensional 
+    histograms of the posterior distribution for each parameter from both methods 
+    are plotted along the diagonal. Blue and red vertical lines represent the 
+    $5 - 95\%$ confidence bounds for \texttt{Bilby} and variational inference respectively, 
+    whereas the black vertical lines denote the truth.}
 \end{figure}
 %
 % 2D scatter plot
@@ -640,24 +640,21 @@ this figure description.}}
 %
 We can further illustrate the accuracy of our machine learning predictions by
 directly plotting the samples generated by our CVAE and \texttt{Bilby}
-superimposed on each other.  In Fig. \ref{fig:1D_overlap}, we histogram
+superimposed on each other.  In Fig. \ref{fig:corner_plot}, we plot
 predictions sampled from the posterior through both \texttt{Bilby} (blue) and
-our CVAE (red).  As can be clearly seen, the overlap between both
-\texttt{Bilby} and the CVAE is extremely high in the $m_1$ parameter space.
-Additional proof of high overlap between posteriors can also be seen in Fig.
-\ref{fig:lum_dist-t0_scatter} where we plot samples from both \texttt{Bilby}
-(blue) and the CVAE (red) posteriors with luminsoity distance as a function of
-$t_0$. 
+our CVAE (red) for one \ac{GW} test case.  As can be clearly seen, the overlap between both
+\texttt{Bilby} and the \ac{CVAE} is extremely high. We provide additional test case example 
+corner plots in the methods section. \hunter{Add more corner plots in methods section}
 
-\chris{One more thing to add, especially if the other KL, AD, and PP plots
-aren't convincing, is a plot displaying 1D confidence bounds compared between
-bilby and VItamin. Imagine a plot with the x-axis as distance and the y-axis
-steps through test data with increasing true distance. for each test data you
-plot 2 error bars horizontally (one for bilby and one for VItamin) spanning the
-range of 90\% confidence. You would hopefully get nearly identical pairs of
-errorbars stacked vertically. Technically you could do this for all parameters
-(and you should) but we might only put one of the plots in the paper (if at
-all).}
+%\chris{One more thing to add, especially if the other KL, AD, and PP plots
+%aren't convincing, is a plot displaying 1D confidence bounds compared between
+%bilby and VItamin. Imagine a plot with the x-axis as distance and the y-axis
+%steps through test data with increasing true distance. for each test data you
+%plot 2 error bars horizontally (one for bilby and one for VItamin) spanning the
+%range of 90\% confidence. You would hopefully get nearly identical pairs of
+%errorbars stacked vertically. Technically you could do this for all parameters
+%(and you should) but we might only put one of the plots in the paper (if at
+%all).}
 
 \chris{Also, what about the speed argument? We need to have a final number for
 how long it takes to train our network including the time it takes to generate
@@ -677,66 +674,98 @@ data or network complexity.}
 %
 % recap and main result
 %
-\chris{We may be limited in words at this point but it might be good to
-reiterate (briefly) the challenges faced in PE for the GW field. Then go on to
-say what we've shown.} In this letter we have demonstrated that we are able to
-reproduce, to a high degree of accuracy~\chris{we will be careful with this
-phrasing}, posteriors \chris{probability distributions} generated from Bayesian
+We currently face a variety of challenges in 
+parameter estimation for the \ac{GW} field. Some of those 
+challenges include accounting for glitches in the data, time-dependent 
+fluctuations in the power spectrum density, systematic uncertainties 
+in the waveform models themselves and decreasing the latency with 
+which parameter posterior estimates are produced \ref{1409.7215}. 
+In this letter we have demonstrated that we are able to
+reproduce, to a high degree of accuracy, posteriors probability distributions generated from Bayesian
 inference using machine learning. This is accomplished through the use of
-variational autoencoders trained on over 1 million~\chris{the numbers are
-irrelvent at this stage - especially if you're not going to mention all of the
-other equally important ones.} whitened~\chris{whitening is not important - all
-approaches use whitening, it is a technicallity to only be mentioned in
-passing.} simulated \ac{GW} signals. By building a neural network model which,
+variational autoencoders trained on simulated \ac{GW} signals. By building a neural network model which,
 when trained, can reproduce the true posterior in less than a second~\chris{we
 will verify and firm-up this number - especially since its problem dependent.},
-we have demonstrated that neural networks can achieve the same
-sensitivity~\chris{there isn't really any sensitivity here - it's not a search.
-It's more like quality of results or optimality.} as that of \chris{the trusted
-benchmark of} Bayesian inference.
+we have demonstrated that neural networks can achieve the same 
+quality of results as the trusted
+benchmark, Bayesian inference.
 
 %
 % discuss the near term CBC implications and why this is a game-changer
 %
-The significance of achieving similar sensitivities~\chris{not sensitivities}
-to Bayesian inference is most evident in the orders of magnitude speed-up in
-performance~\chris{more like orders of magnitude gains in speed - the
-performance is idemtical (hopefully).}. The increase in speed will help the
-LIGO-Virgo-Kagra calibration alert our electromagnetic follow-up partners with
-minimum latency.~\chris{you need to expand upon this a bit more - mention
-GW170817, catching prompt EM emission with super-fast PE estimates, this will
-highlight the fact that we haven't shown the sky inference. The estimated
-future detections for BNS (give numbers) will currently swamp our computer
-resources. Whilst BBH are relatvely easy we will also be swamped with far more
-of these. Our approach will provide (potentially) full-PE on BBH signals in
-seconds on a single GPU. Also the trained pipeline is incredibly portable - 1
-saved network and a small script to feed in new data - anyone can get results.
-Also talk about priors and how although the analysis assumes priors, we can
-train boxes to essentially produce samples from the likelihood - people can
-then resample from them according to their own prior choices.} 
+The significance of achieving similar results
+to Bayesian inference is most evident in the orders of magnitude increase in speed. This increase in speed will help the
+LIGO-Virgo-KAGRA collaboration alert our \ac{EM} follow-up partners with
+minimum latency. Improved low-latency alerts will be especially 
+pertinent for \ac{BNS} signals like GW170817 where we will be able 
+to catch prompt \ac{EM} emission on an even shorter time scale than 
+is currently done with tools such as Bayestar \hunter{provide bayestar 
+reference}. The estimated future detections for \ac{BNS} \hunter{ 
+give number} will swamp our current computational resources using 
+existing Bayesian methods. Our approach will provide (potentially) 
+full-parameter estimation on \ac{BBH}/{\ac{BNS}} signals in seconds 
+on a single GPU. Our trained pipeline is also incredibly modular, with 
+one saved network and a small script~ to feed in new data, 
+any user may produce results. Our analysis assumes a flat prior and our 
+analysis trains a machine learning box to essentially produce samples 
+from the likelihood. Users may then have the unique ability to 
+resample from the posterior according to their own prior choices.  
 
 %
 % future work, current limitations and prospects
 %
-\chris{You need to be upfront about the corners that we've cut and the work
-that needs to be done. Why are we doing a low sample rate? Why are we limiting
-the mass space? Why did we only do 1 detector? Is there any reason we can't do
-all of those things in the near future? What about the things that we want to
-do that are extra to the normal - like dealing with non-Gaussian noise (we
-could train on real detector data) - we wouldn't be affected by the type of
+We choose to use a sampling rate of 256Hz largely in order to 
+decrease the time required to train our machine learning model. 
+There is no general reason why our method 
+should not work at larger sampling frequencies other than an 
+increased amount of time to train and a larger 
+number of GPUs required for memory consumption. The mass parameter space is limited 
+to high mass signals, due to the loss of information on low mass 
+signals at the low sampling frequency which we employ. Future work 
+may also incorporate a multi-detector configuration by simply stacking 
+1-dimensional time series vectors from multiple detector in one array 
+per signal. We elected not to use a multi-detector configuration so 
+that we may use relatively small datasets when training.
+
+In reality, the detectors are also affected by non-Gaussian noise. 
+To account for non-Gaussian noise, we would accordingly train our model using real noise from the detectors. Our method has the added 
+advantage of not being dependent on choice of whitening, whereas 
+current Bayesian methods are dependent on the whitening procedure.   
+\chris{we wouldn't be affected by the type of
 glitch that delayed the confirmed detection and analysis of GW170817- our
 results wouldn't technically depend on our choices of whitening whereas current
 methods do. } Our work can further be expanded upon by including a variety of
-other \ac{GW} sources such as Neutron star - black hole (NSBH)~\chris{no need
-for an acronym if it's only ever used once.} and \ac{BNS} mergers at higher
-sampling frequencies. We have yet to demonstrate the effectivness of our method
+other \ac{GW} sources such as Neutron star - black hole and \ac{BNS} mergers at higher
+sampling frequencies. We have yet to demonstrate the effectiveness of our method
 on additional parameters such as sky location and inclination angle, the
 benefits of which would be best realized in an end-to-end inference pipeline.
 Such a pipeline would be of great importance as the detectors increase up to
-their full potential design sensitivities.~\chris{nice but think bigger - this
-or something like it will form the basis of PE for the next 20 years.}
+their full potential design sensitivities. Given the abundant 
+benefits of this method, we imagine a variant of 
+this of pipeline will form the basis for all \ac{GW} parameter 
+estimation over the next several decades to come.
 
-\chris{Whether there is another paragraph or not, end on a postive note.}
+%
+% acknowledge people and funding agencies
+%
+\section{Acknowledgements.}
+%
+We would like to acknowledge valuable input from the LIGO-Virgo Collaboration
+specifically from {\textbf{someone}}, and the parameter estimation and
+machine-learning working groups. We thank Nvidia for the generous 
+donation of a Tesla V-100 GPU. The authors also gratefully acknowledge the
+Science and Technology Facilities Council of the United Kingdom. CM and SH are
+supported by the Science and Technology Research Council (grant
+No.~ST/~L000946/1) and the European Cooperation in Science and Technology
+(COST) action CA17137.
+
+%% Here is the endmatter stuff: Supplementary Info, etc.
+%% Use \item's to separate, default label is "Acknowledgements"
+
+\section{addendum}
+ \subsection{Competing Interests} 
+    The authors declare that they have no competing financial interests.
+ \subsection{Correspondence} Correspondence and requests for materials should be addressed to Hunter Gabbard~(email: h.gabbard.1@research.gla.ac.uk).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % METHODS
@@ -985,31 +1014,6 @@ distribution one would repeat the procedure with the same input data
 $\mathcal{O}(1000)$ times from which parameter confidence bounds can be
 determined.      
 
-
-%
-% acknowledge people and funding agencies
-%
-\section{Acknowledgements.}
-%
-We would like to acknowledge valuable input from the LIGO-Virgo Collaboration
-specifically from {\textbf{someone}}, and the parameter estimation and
-machine-learning working groups. We thank Nvidia for the generous 
-donation of a Tesla V-100 GPU. The authors also gratefully acknowledge the
-Science and Technology Facilities Council of the United Kingdom. CM and SH are
-supported by the Science and Technology Research Council (grant
-No.~ST/~L000946/1) and the European Cooperation in Science and Technology
-(COST) action CA17137.
-
-%% Here is the endmatter stuff: Supplementary Info, etc.
-%% Use \item's to separate, default label is "Acknowledgements"
-
-%\begin{addendum}
-% \item Put acknowledgements here.
-% \item[Competing Interests] The authors declare that they have no
-%competing financial interests.
-% \item[Correspondence] Correspondence and requests for materials
-%should be addressed to Hunter Gabbard~(email: h.gabbard.1@research.gla.ac.uk).
-%\end{addendum}
 
 \bibliographystyle{apsrev4-1}
 \bibliography{references}% Produces the bibliography via BibTeX.
