@@ -668,6 +668,24 @@ time (which is unlikely) then it would be good to be able to answer questions
 like, how does the training and sample generation speed scale with length of
 data or network complexity.}
 
+%
+% I feel the need, for speed table
+% 
+\begin{table*}
+ \begin{center}
+   \caption{This is a table which describes the run-times of 
+   various sampler methods.}
+   \begin{tabular}{ |c|c|c|c|c| }
+   \hline
+    & min(time/samp) & max(time/samp) & mean(time/samp) & Ratio \\ 
+   Dynesty & 14.5s & 29.0s & 17.4s & 1.2e-8\\ 
+   Emcee & 49.5s & 121.8s & 61.8s & 3.4e-9\\
+   Vitamin & 2.1e-7s & 2.1e-7s & 2.1e-7s & 1.0 \\ 
+   \hline
+  \end{tabular}
+ \end{center}
+\end{table*}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONCLUSIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
