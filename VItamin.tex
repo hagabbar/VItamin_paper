@@ -135,8 +135,8 @@ approach~\cite{1904.06264,1812.04405}.
 % results
 %
 Here we show that a machine learning algorithm can return
-posterior estimates on 4 parameters (this may be extended up to 15 parameters) of a detected \ac{GW} event on the order of less
-than $1s$~\chris{we need to measure this number.}, a 6 order of magnitude speed-up over
+posterior estimates on 4 parameters (this may be extended up to 15 parameters) of a detected \ac{GW} event on the order of less than 
+1 microsecond, a 6 order of magnitude speed-up over
 current inference techniques.}
 
 \chris{
@@ -327,8 +327,7 @@ $\textrm{E}_2$ ($z_2$).
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
-    \caption{\label{fig:network_config}\chris{Why have we made it so encoder 1 is on the right and encoder 2
-is on the left. It reads weird.} This figure illustrates our neural network
+    \caption{\label{fig:network_config} This figure illustrates our neural network
 training/testing operations. During training, a training set of GW signals
 ($y$) and their corresponding true parameters ($x$) are given as input to
 encoder networks $\textrm{E}_1$ and $\textrm{E}_2$. The KL divergence (Eq.
@@ -586,10 +585,10 @@ denoting sampler combinations.
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/latest_pp_plot.png}
-    \caption{\label{fig:pp_plot} P-P plot using $100$ unique test samples and
+    \caption{\label{fig:pp_plot} P-P plot using $25$ unique test samples and
 $5000$ posterior sample predictions per test sample.  The x-axis denotes the
-theoretical cummulative distribution whereas the y-axis denotes the predicted
-cummulative distribution.~\chris{we might have to work on the description of
+theoretical cumulative distribution whereas the y-axis denotes the predicted
+cumulative distribution.~\chris{we might have to work on the description of
 the axes - maybe use the same notation that has been used in the GW PE papers
 that include p-p plots. Obviously this plot is quite worrying but I can't see
 why you get these results looking at the test data posterior comparison. Can
@@ -646,6 +645,20 @@ our CVAE (red) for one \ac{GW} test case.  As can be clearly seen, the overlap b
 \texttt{Bilby} and the \ac{CVAE} is extremely high. We provide additional test case example 
 corner plots in the methods section. \hunter{Add more corner plots in methods section}
 
+The speed at which posterior samples are generated over all samplers used, 
+including Vitamin, is shown in Table \ref{Tab:speed}. Run-time is 
+defined as the total time to produce $\sim 5000$ samples for each 
+sampler in seconds. It can be clearly seen that Vitamin produces 
+samples from the posterior at a rate which is $\sim 6 - 7$ times 
+faster than current inference techniques, a massive speed-up 
+in performance. It should be noted 
+that run-time for the Bayesian samplers is also dependent on 
+the choice of sampler hyperparameters, so total run-time may 
+vary according to hyperparameter configuration. We choose Bayesian sampler 
+hyperparameters based on standard the standard default configurations 
+defined in the \texttt{Bilby} documentation \cite{1811.02042}. 
+ 
+
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
 %aren't convincing, is a plot displaying 1D confidence bounds compared between
 %bilby and VItamin. Imagine a plot with the x-axis as distance and the y-axis
@@ -656,20 +669,8 @@ corner plots in the methods section. \hunter{Add more corner plots in methods se
 %(and you should) but we might only put one of the plots in the paper (if at
 %all).}
 
-\chris{Also, what about the speed argument? We need to have a final number for
-how long it takes to train our network including the time it takes to generate
-the data. We then need (easy to get) numbers for how fast it takes to generate
-samples from the trained network - this is crucial and we need to see if the
-post-generation pruning of the parameter space slows us down. All of this needs
-to be compared fairly apples-to-apples with the bilby runs on the same data. We
-have to be very careful in equating our speed to that of real runs at full
-timing resolution because we will be criticised for being unfair. If we have
-time (which is unlikely) then it would be good to be able to answer questions
-like, how does the training and sample generation speed scale with length of
-data or network complexity.}
-
 %
-% I feel the need, for speed table
+% I feel the need, the need for speed, table
 % 
 \begin{table*}
  \begin{center}
@@ -677,12 +678,13 @@ data or network complexity.}
    various sampler methods.}
    \begin{tabular}{ |c|c|c|c|c| }
    \hline
-    & min(time/samp) & max(time/samp) & mean(time/samp) & Ratio \\ 
-   Dynesty & 14.5s & 29.0s & 17.4s & 1.2e-8\\ 
-   Emcee & 49.5s & 121.8s & 61.8s & 3.4e-9\\
-   Vitamin & 2.1e-7s & 2.1e-7s & 2.1e-7s & 1.0 \\ 
+    & min(run-time) & max(run-time) & median(run-time) & Ratio \\ 
+   Dynesty & 553.9s & 1313.4s & 935.8s & 1.3e-6 \\ 
+   Emcee & 1642.0s & 4040.1s & 3235.4s & 3.7e-7 \\
+   Vitamin & 1.2e-3s & 1.2e-3s & 1.2e-3s & 1.0 \\ 
    \hline
   \end{tabular}
+  \label{Tab:speed}
  \end{center}
 \end{table*}
 
@@ -697,13 +699,12 @@ parameter estimation for the \ac{GW} field. Some of those
 challenges include accounting for glitches in the data, time-dependent 
 fluctuations in the power spectrum density, systematic uncertainties 
 in the waveform models themselves and decreasing the latency with 
-which parameter posterior estimates are produced \ref{1409.7215}. 
+which parameter posterior estimates are produced \cite{1409.7215}. 
 In this letter we have demonstrated that we are able to
 reproduce, to a high degree of accuracy, posteriors probability distributions generated from Bayesian
 inference using machine learning. This is accomplished through the use of
 variational autoencoders trained on simulated \ac{GW} signals. By building a neural network model which,
-when trained, can reproduce the true posterior in less than a second~\chris{we
-will verify and firm-up this number - especially since its problem dependent.},
+when trained, can reproduce the true posterior in less than a second,
 we have demonstrated that neural networks can achieve the same 
 quality of results as the trusted
 benchmark, Bayesian inference.
@@ -717,21 +718,20 @@ LIGO-Virgo-KAGRA collaboration alert our \ac{EM} follow-up partners with
 minimum latency. Improved low-latency alerts will be especially 
 pertinent for \ac{BNS} signals like GW170817 where we will be able 
 to catch prompt \ac{EM} emission on an even shorter time scale than 
-is currently done with tools such as Bayestar \hunter{provide bayestar 
-reference}. The estimated future detections for \ac{BNS} \hunter{ 
+is currently done with tools such as Bayestar \cite{1508.03634}. 
+The estimated future detections for \ac{BNS} \hunter{ 
 give number} will swamp our current computational resources using 
 existing Bayesian methods. Our approach will provide (potentially) 
 full-parameter estimation on \ac{BBH}/{\ac{BNS}} signals in seconds 
 on a single GPU. Our trained pipeline is also incredibly modular, with 
-one saved network and a small script~ to feed in new data, 
+one saved network and a small script to feed in new data, 
 any user may produce results. Our analysis assumes a flat prior and our 
-analysis trains a machine learning box to essentially produce samples 
+trains a machine learning box to essentially produce samples 
 from the likelihood. Users may then have the unique ability to 
-resample from the posterior according to their own prior choices.  
-
-\chris{I had another thought. This is also very important for population
-studies since populations can be generated and now analysed in full-Bayes many
-times very quickly.}
+resample from the posterior according to their own prior choices. Our 
+method may also be useful for population studies since populations 
+may now be generated and analysed in a full-Bayesian manner on a smaller 
+time scale. 
 
 %
 % future work, current limitations and prospects
@@ -752,11 +752,8 @@ that we may use relatively small datasets when training.
 In reality, the detectors are also affected by non-Gaussian noise. 
 To account for non-Gaussian noise, we would accordingly train our model using real noise from the detectors. Our method has the added 
 advantage of not being dependent on choice of whitening, whereas 
-current Bayesian methods are dependent on the whitening procedure.   
-\chris{we wouldn't be affected by the type of
-glitch that delayed the confirmed detection and analysis of GW170817- our
-results wouldn't technically depend on our choices of whitening whereas current
-methods do. } Our work can further be expanded upon by including a variety of
+current Bayesian methods are dependent on the whitening procedure. 
+Our work can further be expanded upon by including a variety of
 other \ac{GW} sources such as Neutron star - black hole and \ac{BNS} mergers at higher
 sampling frequencies. We have yet to demonstrate the effectiveness of our method
 on additional parameters such as sky location and inclination angle, the
