@@ -109,104 +109,86 @@ autoencoders for gravitational-wave astronomy}
 %
 % background
 %
-With the beginning of the \ac{LIGO} and
-Virgo's third observation run well under way, we are now in an era where
-\ac{GW} detection is commonplace~\cite{PhysRevLett.116.061102,
-PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of both detectors
-increases, we will see upwards of 100s of \ac{GW} events per year \cite{1409.7215}.  The current
-method used to estimate the parameters of gravitational wave events is done
-using Bayesian inference~\cite{1409.7215}.
+With the beginning of the \ac{LIGO} and Virgo's third observation run well
+under way, we are now in an era where \ac{GW} detection is
+commonplace~\cite{PhysRevLett.116.061102,
+PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of the global
+network of gravitational wave detectors increases, we will observe
+$\mathcal{O}(100)$s of transient \ac{GW} events per year~\cite{1409.7215}. For
+each of these events the current methods used to estimate their source
+parameters employ conputationally costly Bayesian inference
+approaches~\cite{1409.7215}.
 %
 % rationale
 %
-Bayesian inference has been shown to be incredibly effective when 
-applied towards \ac{GW} parameter estimation. It is also computationally expensive 
-to run. When run on a single \ac{BBH} signal sampled at 4kHz, Bayesian 
-inference can take $\mathcal{O}(1.5\textrm{e}5 - 1.7\textrm{e}6\: s)$ to complete \cite{1409.7215}. 
-Over the next several years, as the detectors become more sensitive, we will 
-need to be able to alert our \ac{EM} follow-up partners in a timely 
-and efficient manner. The current fastest method for doing so, \texttt{Bayestar}, 
-takes $\mathcal{O}(1\: \textrm{minute})$ to produce fast, but only approximate parameter estimates. 
-Given the deluge of signals we are expecting to see, 
-it is imperative that a more efficient low latency parameter estimation 
-method be developed. We propose the use of a \ac{CVAE} as a rapid and accurate alternative to this
-approach~\cite{1904.06264,1812.04405}. 
+Bayesian strategies are known to be optimal for \ac{GW} parameter
+estimation~\cite{Searle_paper}. However, when applied to timeseries containing
+a single \ac{BBH} event sampled at 4kHz, existing \ac{GW} analyses can take
+$\mathcal{O}(1.5\times 10^{5} - 1.7\times 10^{6}\:\textrm{seconds})$ to
+complete~\cite{1409.7215}. For \ac{BNS} signals this timescale increases by at
+least an order of magnitude~\cite{BNS_paper?} and it is for this class of
+signal that counterpart \ac{EM} signatures are expected, containing criucial
+Gamma and X-ray information on timescales of 1 second -- 1 minute. The \ac{GW}
+community strives towards alerting their \ac{EM} follow-up partners in a timely
+and efficient manner and the current fastest method for doing so,
+\texttt{Bayestar}, can provide alerts in $\mathcal{O}(1\: \textrm{minute})$,
+and only approximate parameter estimates on a limited range of source
+parameters. Given the deluge of expected signals, the large computational cost
+and delay in obtaining complete source information, together with the need for
+alerts to \ac{EM} partners on $<1$ second timescales, it is imperative that a
+significantly more efficient parameter estimation method be developed. We
+propose the use of a \ac{CVAE}~\cite{1904.06264,1812.04405} as a rapid and
+accurate alternative to this approach. 
 %
 % results
 %
-Here we show that a machine learning algorithm can return
-posterior estimates on 4 parameters (this may be extended up to 15 parameters) of a detected \ac{GW} event on the order of less than 
-1 microsecond, a 6 order of magnitude speed-up over
-current inference techniques.}
-
-\chris{
-The paragraph structure needs to be changed a bit. Here's how I see it based on
-this text from the Nature guidelines - "As a guideline, the text should be
-structured in broad sections (abstract, introduction, results, conclusions,
-methods)." 
-\begin{itemize} 
-%
-\item Abstract - introductory paragraph
-(not abstract) of approximately 150 words, summarizing the background,
-rationale, main results (introduced by "Here we show" or some equivalent
-phrase) and implications of the study. It's getting there.  
-%
-\item introduction - this section has to expand upon what has mentioned in the
-abstract background (which was only ~50 words). It needs to cover the state of
-the gravitational wave field and the number of detections expected in the next
-~5 years. It should briefly discuss the issue of low latency EM follow up. It
-needs to cover Bayesian inference (not in too much detail) and the signal model
-we are interested in here (again, not too much detail but enough for the
-average Nature reader). It then needs to introduce machine learning and focus
-mainly on how our scheme works. We also need to include a statement about how
-the training data priors affect the result (are they really the priors?)   
-%
-\item results - here you would outline the process of comparison between the
-standard approach and the new one. Define training and test data and how Bilby
-is run on all test data for comparison. How do we then train our network. How
-do we then produce results on the test data. Here you refer to results plots
-but try to not make conclusion statememnts (just descriptive). Also include the
-speed analysis here.  
-%
-\item conclusions - now draw conclusions about the quality of the comparison
-results. Highlight the current limitations but also highlight the importance of
-this for the GW field (multi-detector is easy, additional parameters are easy,
-longer datasets may be a challenge regarding GPU memory?, we don't have to
-assume a noise model if we inject training data into real noise, we do rely on
-well defined signal models, EM-follow up in very low latency, can we use
-transfer learning if we want to retrain, ...) End with broader statements about
-inference in other fields and how this is applicable across the sciences.
-%
-\item methods - Everything that we couldn't fit in. Mostly validation plots.
-%
-\end{itemize} }
+Here we show that a \ac{CVAE} pre-trained on $\sim 10^{6}$ \ac{BBH} signals and
+without being given the precomputed posteriors can return Bayesian posterior
+probability estimates on 4 of the source parameters (easily scalable to higher
+dimensional problems). The training procedure takes $\sim 1$ day on a single
+\ac{GPU} but need only be performed once for a given prior parameter space (or
+signal class). The resulting trained machine can then produce single
+(statistically independent) posterior samples in $\sim 0.2$ microseconds making
+this approach $\sim 6$ orders of magnitude faster than existing techniques and
+therefore allowing full Bayesian parameter estimation in well under 1 second
+for \ac{BBH} signals.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INTRODUCTION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% introduction - this section has to expand upon what has mentioned in the
+% abstract background (which was only ~50 words). It needs to cover the state of
+% the gravitational wave field and the number of detections expected in the next
+% ~5 years. It should briefly discuss the issue of low latency EM follow up. It
+% needs to cover Bayesian inference (not in too much detail) and the signal model
+% we are interested in here (again, not too much detail but enough for the
+% average Nature reader). It then needs to introduce machine learning and focus
+% mainly on how our scheme works. We also need to include a statement about how
+% the training data priors affect the result (are they really the priors?)
+%
 % Intro to the detection era with the LVC
 %
-With the overwhelmingly successful observation runs of O1 and O2 
-now complete, \ac{LIGO} and Virgo have produced a large 
-catalogue of \ac{GW} data covering both \ac{BBH} and \ac{BNS} signals\cite{1811.12907}. Over the next five years 
-we expect the number of detections to increase to be upwards 
-of $\sim180$ \ac{BNS} and $\sim400$ BBH events per year \cite{1304.0670,1811.12907}. This large influx in the number 
-of detections will put an increased amount of pressure on the current \ac{GW} inference 
-methods used for parameter estimation.  
+With the overwhelmingly successful observation runs of O1 and O2 now complete,
+\ac{LIGO} and Virgo have produced a large catalogue of \ac{GW} data covering
+both \ac{BBH} and \ac{BNS} signals\cite{1811.12907}. Over the next five years
+we expect the number of detections to increase to be upwards of $\sim180$
+\ac{BNS} and $\sim400$ BBH events per year~\cite{1304.0670,1811.12907}. This
+large influx in the number of detections will put an increased amount of
+pressure on the current \ac{GW} inference methods used for parameter
+estimation.  
 
 %
 % From GW detection, to parameter estimation
 %
-Much of the \ac{LIGO} analysis effort over the past several years has been focused 
-on the detection of \ac{GW}s. This has been the primary 
-focus of many, due to the difficulty associated 
-with identifying \ac{GW} waveforms buried in 
-in large amount of noise to a high degree of certainty. The detection problem has largely 
-been solved through the use of matched template filtering\cite{0264-9381-33-21-215004}. 
-Once a \ac{GW} has been identified through matched template filtering, Bayesian inference 
-is used to extract information about the source 
-parameters of the detected \ac{GW} event.
+Much of the \ac{LIGO} analysis effort over the past several years has been
+focused on the detection of \ac{GW}s. This has been the primary focus of many,
+due to the difficulty associated with identifying \ac{GW} waveforms buried in
+in large amount of noise to a high degree of certainty. The detection problem
+has largely been solved through the use of matched template
+filtering~\cite{0264-9381-33-21-215004}. Once a \ac{GW} has been identified
+through matched template filtering, Bayesian inference is used to extract
+information about the source parameters of the detected \ac{GW} event.
 
 %
 % Set up parameter estimation problem
@@ -218,7 +200,7 @@ Each parameter is given a prior astrophysically motivated probability
 distribution. In our case, we have additive noise which is modelled as 
 a Gaussian (in reality, the data is not truly Gaussian). Given a noisy
 \ac{GW} waveform, we would like to find an optimal procedure for retrieving
-some finite set of unknown GW parameters. Our procedure should be able
+some finite set of unknown \ac{GW} parameters. Our procedure should be able
 to give us an accurate estimate of the parameters of our observed signal, while
 also accounting for the uncertainty which arises from having multiple noise
 realizations of our observed data able to be mapped to one parameter
@@ -227,24 +209,24 @@ estimate.
 %
 % Describe Bayes Theorem
 %
-According to Bayes Theorem, a posterior for a set of GW parameters can be described by the
-following expression:
+According to Bayes Theorem, a posterior for a set of GW parameters can be
+described by the following expression:
 %
-\begin{equation}
-    p(x|y) = \frac{p(y|x) p(x)}{p(y)},\label{eq:bayes_theorem}
-\end{equation}
+\begin{align}\label{eq:bayes_theorem}
+    p(x|y) &= \frac{p(y|x) p(x)}{p(y)},
+\end{align}
 %
-where $x$ are the parameters, $y$ is the
-observed data, $p(x|y)$ is the posterior, $p(y|x)$ is the likelihood, $p(x)$ is
-the prior we put on our parameter distribution and $p(y)$ is the probability of
-our data, known as the Bayesian evidence or the marginal likelihood. We
-typically ignore $p(y)$ since the term is a constant and we are only interested
-in the shape of the posterior distribution, not its normalization. Eq.
-\ref{eq:bayes_theorem} then reduces to
+where $x$ are the parameters, $y$ is the observed data, $p(x|y)$ is the
+posterior, $p(y|x)$ is the likelihood, $p(x)$ is the prior we put on our
+parameter distribution and $p(y)$ is the probability of our data, known as the
+Bayesian evidence or the marginal likelihood. We typically ignore $p(y)$ since
+the term is a constant and we are only interested in the shape of the posterior
+distribution, not its normalization. Eq.~\ref{eq:bayes_theorem} then reduces
+to
 %
-\begin{equation}\label{eq:simplified_bayes} 
+\begin{align}\label{eq:simplified_bayes} 
 p(x|y) \propto p(y|x) p(x).
-\end{equation} 
+\end{align} 
    
 %
 % Intro to machine learning section
@@ -261,7 +243,7 @@ to image inference \cite{1512.00570}, high-resolution synthetic image
 generation \cite{1612.00005} and the fitting of incomplete heterogeneous data
 \cite{1807.03653}. It is this type of machine learning network that 
 we will utilize to reproduce the Bayesian posterior, which is known to be 
-the optimal result.
+the optimal result~\cite{Searle}.
 
 %
 % What is an autoencoder?
@@ -272,20 +254,24 @@ which are conditioned on an observation, where in our case the observation is a
 variational autoencoders are derived are typically used for problems involving
 image reconstruction and/or dimensionality reduction. They essentially perform
 a regression task whereby the autoencoder tries to predict its own given input
-(model the identity function) through a limited distilled version of the input 
-parameter space. An autoencoder is composed of two neural networks, an encoder and a decoder~\cite{LIOU20083150}. The encoder network takes as input an
+(model the identity function) through a limited distilled version of the input
+parameter space. An autoencoder is composed of two neural networks, an encoder
+and a decoder~\cite{LIOU20083150}. The encoder network takes as input an
 $n$-dimensional vector, where the number of dimensions is a fixed number
-predefined by the user. The encoder converts the input $n$-dimensional vector into a (typically) lower dimensional space, what is also known as the {\it{latent space}}. A
-representation of the data in the latent space is passed to the decoder network
-which generates a reconstruction of the original input data to the encoder
-network. Through training, we learn a how to efficiently represent 
-a dataset within a lower dimensional latent space which will take on the most important properties of our input training samples. When applying an autoencoder to some
-input data, one hopes that the data can be represented in a latent space
-smaller than the dimensionality of the input data.  In this way, the data can
-be compressed with little loss of fidelity. Training continues by passing 
-the learned latent space from the encoder to the decoder network, 
-whereby the decoder tries to predict the input data given initially 
-to the encoder network. The decoder then learns to decode or reconstruct the latent space back to its original form (the input data). 
+predefined by the user. The encoder converts the input $n$-dimensional vector
+into a (typically) lower dimensional space, what is also known as the
+{\it{latent space}}. A representation of the data in the latent space is passed
+to the decoder network which generates a reconstruction of the original input
+data to the encoder network. Through training, we learn a how to efficiently
+represent a dataset within a lower dimensional latent space which will take on
+the most important properties of our input training samples. When applying an
+autoencoder to some input data, one hopes that the data can be represented in a
+latent space smaller than the dimensionality of the input data.  In this way,
+the data can be compressed with little loss of fidelity. Training continues by
+passing the learned latent space from the encoder to the decoder network,
+whereby the decoder tries to predict the input data given initially to the
+encoder network. The decoder then learns to decode or reconstruct the latent
+space back to its original form (the input data). 
 
 %
 % What is a variational autoencoder?
@@ -297,7 +283,7 @@ to the encoder network. The decoder then learns to decode or reconstruct the lat
 A variational autoencoder ~\cite{1812.04405} is also composed of both an
 encoder and a decoder network. The primary difference between a variational
 autoencoder and an autoencoder concerns the method by which the latent space is
-produced. In our variant of the variational autoender, the first two central 
+produced. In our variant of the variational autoender, the first two central
 moments of the encoder output distribution are calculated ($\mu$). These are
 interpreted as parameters governing statistical distributions (in our case the
 means and variances of multivariant Gaussians). In proceeding to the decoder
@@ -501,6 +487,14 @@ simply repeating this procedure with the same input data many times over
 % RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% results - here you would outline the process of comparison between the
+% standard approach and the new one. Define training and test data and how Bilby
+% is run on all test data for comparison. How do we then train our network. How
+% do we then produce results on the test data. Here you refer to results plots
+% but try to not make conclusion statememnts (just descriptive). Also include the
+% speed analysis here.
+%
+%
 % Intro to the results - what are we trying to do?
 %
 We present results on $25$ \ac{GW} test waveforms using machine learning 
@@ -692,6 +686,15 @@ defined in the \texttt{Bilby} documentation \cite{1811.02042}.
 % CONCLUSIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% conclusions - now draw conclusions about the quality of the comparison
+% results. Highlight the current limitations but also highlight the importance of
+% this for the GW field (multi-detector is easy, additional parameters are easy,
+% longer datasets may be a challenge regarding GPU memory?, we don't have to
+% assume a noise model if we inject training data into real noise, we do rely on
+% well defined signal models, EM-follow up in very low latency, can we use
+% transfer learning if we want to retrain, ...) End with broader statements about
+% inference in other fields and how this is applicable across the sciences.
+%
 % recap and main result
 %
 We currently face a variety of challenges in 
@@ -789,6 +792,9 @@ No.~ST/~L000946/1) and the European Cooperation in Science and Technology
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % METHODS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% methods - Everything that we couldn't fit in. Mostly validation plots.
+%
 \section{Methods}
 %
 Put methods in here.  If you are going to subsection it, use
