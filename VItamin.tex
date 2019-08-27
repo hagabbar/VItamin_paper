@@ -36,6 +36,7 @@ floatfix,
 \usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{hyperref}
+%\usepackage{booktabs}
 
 \hypersetup{
 %--- fill inside borders ---
@@ -451,7 +452,7 @@ pre-trained decoder network. The decoder network returns a set of moments
 $\mu^{x}_1$ which describe a multivariate Gaussian distribution in the physical
 parameter space.
 %
-\item We then draw a random $x$ realisation from that ditribution. 
+\item We then draw a random $x$ realisation from that distribution. 
 %
 \end{itemize}
 %
@@ -473,160 +474,176 @@ procedure with the same input data (see Eq.~\ref{eq:latent_model}).
 %
 % Intro to the results - what are we trying to do?
 %
-We present results on $25$ \ac{GW} test waveforms using machine learning 
-(\ac{CVAE}s). Posteriors produced by the \texttt{Bilby} inference library~\cite{1811.02042} are used as a benchmark 
-in order to asses the efficiency and quality of our machine learning approach 
-with the existing most optimal method for posterior sampling. We apply a prior on both component masses which ranges from $35 - 50$
-solar masses, a phase prior from $0 - 2\pi$, a distance prior from  $1\textrm{Gpc} - 3\textrm{Gpc}$, and a time of coalesence prior from
-from $-0.1$---$0.1$s. The parameters we are not interested in estimating are all fixed (except for phase). we use waveforms that have a duration of 1 second, sampling frequency
-of 256Hz, fixed sky position (right ascension ($\alpha$), declination ($\delta$)), inclination angle ($\theta_j$), polarization angle ($\psi$) and a spin of zero. We allow 5 parameters to vary: component masses $m_1$ and $m_2$, luminosity
-distance, time of coalescence and phase, where phase is marginalized
-out. It should be noted that nuisance parameters can (if desired) be 
-marginalized out in the machine learning training procedure itself, rather 
-than after training. \texttt{Bilby} on the other hand must explore the initial 
-phase space when performing full inference. The waveform
-model ($h$) used is
+We present results on $25$\chris{this number needs to be bigger, maybe 10 times
+bigger} \ac{GW} test waveforms in simulated advanced detector noise and compare
+between the existing Bayesian approaches and the \ac{CVAE}. Posteriors produced
+by the \texttt{Bilby} inference library~\cite{1811.02042} are used as a
+benchmark in order to assess the efficiency and quality of our machine learning
+approach with the existing most optimal method for posterior sampling.
+
+%
+% describe the Bilby analysis 
+%
+For the benchmark analysis we assume that 5 parameters are unknown and use a
+uniform prior on both black hole masses $m_1$ and $m_2$, which we allow to
+range from $35$---$50$ solar masses, a uniform phase ($\phi_0$) prior spanning
+$0$---$2\pi$ radians, a uniform distance ($d_{\text{L}})$ prior~\chris{we might
+want to change this to be a $d$-squared prior to demonstrate the application of
+priors in the VItamin training stage.} from $1$---$3$~Gpc, and a time of
+coalescence ($t_{\text{c}}$) prior ranging from
+$0.7$---$0.9$~seconds~\chris{please verify and change these numbers} from the
+start of the segment. The remainder of the parameters (sky position, binary
+inclination angle, polarisation angle, and black hole spins) are all fixed at
+constant values. We use timeseries durations of $1$~second with a sampling
+frequency of $256$~Hz and the waveform model used is
 \texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
-20Hz. \ac{CVAE} posterior results are produced by passing our $25$ \ac{GW} 
-waveforms as input to a pre-trained \ac{CVAE} decoder and sampling until we have 
-generated $\sim5000$ posterior samples per parameter, per \ac{GW} signal 
-\texttt{Bilby} is passed the same $25$ \ac{GW} test waveforms and we randomly sample $\sim5000$ samples from \texttt{Bilby} posteriors to be used as our benchmark.
-
+20Hz. For each input test waveform we run the benchmark analysis using multiple
+sampling algorithms available within \texttt{Bilby} and for each algorithm we
+run twice with different sampling random seeds. For each run and sampler we
+extract $5000$ samples from the posterior on the 5 physical parameters.  
 
 %
-% discuss codebase which we use to generate waveforms, sampling frequency, and
-% parameter space
+% the VItamin process
 %
+The \ac{CVAE} training process used as input $10^{6}$ waveforms corresponding
+to parameters drawn from the same priors as assumed for the benchmark analysis.
+The waveforms are also of identical duration, sampling frequency, and waveform
+model and when each waveform is placed within a training batch it is given a
+unique detector noise realisation. The data are then whitened using the same
+advanced detector \ac{PSD} from which the simulated noise is generated. The
+\ac{CVAE} posterior results are produced by passing our $N?$ whitened noisy
+testing set of \ac{GW} waveforms as input into the testing path of the
+pre-trained \ac{CVAE}. For each input waveform we sample until we have
+generated $5000$ posterior samples on 4 physical parameters
+($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of the full
+5-dimensional space to demonstrate that nuisance parameters (such as $\phi_0$) 
+can (if desired) be marginalized out within the \ac{CVAE} procedure
+itself, rather than after training. 
+
+%
+% 1-D overlap results
+%
+\begin{figure*}
+    \includegraphics[width=\textwidth]{images/corner_testcase0.png}
+    \caption{\label{fig:corner_plot} Corner plot showing 2 and 1-dimensional
+marginalised posterior distributions for one example test dataset. Filled (red)
+contours represent the posteriors obtained form the \ac{CVAE} approach and
+solid (blue) contours are the posteriors output from our benchmark analysis
+(\texttt{Bilby} using the dynesty sampler). In each case the contour boundaries
+enclose $68,90$ and $95\%$ probability. One dimensional histograms of the
+posterior distribution for each parameter from both methods are plotted along
+the diagonal. Blue and red vertical lines represent the $5$---$95\%$
+non-symmetric confidence bounds for \texttt{Bilby} and variational inference
+respectively. Black crosses and vertical lines denote the true parameter values
+of the simulated signal.~\chris{Can you try to use the white space in the top
+corner to show the original whitened timeseries for this test data?}} 
+\end{figure*}
+
+%
+% discuss the corner plot results
+%
+We can imediately illustrate the accuracy of our machine learning predictions
+by directly plotting posteriors (generated using the samples) generated by our
+\ac{CVAE} and \texttt{Bilby} approaches superimposed on each other. We show
+this for one example test dataset in Fig.~\ref{fig:corner_plot}, where the
+strong agreement between both \texttt{Bilby} and the \ac{CVAE} can be clearly
+seen. We provide additional test case example corner plots in the
+methods section. \hunter{Add more corner plots in methods
+section}~\chris{Maybe, but more corner plots aren't going to convince people.
+We need to agregate the results into a single figure somehow (like the KL
+values). I think something based on the 1-D intervals would be nice.}
 
 %
 % K-L divergence results
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/hist-kl.png}
-    \caption{\label{fig:kl_results} We plot the KL divergence values 
-    of three independent samplers against each other over the same 25 \ac{GW} 
-    test waveforms. Divergence are computing by comparing posterior 
-    distributions between independent sampler posteriors. The posterior 
-    is computed for each of the 25 \ac{GW} waveforms using every sampler 
-    twice. A multi-dimensional KL divergence is then computed 
-    between all samplers 
-    with every other sampler (including themselves) over all 25 \ac{GW} 
-    test cases. The resulting KL divergence values are 
-    then plotted as overlapping histograms 
-    above, with each color demonstrating a different sampler combination. 
-    Both the y and x axis are log scaled for readability.}
+    \caption{\label{fig:kl_results} We plot the KL-divergence values of
+three~\chris{update this with more samplers} independent samplers against each
+other over the same $N?$ \ac{GW} test waveforms. Posterior samples are computed
+for each of the $N?$ \ac{GW} waveforms using each sampler twice. A KL
+divergence is then computed between all samplers with every other sampler
+(including themselves) over all 25 \ac{GW} test cases. The distributions of the
+resulting KL divergence values are then plotted, with each color representing a
+different sampler combination. Both the $x$ and $y$ axes are scaled
+logarithmically for readability.} 
 \end{figure}
 %
-In Fig. \ref{fig:kl_results} we show histograms of \ac{KL} divergence values 
-using $25$ test GW samples and three independent samplers (\ac{CVAE}, 
-\texttt{dynesty}, \texttt{emcee}). Each independent sampler is run twice 
-on the same test set to produce a set of posteriors. We compute the KL divergence of each sampler with itself and all other samplers over 25 
-\ac{GW} test samples. Results are binned in a histogram with each color 
-denoting sampler combinations.
 
 %
-% AD results
+% discuss the KL results
 %
-%\begin{figure}
-%    \includegraphics[width=\columnwidth]{images/hist-ad_0.png}
-%    \caption{\label{fig:ad_results} Histograms of 25 different test GW signal
-%Anderson-Darling (AD) statistic component mass 1 values. Distributions which
-%are similar will have AD values which are close to 0.  Red denotes predictions
-%from the \ac{CVAE} and blue denotes predictions from
-%\texttt{Bilby}.~\chris{Please see the suggested changes in
-%Fig.~\ref{fig:kl_results} and apply the same here. Results wise this doesn't
-%look too bad and a bit more tuning might get everything to overlap in a nicer
-%looking way. Also, the x-axis label is wrong.}}
-%\end{figure}
-%
-%In Fig.~\ref{fig:ad_results} we show histograms of \ac{AD} statistic results
-%computed over $100$ iterations per test sample.  The \ac{AD} statistic is a
-%1-dimensional figure of merit, so Fig.~\ref{fig:ad_results} only illustrate
-%results from predictions on $m_1$ here as an example, but provide results from other parameters in the methods section.~\hunter{attach other plots.} The closer \ac{AD} statistic values are to zero, the more
-%likely that the two sets of samples being compared are drawn from the same
-%distribution. As can be seen in Fig.~\ref{fig:ad_results} there is
-%some overlap between the machine learning predictions and our benchmark
-%\texttt{Bilby} results.~\chris{hopefully if/when we improve the results the AD,
-%KL, and KS statsistics will all be reasonably overlapping and we can say a bit
-%more about it.}
+Each independent sampler (including \ac{CVAE}) is run twice on the same test
+data to produce samples from the corresponding posterior. We then compute the
+KL-divergence between output distributions from each sampler with itself and
+each sampler with all other samplers. For distributions that are identical the
+KL-divergence is equal to zero but since we are representing our posterior
+distributions using finite numbers of samples, identical distributions should
+result in KL-divergence values $<1$. In Fig.~\ref{fig:kl_results} we show the
+distributions of these KL-divergences for the $N?$ test \ac{GW} samples where
+we see that samplers compared with themselves produce KL values that are
+generally $<1$ with the exception of the Emcee sampler. More importantly we see
+that the \ac{CVAE} approach when compared to the existing samplers have KL
+values that match the values produced when comparing between 2 different
+existing samplers.~\chris{we really need to tidy up this part of the analysis
+and look at more samplers.} 
 
 %
 % P-P plot
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/latest_pp_plot.png}
-    \caption{\label{fig:pp_plot} P-P plot using $25$ unique test samples and
-$5000$ posterior sample predictions per test sample.  The x-axis denotes the
-theoretical cumulative distribution whereas the y-axis denotes the predicted
-cumulative distribution.~\chris{we might have to work on the description of
-the axes - maybe use the same notation that has been used in the GW PE papers
-that include p-p plots. Obviously this plot is quite worrying but I can't see
-why you get these results looking at the test data posterior comparison. Can
-you please check the p-p plot code - you should run it on the Bilby samples as
-a reference anyway. To make the plot more interesting you could also plot
-curves from each of the different bilby samplers (since you'll have to run
-those anyway). Also, try to make the plot square - there is supposed to be a
-symmetry between the axes.}} 
+    \caption{\label{fig:pp_plot} P-P plot (defined in the main text) using $N?$
+unique test samples and $5000$ posterior sample predictions per test sample.
+The $x$-axis denotes the theoretical cumulative distribution whereas the y-axis
+denotes the predicted cumulative distribution.~\chris{we might have to work on
+the description of the axes - maybe use the same notation that has been used in
+the GW PE papers that include p-p plots. Obviously this plot is quite worrying
+but I can't see why you get these results looking at the test data posterior
+comparison. Can you please check the p-p plot code - you should run it on the
+Bilby samples as a reference anyway. To make the plot more interesting you
+could also plot curves from each of the different bilby samplers (since you'll
+have to run those anyway). Also, try to make the plot square - there is
+supposed to be a symmetry between the axes.}}
 \end{figure}
 %
-In order to show that our results are consistent with the truth, we have
+
+%
+% discuss pp plot result
+%
+\chris{You need to better describe what a P-P plot is and why we use it. Maybe
+throw in a reference to existing PE group papers that use it. Nature readers
+will have never seen one before. We also have to wait until we get better P-P
+plot curves for our approach before we warrant adding it to the paper.} In
+order to show that our results are consistent with the truth, we have
 additionally plotted probability-probability (p-p) plots in
 Fig.~\ref{fig:pp_plot}. On the y axis is plotted the predicted cumulative
 distribution and on the x axis is plotted the theoretical distribution.
-Predictions from the \ac{CVAE} consistent with the black dashed diagonal 
-line is indicative that the Bayesian probability distributions are 
-consistent with the frequentest interpretation - that the truth will 
-lie inside the $X\%$ probability contour with a frequency of $X\%$ of the time.  We plot empirical results as those represented in the blue line.~\chris{as mentioned in the figure caption comments, please add p-p plot
-curves for the other samplers run on the same test data.} 
+Predictions from the \ac{CVAE} consistent with the black dashed diagonal line
+is indicative that the Bayesian probability distributions are consistent with
+the frequentest interpretation - that the truth will lie inside the $X\%$
+probability contour with a frequency of $X\%$ of the time.  We plot empirical
+results as those represented in the blue line.~\chris{as mentioned in the
+figure caption comments, please add p-p plot curves for the other samplers run
+on the same test data.} 
 
 %
-% 1-D overlap results
+% discuss the speed of the analysis
 %
-\begin{figure}
-    \includegraphics[width=\columnwidth]{images/corner_testcase0.png}
-    \caption{\label{fig:corner_plot} Plotted above is a corner plot illustrating the 
-    overlap between posteriors from our benchmark (\texttt{Bilby}) and predictions 
-    from our machine learning approach. We plot samples from the posterior of each 
-    parameter against all other parameters for one \ac{GW} test case. One dimensional 
-    histograms of the posterior distribution for each parameter from both methods 
-    are plotted along the diagonal. Blue and red vertical lines represent the 
-    $5 - 95\%$ confidence bounds for \texttt{Bilby} and variational inference respectively, 
-    whereas the black vertical lines denote the truth.}
-\end{figure}
-%
-% 2D scatter plot
-%
-%\begin{figure}
-%    \includegraphics[width=\columnwidth]{images/posteriors_13.png}
-%\caption{\label{fig:lum_dist-t0_scatter} This figure illustrates 25 different
-%test GW samples with $5000$ posterior samples from both \texttt{Bilby} and our
-%CVAE plotted. Red denotes predictions from the CVAE and blue denotes
-%predictions from \texttt{Bilby}. Luminosity distance is plotted as a function
-%of time of coalescence with 4-dimensional overlap values printed in the upper
-%right-hand portion of each subplot.\chris{see Fig.~\ref{fig:1D_overlap} caption
-%for comments}}
-%\end{figure}
-%
-We can further illustrate the accuracy of our machine learning predictions by
-directly plotting the samples generated by our CVAE and \texttt{Bilby}
-superimposed on each other.  In Fig. \ref{fig:corner_plot}, we plot
-predictions sampled from the posterior through both \texttt{Bilby} (blue) and
-our CVAE (red) for one \ac{GW} test case.  As can be clearly seen, the overlap between both
-\texttt{Bilby} and the \ac{CVAE} is extremely high. We provide additional test case example 
-corner plots in the methods section. \hunter{Add more corner plots in methods section}
-
-The speed at which posterior samples are generated over all samplers used, 
-including Vitamin, is shown in Table \ref{Tab:speed}. Run-time is 
-defined as the total time to produce $\sim 5000$ samples for each 
-sampler in seconds. It can be clearly seen that Vitamin produces 
-samples from the posterior at a rate which is $\sim 6 - 7$ times 
-faster than current inference techniques, a massive speed-up 
-in performance. It should be noted 
-that run-time for the Bayesian samplers is also dependent on 
-the choice of sampler hyperparameters, so total run-time may 
-vary according to hyperparameter configuration. We choose Bayesian sampler 
-hyperparameters based on standard the standard default configurations 
-defined in the \texttt{Bilby} documentation \cite{1811.02042}. 
+The speed at which posterior samples are generated over all samplers used,
+including Vitamin, is shown in Table~\ref{Tab:speed}. Run-time is defined as
+the total time to produce $\sim 5000$ samples for each sampler in seconds. It
+can be clearly seen that Vitamin produces samples from the posterior at a rate
+which is $\sim 6 - 7$ orders of magnitude faster than current inference
+techniques, representing a dramatic speed-up in performance. It should be noted
+that run-time for the Bayesian samplers is also dependent on the choice of
+sampler hyperparameters, so total run-time may vary according to hyperparameter
+configuration. We choose Bayesian sampler hyperparameters based on standard the
+standard default configurations defined in the \texttt{Bilby}
+documentation~\cite{1811.02042}~\chris{this is noce and should be used as our
+defence for all things regarding Bilby.}.~\chris{You need to add more about the
+time spent training our analysis just to cover our backs. We can't be seen to
+be hiding this. Also, we need to add more samplers to this list.} 
  
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
@@ -642,21 +659,22 @@ defined in the \texttt{Bilby} documentation \cite{1811.02042}.
 %
 % I feel the need, the need for speed, table
 % 
-\begin{table*}
- \begin{center}
-   \caption{This is a table which describes the run-times of 
-   various sampler methods.}
-   \begin{tabular}{ |c|c|c|c|c| }
-   \hline
-    & min(run-time) & max(run-time) & median(run-time) & Ratio \\ 
-   Dynesty & 553.9s & 1313.4s & 935.8s & 1.3e-6 \\ 
-   Emcee & 1642.0s & 4040.1s & 3235.4s & 3.7e-7 \\
-   Vitamin & 1.2e-3s & 1.2e-3s & 1.2e-3s & 1.0 \\ 
-   \hline
-  \end{tabular}
-  \label{Tab:speed}
- \end{center}
-\end{table*}
+\begin{table}
+\centering
+\caption{Durations required to produce $5000$ posterior samples from each of
+the different posterior sampling approaches}
+\begin{tabular}[t]{lcccc}
+\toprule
+& & run time (sec) & & \\
+& min & max & median & Ratio \\
+\hline
+Dynesty & 553.9 & 1313.4 & 935.8 & $1.3\times 10^{-6}$ \\
+Emcee & 1642.0 & 4040.1 & 3235.4 & $3.7\times 10^{-7}$ \\
+VItamin & - & - & $1.2\times 10^{-3}$ & 1.0 \\
+\botrule
+\end{tabular}
+\label{Tab:speed}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONCLUSIONS
