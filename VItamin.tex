@@ -93,6 +93,7 @@ autoencoders for gravitational-wave astronomy}
 \acrodef{AD}[AD]{Anderson-Darling}
 \acrodef{KS}[KS]{Kolmogorov-Smirnoff}
 \acrodef{KL}[KL]{Kullback–Leibler}
+\acrodef{GPU}[GPU]{graphics processing unit}
 
 %
 % Introductory paragraph describing the content of the letter
@@ -116,7 +117,7 @@ PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of the global
 network of gravitational wave detectors increases, we will observe
 $\mathcal{O}(100)$s of transient \ac{GW} events per year~\cite{1409.7215}. For
 each of these events the current methods used to estimate their source
-parameters employ conputationally costly Bayesian inference
+parameters employ computationally costly Bayesian inference
 approaches~\cite{1409.7215}.
 %
 % rationale
@@ -126,8 +127,8 @@ estimation~\cite{Searle_paper}. However, when applied to timeseries containing
 a single \ac{BBH} event sampled at 4kHz, existing \ac{GW} analyses can take
 $\mathcal{O}(1.5\times 10^{5} - 1.7\times 10^{6}\:\textrm{seconds})$ to
 complete~\cite{1409.7215}. For \ac{BNS} signals this timescale increases by at
-least an order of magnitude~\cite{BNS_paper?} and it is for this class of
-signal that counterpart \ac{EM} signatures are expected, containing criucial
+least an order of magnitude ~\cite{PhysRevLett.119.161101} and it is for this class of
+signal that counterpart \ac{EM} signatures are expected, containing crucially
 Gamma and X-ray information on timescales of 1 second -- 1 minute. The \ac{GW}
 community strives towards alerting their \ac{EM} follow-up partners in a timely
 and efficient manner and the current fastest method for doing so,
@@ -243,7 +244,7 @@ inference~\cite{1512.00570}, high-resolution synthetic image
 generation~\cite{1612.00005} and the fitting of incomplete heterogeneous
 data~\cite{1807.03653}. It is this type of machine learning network that we
 utilize to accuratelly approximate the Bayesian posterior $p(x|y)$, which is
-known to be the optimal result~\cite{Searle}.
+known to be the optimal result ~\cite{0809.2809}.
 
 %
 % What is an autoencoder?
