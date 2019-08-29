@@ -225,10 +225,16 @@ $p(y)$, the probability of our data, known as the Bayesian evidence or the
 marginal likelihood. We typically ignore $p(y)$ since it is a constant and for
 parameter estimation purposes we are only interested in the shape of the
 posterior.
- 
-\chris{We require a paragraph more specific on the existing techniques.
-Basically all the references wrapped up in some brief text about sampling. Not
-too long.}
+
+Due to the size of the parameter space typically encountered in \ac{GW} 
+parameter estimation and the large quantities of data used, we must 
+stochastically sample the parameter space in order to estimate 
+the posterior. Sampling is done using a 
+variety of techniques including nested sampling 
+\cite{cpnest,dynesty} and Markov chain Monte Carlo methods \cite{emcee,ptemcee}. The primary software tools used by the \ac{LIGO} 
+parameter estimation analysis are \texttt{LALInference} and 
+\texttt{Bilby} \cite{1409.7215,1811.02042}, which contain many 
+different sampling methods.  
   
 %
 % Intro to machine learning section
@@ -259,10 +265,9 @@ task whereby the autoencoder attempts to predict its own given input (model the
 identity function) through a limited and therefore distilled representation of
 the input parameter space. An autoencoder is composed of two neural networks,
 an encoder and a decoder~\cite{LIOU20083150}. The encoder network takes as
-input an $n$-dimensional~\chris{change terminalogy. We already have a 1-d time
-series which is also an n-d vector - confusing.} vector, where the number of
+input an vector, where the number of
 dimensions is a fixed number predefined by the user. The encoder converts the
-input $n$-dimensional vector into a (typically) lower dimensional space,
+input vector into a (typically) lower dimensional space,
 referred to as the {\it{latent space}}. A representation of the data in the
 latent space is passed to the decoder network which generates a reconstruction
 of the original input data to the encoder network. Through training, the two
@@ -270,7 +275,7 @@ sub-networks learn a how to efficiently represent a dataset within a lower
 dimensional latent space which will take on the most important properties of
 our input training data. In this way, the data can be compressed with little
 loss of fidelity. Additionally, the decoder simultaneously learns to decode the
-latent space representation and reconstuct that data back to its original form
+latent space representation and reconstruct that data back to its original form
 (the input data). 
 
 %
@@ -327,26 +332,20 @@ each stage of training.
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
     \caption{\label{fig:network_config} This figure illustrates our neural
-network training/testing operations. During training, a training set of noisy
+network training/testing operations. During training (left-hand side), 
+a training set of noisy
 \ac{GW} signals ($y$) and their corresponding true parameters ($x$) are given
-as input to encoder networks $\textrm{E}_1$ and $\textrm{E}_2$~\chris{E1
-doesn't get both as input}. The K-L divergence (Eq.~\ref{eq:kl}) is computed
-between the moments of latent space representations ($\mu^{j}_{1},\mu^{j}_{2}$)
-of the respective input data to both encoder networks. We then sample from a
-multivariate Gaussian whose mean and variances are defined by $\mu^{j}_{2}$.
-These samples are given as input to the decoder network. We take the first two
+as input to encoder network $\textrm{E}_2$, while only $y$ is 
+given to $\textrm{E}_1$. The K-L divergence (Eq.~\ref{eq:kl}) is computed
+between the moments of latent space representations. We then sample from a
+multivariate Gaussian whose mean and variances are defined by $\mu^{j}_{2}$, 
+which is given as input to the decoder network. We take the first two
 moments $\mu^{j}_x$ of the predictions from the decoder network, along with our
 training parameters $x$ and compute a cost function Eq. \ref{eq:cost}. After
-having trained our networks, we test using only $\textrm{E}_1$ and the decoder.
-Using the $\textrm{E}_1$ encoder (which is similar to $\textrm{E}_2$ but uses
-only $y$ data input) latent space predictions are given to the decoder which
-returns an output. This output represents the parameters of the
-mult-dimensional Gaussian function that describes the likelihood/posterior and
-so we simply sample from it. We then have a generated set of posterior
-samples.~\chris{OK, I might have changed my mind on this caption. Since it's
-important and we do describe it in detail in the text then maybe the caption
-can be made more concise. Whatever happens, it should also seperately refer to
-both left and right parts of the figure.}} 
+having trained our networks, we test (right-hand side) using only $\textrm{E}_1$ and the decoder.
+The decoder returns a multi-dimensional Gaussian function that describes 
+the likelihood/posterior and so we simply sample from it. A more 
+detailed description of the network can be found in the letter text.} 
 \end{figure}
 
 %
@@ -402,10 +401,8 @@ The losses computed from the K-L divergence and the cost function are summed
 and then back-propagated through all three networks (E1, E2, and D).  As is
 standard practice in machine learning applications, the loss is computed over a
 batch of training samples and repeated for a pre-defined number of iterations.
-For our purposes, we found that $\sim3\textrm{e}6$~\chris{OK, I'm leaving this
-example here as a reference. We do not want to have numerical notation of
-floating point numbers anywhere in any paper. Never do 1e6, always do $2\times
-10^6$} training iterations, a batch size of $128$ training samples and a
+For our purposes, we found that $\sim3\times10^6$ training iterations, 
+a batch size of $128$ training samples and a
 learning rate of $10^{-4}$ was sufficient. We used a total of $10^6$ training
 samples in order to adequately cover the \ac{BBH} parameter space.  We
 additionally ensure that an (effectively) infinite number of noise realizations
@@ -439,10 +436,12 @@ Fig.~\ref{fig:network_config}. Given a new $y$ data sample (not taken from the
 training set) we simply input this into the encoder $\textrm{E}_1$ from which
 we obtain a single value of $\mu_{1}$ describing a distribution (conditional on
 the data $y$) in the latent space. We then repeat the following 3 steps to
-obtain new samples from the posterior~\chris{Hunter, note that we only need to
-do the first pass through E1 only once for a given peice of data do the real
-cost is only in the other steps. This will likely only change the timing by
-~25\% so it might not be worth doing the tests again. Just bear it in mind.}
+obtain new samples from the posterior
+
+%~\chris{Hunter, note that we only need to
+%do the first pass through E1 only once for a given peice of data do the real
+%cost is only in the other steps. This will likely only change the timing by
+%~25\% so it might not be worth doing the tests again. Just bear it in mind.}
 %
 \begin{itemize}
 %
@@ -490,9 +489,9 @@ uniform prior on both black hole masses $m_1$ and $m_2$, which we allow to
 range from $35$---$50$ solar masses, a uniform phase ($\phi_0$) prior spanning
 $0$---$2\pi$ radians, a uniform distance ($d_{\text{L}})$ prior~\chris{we might
 want to change this to be a $d$-squared prior to demonstrate the application of
-priors in the VItamin training stage.} from $1$---$3$~Gpc, and a time of
+priors in the \texttt{VItamin} training stage.} from $1$---$3$~Gpc, and a time of
 coalescence ($t_{\text{c}}$) prior ranging from
-$0.7$---$0.9$~seconds~\chris{please verify and change these numbers} from the
+$0.65$---$0.85$~seconds from the
 start of the segment. The remainder of the parameters (sky position, binary
 inclination angle, polarisation angle, and black hole spins) are all fixed at
 constant values. We use timeseries durations of $1$~second with a sampling
@@ -632,19 +631,17 @@ on the same test data.}
 % discuss the speed of the analysis
 %
 The speed at which posterior samples are generated over all samplers used,
-including Vitamin, is shown in Table~\ref{Tab:speed}. Run-time is defined as
-the total time to produce $\sim 5000$ samples for each sampler in seconds. It
-can be clearly seen that Vitamin produces samples from the posterior at a rate
-which is $\sim 6 - 7$ orders of magnitude faster than current inference
+including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is defined as
+the total time to produce $\sim 5000$ samples for each sampler in seconds.
+The major computational cost of running \texttt{VItamin} lies in the training time, which can 
+take of order several hours to complete. However, once trained there is no need to 
+retrain the network and may be run on any new signal which is consistent with 
+the prior. It can be clearly seen that \texttt{VItamin} produces samples from the posterior at a rate which is $\sim 6 - 7$ orders of magnitude faster than current inference
 techniques, representing a dramatic speed-up in performance. It should be noted
 that run-time for the Bayesian samplers is also dependent on the choice of
 sampler hyperparameters, so total run-time may vary according to hyperparameter
-configuration. We choose Bayesian sampler hyperparameters based on standard the
-standard default configurations defined in the \texttt{Bilby}
-documentation~\cite{1811.02042}~\chris{this is noce and should be used as our
-defence for all things regarding Bilby.}.~\chris{You need to add more about the
-time spent training our analysis just to cover our backs. We can't be seen to
-be hiding this. Also, we need to add more samplers to this list.} 
+configuration. We choose Bayesian sampler hyperparameters based on standard default configurations defined in the \texttt{Bilby}
+documentation~\cite{1811.02042}.~\chris{Also, we need to add more samplers to this list.} 
  
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
