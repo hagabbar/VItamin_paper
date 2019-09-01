@@ -474,8 +474,7 @@ procedure with the same input data (see Eq.~\ref{eq:latent_model}).
 %
 % Intro to the results - what are we trying to do?
 %
-We present results on $25$\chris{this number needs to be bigger, maybe 10 times
-bigger} \ac{GW} test waveforms in simulated advanced detector noise and compare
+We present results on $256$ \ac{GW} test waveforms in simulated advanced detector noise and compare
 between the existing Bayesian approaches and the \ac{CVAE}. Posteriors produced
 by the \texttt{Bilby} inference library~\cite{1811.02042} are used as a
 benchmark in order to assess the efficiency and quality of our machine learning
@@ -511,7 +510,7 @@ The waveforms are also of identical duration, sampling frequency, and waveform
 model and when each waveform is placed within a training batch it is given a
 unique detector noise realisation. The data are then whitened using the same
 advanced detector \ac{PSD} from which the simulated noise is generated. The
-\ac{CVAE} posterior results are produced by passing our $N?$ whitened noisy
+\ac{CVAE} posterior results are produced by passing our 256 whitened noisy
 testing set of \ac{GW} waveforms as input into the testing path of the
 pre-trained \ac{CVAE}. For each input waveform we sample until we have
 generated $5000$ posterior samples on 4 physical parameters
@@ -559,11 +558,11 @@ values). I think something based on the 1-D intervals would be nice.}
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/hist-kl.png}
     \caption{\label{fig:kl_results} We plot the KL-divergence values of
-three~\chris{update this with more samplers} independent samplers against each
-other over the same $N?$ \ac{GW} test waveforms. Posterior samples are computed
-for each of the $N?$ \ac{GW} waveforms using each sampler twice. A KL
+five independent samplers against each
+other over the same 256 \ac{GW} test waveforms. Posterior samples are computed
+for each of the 256 \ac{GW} waveforms using each sampler twice. A KL
 divergence is then computed between all samplers with every other sampler
-(including themselves) over all 25 \ac{GW} test cases. The distributions of the
+(including themselves) over all 256 \ac{GW} test cases. The distributions of the
 resulting KL divergence values are then plotted, with each color representing a
 different sampler combination. Both the $x$ and $y$ axes are scaled
 logarithmically for readability.} 
@@ -580,20 +579,19 @@ each sampler with all other samplers. For distributions that are identical the
 KL-divergence is equal to zero but since we are representing our posterior
 distributions using finite numbers of samples, identical distributions should
 result in KL-divergence values $<1$. In Fig.~\ref{fig:kl_results} we show the
-distributions of these KL-divergences for the $N?$ test \ac{GW} samples where
+distributions of these KL-divergences for the 256 test \ac{GW} samples where
 we see that samplers compared with themselves produce KL values that are
 generally $<1$ with the exception of the Emcee sampler. More importantly we see
 that the \ac{CVAE} approach when compared to the existing samplers have KL
 values that match the values produced when comparing between 2 different
-existing samplers.~\chris{we really need to tidy up this part of the analysis
-and look at more samplers.} 
+existing samplers.
 
 %
 % P-P plot
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/latest_pp_plot.png}
-    \caption{\label{fig:pp_plot} P-P plot (defined in the main text) using $N?$
+    \caption{\label{fig:pp_plot} P-P plot (defined in the main text) using 256
 unique test samples and $5000$ posterior sample predictions per test sample.
 The $x$-axis denotes the theoretical cumulative distribution whereas the y-axis
 denotes the predicted cumulative distribution.~\chris{we might have to work on
@@ -623,9 +621,7 @@ Predictions from the \ac{CVAE} consistent with the black dashed diagonal line
 is indicative that the Bayesian probability distributions are consistent with
 the frequentest interpretation - that the truth will lie inside the $X\%$
 probability contour with a frequency of $X\%$ of the time.  We plot empirical
-results as those represented in the blue line.~\chris{as mentioned in the
-figure caption comments, please add p-p plot curves for the other samplers run
-on the same test data.} 
+results as those represented in the blue line. 
 
 %
 % discuss the speed of the analysis
@@ -641,7 +637,7 @@ techniques, representing a dramatic speed-up in performance. It should be noted
 that run-time for the Bayesian samplers is also dependent on the choice of
 sampler hyperparameters, so total run-time may vary according to hyperparameter
 configuration. We choose Bayesian sampler hyperparameters based on standard default configurations defined in the \texttt{Bilby}
-documentation~\cite{1811.02042}.~\chris{Also, we need to add more samplers to this list.} 
+documentation~\cite{1811.02042}. 
  
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
@@ -666,9 +662,11 @@ the different posterior sampling approaches}
 & & run time (sec) & & \\
 & min & max & median & Ratio \\
 \hline
-Dynesty & 553.9 & 1313.4 & 935.8 & $1.3\times 10^{-6}$ \\
-Emcee & 1642.0 & 4040.1 & 3235.4 & $3.7\times 10^{-7}$ \\
-VItamin & - & - & $1.2\times 10^{-3}$ & 1.0 \\
+Dynesty & 602.3 & 1537.8 & 773.6 & $2.6\times 10^{-6}$ \\
+Emcee & 2005.3 & 11926.5 & 4350.9 & $4.6\times 10^{-7}$ \\
+Ptemcee & 3353.9 & 12771.4 & 4981.5 & $4.0\times 10^{-7}$ \\
+Cpnest & 1430.7 & 5405.4 & 2286.9 & $8.8\times 10^{-7}$ \\
+VItamin & - & - & $2.0\times 10^{-3}$ & 1.0 \\
 \botrule
 \end{tabular}
 \label{Tab:speed}
