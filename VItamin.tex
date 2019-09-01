@@ -626,17 +626,24 @@ results as those represented in the blue line.
 %
 % discuss the speed of the analysis
 %
-The speed at which posterior samples are generated over all samplers used,
-including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is defined as
-the total time to produce $\sim 5000$ samples for each sampler in seconds.
-The major computational cost of running \texttt{VItamin} lies in the training time, which can 
-take of order several hours to complete. However, once trained there is no need to 
-retrain the network and may be run on any new signal which is consistent with 
-the prior. It can be clearly seen that \texttt{VItamin} produces samples from the posterior at a rate which is $\sim 6 - 7$ orders of magnitude faster than current inference
+The speed at which posterior samples are generated for all samplers used,
+including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is
+defined as the total time (in seconds) to produce $\sim 5000$ samples for each
+sampler. The dominating computational cost of running \texttt{VItamin} lies in
+the training time, which can take of order several hours to complete~\chris{Can
+we be more specific? Mention the type/class of GPU and the memory required}.
+However, once trained there is no need to retrain the network and it may be run
+on any new input data of the same format. Reliable posterior estimates can then
+be expected if the data contain signals whose true parameters lie within the
+prior space over which the network has been trained and whose noise
+characteristics are consistent with that used in training. For our test case of
+\ac{BBH} signals \texttt{VItamin} produces samples from the posterior at a rate
+which is $\sim 6$---$7$ orders of magnitude faster than current inference
 techniques, representing a dramatic speed-up in performance. It should be noted
 that run-time for the Bayesian samplers is also dependent on the choice of
-sampler hyperparameters, so total run-time may vary according to hyperparameter
-configuration. We choose Bayesian sampler hyperparameters based on standard default configurations defined in the \texttt{Bilby}
+sampler hyper-parameters, so total run-time may vary according to specific
+configuration choices. We choose Bayesian sampler hyper-parameters based on
+standard default configurations defined in the \texttt{Bilby}
 documentation~\cite{1811.02042}. 
  
 
@@ -661,12 +668,13 @@ the different posterior sampling approaches}
 \toprule
 & & run time (sec) & & \\
 & min & max & median & Ratio \\
+\hline\vspace{0.1cm}
+Dynesty & 602 & 1538 & 774 & $2.6\times 10^{-6}$ \\
+Emcee & 2006 & 11927 & 4351 & $4.6\times 10^{-7}$ \\
+Ptemcee & 3354 & 12771 & 4982 & $4.0\times 10^{-7}$ \\
+Cpnest & 1431 & 5405 & 2287 & $8.8\times 10^{-7}$ \\
 \hline
-Dynesty & 602.3 & 1537.8 & 773.6 & $2.6\times 10^{-6}$ \\
-Emcee & 2005.3 & 11926.5 & 4350.9 & $4.6\times 10^{-7}$ \\
-Ptemcee & 3353.9 & 12771.4 & 4981.5 & $4.0\times 10^{-7}$ \\
-Cpnest & 1430.7 & 5405.4 & 2286.9 & $8.8\times 10^{-7}$ \\
-VItamin & - & - & $2.0\times 10^{-3}$ & 1.0 \\
+VItamin & & $\bm{2.0\times 10^{-3}}$ & & 1.0 \\
 \botrule
 \end{tabular}
 \label{Tab:speed}
@@ -687,89 +695,102 @@ VItamin & - & - & $2.0\times 10^{-3}$ & 1.0 \\
 %
 % recap and main result
 %
-We currently face a variety of challenges in 
-parameter estimation for the \ac{GW} field. Some of those 
-challenges include accounting for glitches in the data, time-dependent 
-fluctuations in the power spectrum density, systematic uncertainties 
-in the waveform models themselves and decreasing the latency with 
-which parameter posterior estimates are produced \cite{1409.7215}. 
-In this letter we have demonstrated that we are able to
-reproduce, to a high degree of accuracy, posteriors probability distributions generated from Bayesian
-inference using machine learning. This is accomplished through the use of
-variational autoencoders trained on simulated \ac{GW} signals. By building a neural network model which,
-when trained, can reproduce the true posterior in less than a second,
-we have demonstrated that neural networks can achieve the same 
-quality of results as the trusted
-benchmark, Bayesian inference.
+There are currently a variety of challenges within the field of \ac{GW}
+parameter estimation including, and not limited to, accounting for detector
+artefacts (non-Gaussian transient "glitches") in the data, time-dependent
+variations (non-stationarity) of the detector noise power spectrum density,
+systematic uncertainties in the waveform models themselves and decreasing the
+latency with which parameter estimates are produced~\cite{1409.7215}. In this
+letter we have demonstrated that we are able to reproduce, to a high degree of
+accuracy, Bayesian posterior probability distributions generated through
+machine learning. This is accomplished using \acp{CVAE} trained on simulated
+\ac{GW} signals and does not require the input of precomputed posterior
+estimates. We have demonstrated that our neural network model which, when
+trained, can reproduce complete and accurate posterior estimates in
+$\mathcal{O}(1)$ milliscond, can achieve the same quality of results as the
+trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 
 %
 % discuss the near term CBC implications and why this is a game-changer
 %
-The significance of achieving similar results
-to Bayesian inference is most evident in the orders of magnitude increase in speed. This increase in speed will help the
-LIGO-Virgo-KAGRA collaboration alert our \ac{EM} follow-up partners with
-minimum latency. Improved low-latency alerts will be especially 
-pertinent for \ac{BNS} signals like GW170817 where we will be able 
-to catch prompt \ac{EM} emission on an even shorter time scale than 
-is currently done with tools such as Bayestar \cite{1508.03634}. 
-The estimated future detections for \ac{BNS} \hunter{ 
-give number} will swamp our current computational resources using 
-existing Bayesian methods. Our approach will provide (potentially) 
-full-parameter estimation on \ac{BBH}/{\ac{BNS}} signals in seconds 
-on a single GPU. Our trained pipeline is also incredibly modular, with 
-one saved network and a small script to feed in new data, 
-any user may produce results. Our analysis assumes a flat prior and our 
-trains a machine learning box to essentially produce samples 
-from the likelihood. Users may then have the unique ability to 
-resample from the posterior according to their own prior choices. Our 
-method may also be useful for population studies since populations 
-may now be generated and analysed in a full-Bayesian manner on a smaller 
-time scale. 
+The significance of our results is most evident in the orders of magnitude
+increase in speed over existing approaches. This increase will help the
+LIGO-Virgo collaboration alert \ac{EM} follow-up partners with minimum latency.
+Improved low-latency alerts will be especially pertinent for signals from
+\ac{BNS}, like GW170817~\chris{give reference}, and \ac{NSBH} signals where we
+parameter estimation will no longer be limiting factor\footnote{The complete
+low-latency pipeline includes a number of steps. The process of \ac{GW} data
+aquisition is followed by the transfer of data. There is then the corresponding
+analysis and the subsequent communication of results to the \ac{EM} astronomy
+community after which there are physical aspects such as slewing observing
+instruments to the correct pointing.} in observing the prompt \ac{EM} emission
+expected on shorter time scales than is acheivable with existing \ac{LVC}
+analysis tools such as Bayestar~\cite{1508.03634}. The predicted number of
+future detections of \ac{BNS} mergers~\hunter{ give number} will severely
+strain the \ac{GW} cummunity's current computational resources using existing
+Bayesian methods. Our approach will provide (potentially) full-parameter
+estimation on \ac{CBC} signals in seconds on a single \ac{GPU}. Our trained
+network is also incredibly modular, and can be shared and used easily by any
+user to produce results. The specific analysis described in the letter assumes
+a uniform prior on the signal parameters but this is a choice and the network
+can be trained with any prior the user demands. However, posterior samples
+obtained using a network trained on the uniform prior are essentially samples
+from the likelihood. Users then have the option to (cheaply) resample from the
+posterior according to their own prior choices. We also note that our method
+will be invaluable for population studies since populations may now be
+generated and analysed in a full-Bayesian manner on a vastly reduced and
+therefore tractable time scale. 
 
 %
 % future work, current limitations and prospects
 %
-We choose to use a sampling rate of 256Hz largely in order to 
-decrease the time required to train our machine learning model. 
-There is no general reason why our method 
-should not work at larger sampling frequencies other than an 
-increased amount of time to train and a larger 
-number of GPUs required for memory consumption. The mass parameter space is limited 
-to high mass signals, due to the loss of information on low mass 
-signals at the low sampling frequency which we employ. Future work 
-may also incorporate a multi-detector configuration by simply stacking 
-1-dimensional time series vectors from multiple detector in one array 
-per signal. We elected not to use a multi-detector configuration so 
-that we may use relatively small datasets when training.
+\ac{GW} data is typically sampled at 16kHz and downsampled to more managable
+rates dependent on the signal class being analysed. For \ac{BBH} signals this
+is usually chosen as $1$---$4$ KHz dependent upon mass of binary wheras we have
+chosen to use the noticably low sampling rate of 256Hz largely in order to
+decrease the computational time required to develop our approach. We do not
+anticipate any problems in extending our analysis to higher sampling
+frequencies other than an increase in training time and a larger burden on the
+\ac{GPU} memory. The lower sampling rate naturally limited our chosen \ac{BBH}
+mass parameter space to high mass signals. We similarly do not anticipate that
+extending the parameter space to lower masses will lead to problems but do
+expect that a larger number of training samples may be required. Future work
+will incorporate a multi-detector configuration at which point parameter
+estimation can be extended to sky localisation. In this work we have elected to
+use a single detector configuration so that we may again decrease the
+computational time required to develop the approach.
 
-In reality, the detectors are also affected by non-Gaussian noise. 
-To account for non-Gaussian noise, we would accordingly train our model using real noise from the detectors. Our method has the added 
-advantage of not being dependent on choice of whitening, whereas 
-current Bayesian methods are dependent on the whitening procedure. 
-Our work can further be expanded upon by including a variety of
-other \ac{GW} sources such as Neutron star - black hole and \ac{BNS} mergers at higher
-sampling frequencies. We have yet to demonstrate the effectiveness of our method
-on additional parameters such as sky location and inclination angle, the
-benefits of which would be best realized in an end-to-end inference pipeline.
-Such a pipeline would be of great importance as the detectors increase up to
-their full potential design sensitivities. Given the abundant 
-benefits of this method, we imagine a variant of 
-this of pipeline will form the basis for all \ac{GW} parameter 
-estimation over the next several decades to come.
+%
+% Non gaussian noise and the final statement
+%
+In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts. To
+account for this noise within our scheme, we would train our network using
+samples of real detector noise (preferably recent examples to best reflect the
+state of the detectors). Our method has the added advantage of not being
+dependent on the choice of \ac{PSD} used for whitening, unlike current Bayesian
+methods. The whitening procedure applied to the training data for the \a{CVAE}
+is simply to rescale the input to a scale more suitable to neural networks
+whereas for existing methods assumptions on the \ac{PSD} directly affect the
+posterior results. Our work can naturally be expanded to include the full range
+of \ac{CBC} signal types but also to any and all other parameterised \ac{GW}
+signals and to analyses of \ac{GW} data beyond that of ground based
+experiments. Given the abundant benefits of this method, we hope that a variant
+of this of approach will form the basis for all \ac{GW} parameter estimation
+over the next several decades to come.
 
 %
 % acknowledge people and funding agencies
 %
 \section{Acknowledgements.}
 %
-We would like to acknowledge valuable input from the LIGO-Virgo Collaboration
-specifically from {\textbf{someone}}, and the parameter estimation and
-machine-learning working groups. We thank Nvidia for the generous 
-donation of a Tesla V-100 GPU. The authors also gratefully acknowledge the
-Science and Technology Facilities Council of the United Kingdom. CM and SH are
-supported by the Science and Technology Research Council (grant
-No.~ST/~L000946/1) and the European Cooperation in Science and Technology
-(COST) action CA17137.
+We would like to acknowledge valuable input from the LIGO-Virgo Collaboration,
+specifically from the parameter estimation and machine-learning working groups.
+We thank Nvidia for the generous donation of a Tesla V-100 GPU used in addition
+to \ac{LVC} computational resources. The authors also gratefully
+acknowledge the Science and Technology Facilities Council of the United
+Kingdom. CM and SH are supported by the Science and Technology Research Council
+(grant No.~ST/~L000946/1) and the European Cooperation in Science and
+Technology (COST) action CA17137.
 
 %% Here is the endmatter stuff: Supplementary Info, etc.
 %% Use \item's to separate, default label is "Acknowledgements"
