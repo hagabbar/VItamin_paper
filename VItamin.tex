@@ -83,6 +83,7 @@ autoencoders for gravitational-wave astronomy}
 \acrodef{BBH}[BBH]{binary black hole}
 \acrodef{EM}[EM]{electromagnetic}
 \acrodef{BNS}[BNS]{binary neutron star}
+\acrodef{NSBH}[NSBH]{neutron star black hole}
 \acrodef{SNR}[SNR]{signal-to-noise ratio}
 \acrodef{PSD}[PSD]{power spectral density}
 \acrodef{FFT}[FFT]{fast Fourier transform}
@@ -111,49 +112,38 @@ autoencoders for gravitational-wave astronomy}
 %
 % background
 %
-With the beginning of the \ac{LIGO} and Virgo's third observation run well
-under way, we are now in an era where \ac{GW} detection is
-commonplace~\cite{PhysRevLett.116.061102,
+The third \ac{LIGO} and Virgo observing run is well under way and we are now in
+an era where \ac{GW} detection is commonplace~\cite{PhysRevLett.116.061102,
 PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of the global
-network of gravitational wave detectors increases, we will observe
-$\mathcal{O}(100)$s of transient \ac{GW} events per year~\cite{1409.7215}. For
-each of these events the current methods used to estimate their source
-parameters employ computationally costly Bayesian inference
+network of \ac{GW} detectors improves, we will observe $\mathcal{O}(100)$s of
+transient \ac{GW} events per year~\cite{1409.7215}. For each of these events
+the current methods used to estimate their source parameters employ optimally
+sensitive~\cite{Searle_paper} but computationally costly Bayesian inference
 approaches~\cite{1409.7215}.
 %
 % rationale
 %
-Bayesian strategies are known to be optimal for \ac{GW} parameter
-estimation~\cite{Searle_paper}. However, when applied to timeseries containing
-a single \ac{BBH} event sampled at 4kHz, existing \ac{GW} analyses can take
-$\mathcal{O}(1.5\times 10^{5} - 1.7\times 10^{6}\:\textrm{seconds})$ to
-complete~\cite{1409.7215}. For \ac{BNS} signals this timescale increases by at
-least an order of magnitude ~\cite{PhysRevLett.119.161101} and it is for this class of
-signal that counterpart \ac{EM} signatures are expected, containing crucially
-Gamma and X-ray information on timescales of 1 second -- 1 minute. The \ac{GW}
-community strives towards alerting their \ac{EM} follow-up partners in a timely
-and efficient manner and the current fastest method for doing so,
-\texttt{Bayestar}, can provide alerts in $\mathcal{O}(1\: \textrm{minute})$,
-and only approximate parameter estimates on a limited range of source
-parameters. Given the deluge of expected signals, the large computational cost
-and delay in obtaining complete source information, together with the need for
-alerts to \ac{EM} partners on $<1$ second timescales, it is imperative that a
-significantly more efficient parameter estimation method be developed. We
-propose the use of a \ac{CVAE}~\cite{1904.06264,1812.04405} as a rapid and
-accurate alternative to this approach. 
+For \ac{BBH} signals, existing \ac{GW} analyses can take $\mathcal{O}(10^{5} -
+10^{6}\:\textrm{seconds})$ to complete~\cite{1409.7215} and for \ac{BNS}
+signals this timescale increases by at least an order of magnitude
+~\cite{PhysRevLett.119.161101}. It is for this latter class of signal (and
+\ac{NSBH} systems) that counterpart \ac{EM} signatures are expected, containing
+prompt emission on timescales of 1 second -- 1 minute. The current fastest
+method for alerting \ac{EM} follow-up observers~\cite{bayestar_paper}, can
+provide estimates in $\mathcal{O}(1)$ minute, on a limited range of key source
+parameters. Given the deluge of expected signals, and the scientifc gains to be
+made through speed improvement it is imperative that a significantly more
+efficient parameter estimation method be developed.
 %
 % results
 %
-Here we show that a \ac{CVAE} pre-trained on $\sim 10^{6}$ \ac{BBH} signals and
-without being given the precomputed posteriors can return Bayesian posterior
-probability estimates on 4 of the source parameters (easily scalable to higher
-dimensional problems). The training procedure takes $\sim 1$ day on a single
-\ac{GPU} but need only be performed once for a given prior parameter space (or
-signal class). The resulting trained machine can then produce single
-(statistically independent) posterior samples in $\sim 0.2$ microseconds making
-this approach $\sim 6$ orders of magnitude faster than existing techniques and
-therefore allowing full Bayesian parameter estimation in well under 1 second
-for \ac{BBH} signals.}
+Here we show that a \ac{CVAE}~\cite{1904.06264,1812.04405} pre-trained on
+\ac{BBH} signals and without being given the precomputed posteriors can return
+Bayesian posterior probability estimates on source parameters. The training
+procedure need only be performed once for a given prior parameter space (or
+signal class) and the resulting trained machine can then generate samples
+describing the posterior distribution $\sim 6$ orders of magnitude faster than
+existing techniques.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INTRODUCTION
@@ -768,7 +758,7 @@ account for this noise within our scheme, we would train our network using
 samples of real detector noise (preferably recent examples to best reflect the
 state of the detectors). Our method has the added advantage of not being
 dependent on the choice of \ac{PSD} used for whitening, unlike current Bayesian
-methods. The whitening procedure applied to the training data for the \a{CVAE}
+methods. The whitening procedure applied to the training data for the \ac{CVAE}
 is simply to rescale the input to a scale more suitable to neural networks
 whereas for existing methods assumptions on the \ac{PSD} directly affect the
 posterior results. Our work can naturally be expanded to include the full range
