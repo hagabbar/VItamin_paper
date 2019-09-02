@@ -557,17 +557,24 @@ results as those represented in the blue line.
 %
 % discuss the speed of the analysis
 %
-The speed at which posterior samples are generated over all samplers used,
-including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is defined as
-the total time to produce $\sim 5000$ samples for each sampler in seconds.
-The major computational cost of running \texttt{VItamin} lies in the training time, which can 
-take of order several hours to complete. However, once trained there is no need to 
-retrain the network and may be run on any new signal which is consistent with 
-the prior. It can be clearly seen that \texttt{VItamin} produces samples from the posterior at a rate which is $\sim 6 - 7$ orders of magnitude faster than current inference
+The speed at which posterior samples are generated for all samplers used,
+including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is
+defined as the total time (in seconds) to produce $\sim 5000$ samples for each
+sampler. The dominating computational cost of running \texttt{VItamin} lies in
+the training time, which can take of order several hours to complete~\chris{Can
+we be more specific? Mention the type/class of GPU and the memory required}.
+However, once trained there is no need to retrain the network and it may be run
+on any new input data of the same format. Reliable posterior estimates can then
+be expected if the data contain signals whose true parameters lie within the
+prior space over which the network has been trained and whose noise
+characteristics are consistent with that used in training. For our test case of
+\ac{BBH} signals \texttt{VItamin} produces samples from the posterior at a rate
+which is $\sim 6$---$7$ orders of magnitude faster than current inference
 techniques, representing a dramatic speed-up in performance. It should be noted
 that run-time for the Bayesian samplers is also dependent on the choice of
-sampler hyperparameters, so total run-time may vary according to hyperparameter
-configuration. We choose Bayesian sampler hyperparameters based on standard default configurations defined in the \texttt{Bilby}
+sampler hyper-parameters, so total run-time may vary according to specific
+configuration choices. We choose Bayesian sampler hyper-parameters based on
+standard default configurations defined in the \texttt{Bilby}
 documentation~\cite{1811.02042}. 
  
 
@@ -593,11 +600,11 @@ the different posterior sampling approaches}
 & & run time (sec) & & \\
 & min & max & median & Ratio \\
 \hline
-Dynesty & 602.3 & 1537.8 & 773.6 & $2.6\times 10^{-6}$ \\
-Emcee & 2005.3 & 11926.5 & 4350.9 & $4.6\times 10^{-7}$ \\
-Ptemcee & 3353.9 & 12771.4 & 4981.5 & $4.0\times 10^{-7}$ \\
-Cpnest & 1430.7 & 5405.4 & 2286.9 & $8.8\times 10^{-7}$ \\
-VItamin & - & - & $2.0\times 10^{-3}$ & 1.0 \\
+Dynesty & 602 & 1538 & 774 & $2.6\times 10^{-6}$ \\
+Emcee & 2005 & 11927 & 4351 & $4.6\times 10^{-7}$ \\
+Ptemcee & 3354 & 12771 & 4982 & $4.0\times 10^{-7}$ \\
+Cpnest & 1431 & 5405 & 2287 & $8.8\times 10^{-7}$ \\
+VItamin & - & - & \bm{$2\times 10^{-3}$} & 1 \\
 \botrule
 \end{tabular}
 \label{Tab:speed}
@@ -618,20 +625,20 @@ VItamin & - & - & $2.0\times 10^{-3}$ & 1.0 \\
 %
 % recap and main result
 %
-We currently face a variety of challenges in 
-parameter estimation for the \ac{GW} field. Some of those 
-challenges include accounting for glitches in the data, time-dependent 
-fluctuations in the power spectrum density, systematic uncertainties 
-in the waveform models themselves and decreasing the latency with 
-which parameter posterior estimates are produced \cite{1409.7215}. 
-In this letter we have demonstrated that we are able to
-reproduce, to a high degree of accuracy, posteriors probability distributions generated from Bayesian
-inference using machine learning. This is accomplished through the use of
-variational autoencoders trained on simulated \ac{GW} signals. By building a neural network model which,
-when trained, can reproduce the true posterior in less than a second,
-we have demonstrated that neural networks can achieve the same 
-quality of results as the trusted
-benchmark, Bayesian inference.
+There are currently a variety of challenges within the field of \ac{GW}
+parameter estimation including, and not limited to, accounting for detector
+artefacts (non-Gaussian transient "glitches") in the data, time-dependent
+variations (non-stationarity) of the detector noise power spectrum density,
+systematic uncertainties in the waveform models themselves and decreasing the
+latency with which parameter estimates are produced~\cite{1409.7215}. In this
+letter we have demonstrated that we are able to reproduce, to a high degree of
+accuracy, Bayesian posterior probability distributions generated through
+machine learning. This is accomplished using \acp{CVAE} trained on simulated
+\ac{GW} signals and does not require the input of precomputed posterior
+estimates. We have demonstrated that our neural network model which, when
+trained, can reproduce complete and accurate posterior estimates in
+$\mathcal{O}(1)$ milliscond, can achieve the same quality of results as the
+trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 
 %
 % discuss the near term CBC implications and why this is a game-changer
@@ -706,14 +713,14 @@ over the next several decades to come.
 %
 \section{Acknowledgements.}
 %
-We would like to acknowledge valuable input from the LIGO-Virgo Collaboration
-specifically from {\textbf{someone}}, and the parameter estimation and
-machine-learning working groups. We thank Nvidia for the generous 
-donation of a Tesla V-100 GPU. The authors also gratefully acknowledge the
-Science and Technology Facilities Council of the United Kingdom. CM and SH are
-supported by the Science and Technology Research Council (grant
-No.~ST/~L000946/1) and the European Cooperation in Science and Technology
-(COST) action CA17137.
+We would like to acknowledge valuable input from the LIGO-Virgo Collaboration,
+specifically from the parameter estimation and machine-learning working groups.
+We thank Nvidia for the generous donation of a Tesla V-100 GPU used in addition
+to \ac{LVC} computational resources. The authors also gratefully
+acknowledge the Science and Technology Facilities Council of the United
+Kingdom. CM and SH are supported by the Science and Technology Research Council
+(grant No.~ST/~L000946/1) and the European Cooperation in Science and
+Technology (COST) action CA17137.
 
 %% Here is the endmatter stuff: Supplementary Info, etc.
 %% Use \item's to separate, default label is "Acknowledgements"
