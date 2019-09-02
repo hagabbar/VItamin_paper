@@ -147,7 +147,7 @@ Here we show that a \ac{CVAE}~\cite{1904.06264,1812.04405} pre-trained on
 Bayesian posterior probability estimates on source parameters. The training
 procedure need only be performed once for a given prior parameter space (or
 signal class) and the resulting trained machine can then generate samples
-describing the posterior distribution $\sim 6$ orders of magnitude faster than
+describing the posterior distribution $\sim 7$ orders of magnitude faster than
 existing techniques.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -561,9 +561,14 @@ The speed at which posterior samples are generated for all samplers used,
 including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is
 defined as the total time (in seconds) to produce $\sim 5000$ samples for each
 sampler. The dominating computational cost of running \texttt{VItamin} lies in
-the training time, which can take of order several hours to complete~\chris{Can
-we be more specific? Mention the type/class of GPU and the memory required}.
-However, once trained there is no need to retrain the network and it may be run
+the training time, which can take of order several hours to complete. 
+Completion is determined by comparing posteriors produced 
+by the machine learning model and those of \texttt{Bilby} iteratively 
+during training. We 
+additionally look to see whether the loss curves (Fig. \ref{fig:loss_log}) have flattened out. We use a single Tesla 
+V-100 GPU with $16$ Gb of RAM on an NVIDIA DGX-1 machine 
+at the LIGO Livingston site.
+Once trained there is no need to retrain the network and it may be run
 on any new input data of the same format. Reliable posterior estimates can then
 be expected if the data contain signals whose true parameters lie within the
 prior space over which the network has been trained and whose noise
@@ -647,7 +652,7 @@ The significance of our results is most evident in the orders of magnitude
 increase in speed over existing approaches. This increase will help the
 LIGO-Virgo collaboration alert \ac{EM} follow-up partners with minimum latency.
 Improved low-latency alerts will be especially pertinent for signals from
-\ac{BNS}, like GW170817~\chris{give reference}, and \ac{NSBH} signals where we
+\ac{BNS}, like GW170817 \cite{PhysRevLett.119.161101}, and \ac{NSBH} signals where
 parameter estimation will no longer be limiting factor\footnote{The complete
 low-latency pipeline includes a number of steps. The process of \ac{GW} data
 aquisition is followed by the transfer of data. There is then the corresponding
