@@ -31,6 +31,9 @@ floatfix,
 \usepackage{dcolumn}% Align table columns on decimal point
 \usepackage{bm}% bold math
 %\usepackage{lineno}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 \usepackage{color}
 \usepackage{acronym}
 \usepackage{multirow}
@@ -307,7 +310,7 @@ Sec.~\ref{sec:methods} and in~\cite{1904.06264}. The final form of the
 cross-entropy loss function is given by the bound
 %
 \begin{align}\label{eq:cost3}
-C \geq & \frac{1}{N}\sum_{n=1}^{N}\left[\log
+H \lesssim -\frac{1}{N}\sum_{n=1}^{N}&\left[\log
 r_{\theta_{2}}(x_{n}|z_{n},y_{n})\right.\nonumber\\
 &\left.-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\right].
 \end{align}
@@ -738,8 +741,8 @@ Technology (COST) action CA17137.
 %
 We begin with the statement defining the aim of the analysis. We wish to obtain
 a function that reproduces the posterior distribution (the probability of our
-physical parameters $x$ given some measured data $y$). We define the cross entropy
-between 2 distributions as
+physical parameters $x$ given some measured data $y$). The cross entropy
+between 2 distributions is defined as
 %
 \begin{equation}\label{eq:cross_ent}
 H(p,r) = -\int dx\, p(x|y) \log r_{\theta}(x|y)
@@ -751,22 +754,23 @@ posterior) and $r_{\theta}(x|y)$ is the parametric distribution that we will
 use neural networks to construct. In this case $\theta$ represents the
 trainable neural network parameters. 
 
-The cross-entropy is minimised when $p(x|y)=r_{\theta}(x|y)$ and so by maximising
+The cross-entropy is minimised when $p(x|y)=r_{\theta}(x|y)$ and so by
+minimising
 %
-\begin{equation}\label{eq:cost1}
-C = \text{E}_{p(y)}\left[\int dx\,p(x|y) \log r_{\theta}(x|y)\right]
-\end{equation}
+\begin{align}\label{eq:cost1}
+H &= -\text{E}_{p(y)}\left[\int dx\,p(x|y) \log r_{\theta}(x|y)\right]
+\end{align}
 % 
-where $\text{E}_{p(y)}[\dot]$ indicates the expectation value over the
-distribution of measurements, we therefore make the parameteric distribution as
-similar to the target for all possible measurements $y$.
+where $\text{E}_{p(y)}[\cdot]$ indicates the expectation value over the
+distribution of measurements $y$, we therefore make the parameteric distribution
+as similar to the target for all possible measurements $y$.
 
 Converting the expectation value into an integral over $y$ weighted by $p(y)$
 and applying Bayes theorem we obtain
 %
-\begin{equation}\label{eq:cost1}
-C = \int dx\,p(x)\int dy\,p(y|x)\log r_{\theta}(x|y)
-\end{equation}
+\begin{align}\label{eq:cost1}
+H &= -\int dx\,p(x)\int dy\,p(y|x)\log r_{\theta}(x|y)
+\end{align}
 %
 where $p(x)$ is the prior distribution on the physical parameters $x$.
 
@@ -775,9 +779,9 @@ Fig.~\ref{fig:network_config} makes use of a conditional latent variable model.
 Our parameteric model is constructed from the product of 2 seperate
 distributions marginalised over the latent space
 %
-\begin{equation}\label{eq:latent_model}
-r_{\theta}(x|y) = \int dz\,r_{\theta_{1}}(z|y)r_{\theta_{2}}(x|z,y).
-\end{equation}
+\begin{align}\label{eq:latent_model}
+r_{\theta}(x|y) &= \int dz\,r_{\theta_{1}}(z|y)r_{\theta_{2}}(x|z,y).
+\end{align}
 %  
 We have used $\theta_{1}$ and $\theta_{2}$ to indidate that the 2 seperate
 networks modelling these distributions will be trained on these parameter sets
@@ -787,45 +791,45 @@ means and variances). However, this still allows $r_{\theta}(x|y)$ to take a
 general form (although it does limit it to be unimodal).  
 
 One could be forgiven in thinking that by setting up networks that simply aim
-to maximise $C$ over the $\theta_{1}$ and $\theta_{2}$ would be enough to solve
+to minimise $H$ over the $\theta_{1}$ and $\theta_{2}$ would be enough to solve
 this problem. However, as shown in~\cite{NIPS2015_5775} this is an intractable
 problem and a network cannot be trained directly to do this. Instead we define
 a recognition function $q_{\phi}(z|x,y)$ that will be used to derive an
 \ac{ELBO}.
 
-Let us first define the Kullback–Leibler divergence between 2 of our
+Let us first define the \ac{KL} divergence between 2 of our
 distributions as
 %
-\begin{equation}\label{eq:kl}
-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{2}}(z|x,y)\right] = \int dz\,
+\begin{align}\label{eq:kl}
+\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{2}}(z|x,y)\right] &= \int dz\,
 \log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta_{2}}(z|x,y)}\right).
-\end{equation}
+\end{align}
 %  
 It can be shown that after some manipulation that
 %
-\begin{equation}\label{eq:elbo1}
-\log r_{\theta}(x|y) = L + \text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{?}}(z|x,y)\right]
-\end{equation}
+\begin{align}\label{eq:elbo1}
+\log r_{\theta}(x|y) &= L + \text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{?}}(z|x,y)\right]
+\end{align}
 %
 where the \ac{ELBO} $L$ is given by
 %
-\begin{equation}\label{eq:elbo2}
-L = \int dz\,
+\begin{align}\label{eq:elbo2}
+L &= \int dz\,
 q_{\phi}(z|x,y)\log\left(\frac{r_{\theta_{2}}(x|z,y)r_{\theta_{1}}(z|y)}{q_{\phi}(z|x,y)}\right)
-\end{equation}
+\end{align}
 %
 and is so-named since $\text{KL}$ cannot be negative and has a minimum of zero.
 Therefore, if we were to find a $q_{\phi}(z|x,y)$ function (optimised on
-$\phi$) that minimised the KL-divergence then we can state that
+$\phi$) that minimised the \ac{KL}-divergence then we can state that
 %
-\begin{equation}
-\log r_{\theta}(x|y) \geq L.
-\end{equation}
+\begin{align}
+\log r_{\theta}(x|y) &\geq L.
+\end{align}
 %
-After some further manipulation of Eq.\ref{eq:elbo2} we find that
+After some further manipulation of Eq.~\ref{eq:elbo2} we find that
 %
 \begin{align}\label{eq:logr}
-\log r_{\theta}(x|y) \geq & \text{E}_{q_{\phi}(z|x,y)}\left[\log
+\log r_{\theta}(x|y) &\geq  \text{E}_{q_{\phi}(z|x,y)}\left[\log
 r_{\theta_{2}}(x|z,y)\right] \nonumber\\
 &-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right].
 \end{align}
@@ -834,60 +838,54 @@ We can now substitute this inequality into Eq.~\ref{eq:cost1} (our cost
 function) to obtain
 %
 \begin{align}\label{eq:cost2}
-C \geq & \int dx\, p(x)\int dy\,p(y|x)
-\left[\text{E}_{q_{\phi}(z|x,y)}\left[\log r_{\theta_{2}}(x|z,y)\right]
+H \leq & -\int dx\, p(x)\int dy\,p(y|x)
+\left\{\text{E}_{q_{\phi}(z|x,y)}\left[\log r_{\theta_{2}}(x|z,y)\right]
 \right.\nonumber\\
-&-\left.\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\right]  
+&-\left.\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\right\}  
 \end{align}
 %
 which can in practice be approximated as a stochastic integral over draws of
 $x$ from the prior, $y$ from the likelihood function $p(y|x)$, and from the
-recognition function, giving us
-%
-\begin{align}\label{eq:cost3}
-C \geq & \frac{1}{N}\sum_{n=1}^{N}\left[\log
-r_{\theta_{2}}(x_{n}|z_{n},y_{n})\right.\nonumber\\
-&\left.-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\right].
-\end{align}
-% 
+recognition function, giving us Eq.~\ref{eq:cost3}.
+
 In this case we draw $N$ sets of physical parameter, corresponding data
 sets, and draws from the recognition function. It is important to note that
-whilst it is true that the KL-divergence between the $q_{\phi}(z|x,y)$ and
+whilst it is true that the \ac{KL}-divergence between the $q_{\phi}(z|x,y)$ and
 $r_{\theta_{2}}(z|x,y)$ (seen in Eq.~\ref{eq:elbo1}) should be minimised and in
-an ideal case be equal to zero, that is not the case for the KL-divergence in
-Eq.~\ref{eq:cost3}. In this case our aim is to maximise $C$ which implies that
-the KL-divergence should be low but not necessarily zero.
+an ideal case be equal to zero, that is not the case for the \ac{KL}-divergence in
+Eq.~\ref{eq:cost3}. In this case our aim is to minimise $H$ which implies that
+the \ac{KL}-divergence should be low but not necessarily zero.
 
 We have now set up a system composed of 3 functions that have well defined
 inputs and outputs where the mapping of those inputs to outputs is governed by
 the parameter sets $\theta_{1},\theta_{2},\phi$. These parameters are the
 weights and biases of 3 neural networks acting as (variational) encoder,
 decoder, and encoder respectively. To train such a network one must connect the
-inputs and outputs appropriately to compute $C$ and back-propogate cost
-function derivatives to update the network parameters. The network structure
-shown in Fig.~\ref{fig:network_config} shows how for a batch of $N$ sets of $x$
-and corresponding $y$ values first both $x$ and $y$ are fed into the encoder 2
-network that produces the means and variances of the latent space $z$
-describing the $q_{\phi}(z|x,y)$ distribution function. Next (the order does
-not matter) the data $y$ alone is passed into the encoder 1 network that
-produces the means and variances of the latent space $z$ describing the
+inputs and outputs appropriately to compute the cost function $H$ and
+back-propogate cost function derivatives to update the network parameters. The
+network structure shown in Fig.~\ref{fig:network_config} shows how for a batch
+of $N$ sets of $x$ and corresponding $y$ values first both $x$ and $y$ are fed
+into the encoder 2 network that produces the means and variances of the latent
+space $z$ describing the $q_{\phi}(z|x,y)$ distribution function. Next (the
+order does not matter) the data $y$ alone is passed into the encoder 1 network
+that produces the means and variances of the latent space $z$ describing the
 $r_{\theta_{1}}(z|y)$ distribution function. Given the parameters of these
 Gaussian (diagonal covariance matrix) distributions the $\text{KL}$-divergence
 is computed as
 %
 \begin{align}\label{eq:klgauss}
-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] =&
-\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
-\frac{(\mu_{r,j}-\mu_{q,j})^{2}}{\sigma_{r,j}^{2}}\right.\nonumber\\ 
-&\left.+
+\text{KL}&\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] =
+\\
+&\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
+\frac{(\mu_{r,j}-\mu_{q,j})^{2}}{\sigma_{r,j}^{2}}+
 \log\left(\frac{\sigma_{r,j}^{2}}{\sigma_{q,j}^{2}}\right)\right] -
-\frac{n_{z}}{2}
+\frac{n_{z}}{2}\nonumber 
 \end{align}
 %
-where those labelled and indexed parameters output from the encoder networks
-are denoted by $\mu$ and $\sigma$.
+where those labelled and indexed parameters output from the encoder networks are
+denoted by $\mu$ and $\sigma$.
 
-To evaluate the first term within the loss function (Eq.~\ref{eq:cost3}) we
+To evaluate the first term within the cost function (Eq.~\ref{eq:cost3}) we
 require the data $y$ and a randomly drawn $z$ value from the latent space defined
 by $q_{\phi}(z|x,y)$. These are then passed as input into the decoder network D
 that produces the means and variances in the physical parameter space $x$ describing
