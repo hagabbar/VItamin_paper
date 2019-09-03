@@ -55,6 +55,12 @@ floatfix,
 \newcommand{\siong}[1]{\textbf{\textcolor{cyan}{SIONG: #1}}}
 \newcommand{\rod}[1]{\textbf{\textcolor{yellow}{ROD: #1}}}
 
+%% ----- the LIGO DCC number
+\newcommand{\dcc}{LIGO-P1900268}
+
+%% ----- input git-version tag
+\input{tag.tex}
+
 \begin{document}
 
 \preprint{APS/123-QED}
@@ -79,6 +85,8 @@ autoencoders for gravitational-wave astronomy}
 }
 
 \date{\today}
+
+\date{\commitDATE\\\mbox{\small \commitID}\\\mbox{\dcc}}
 
 \maketitle
 
