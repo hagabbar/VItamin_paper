@@ -82,6 +82,21 @@ autoencoders for gravitational-wave astronomy}
 
 \maketitle
 
+% TO-DO LIST
+%
+% 1. Get abstract word count roughly correct - currently 240
+% 2. Get total word count roughly correct - currently (240, 680, 960, 780) =
+% 2660
+% 3. Clean captions and check word count
+% 4. Fix all plots
+% 5. Tidy Methods section
+% 6. Polish language throughout
+% 7. Check acronymns for consistency
+% 8. Check names and variables for consistency (KL, VItamin, etc...)
+% 9. Fix references - check limit
+% 10. Maybe change title
+% 11. Maybe add extra plots to methods section
+
 \acrodef{GW}[GW]{gravitational wave}
 \acrodef{BBH}[BBH]{binary black hole}
 \acrodef{EM}[EM]{electromagnetic}
@@ -149,6 +164,9 @@ procedure need only be performed once for a given prior parameter space (or
 signal class) and the resulting trained machine can then generate samples
 describing the posterior distribution $\sim 7$ orders of magnitude faster than
 existing techniques.}
+%
+% currently ~240 words - needs cutting to ~150
+% approx 9.6 words per line
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INTRODUCTION
@@ -166,70 +184,70 @@ existing techniques.}
 %
 % Intro to the detection era with the LVC
 %
-With the overwhelmingly successful observation runs of O1 and O2 now complete,
-\ac{LIGO} and Virgo have produced a large catalogue of \ac{GW} data covering
-both \ac{BBH} and \ac{BNS} signals~\cite{1811.12907}. Over the next five years
-we expect the number of detections to increase to be upwards of $\sim180$
-\ac{BNS} and $\sim400$ BBH events per year~\cite{1304.0670,1811.12907}. This
-large influx in the number of detections will put an increased amount of
-pressure on the current \ac{GW} inference methods used for parameter
-estimation.  
+%With the overwhelmingly successful observation runs of O1 and O2 now complete,
+%\ac{LIGO} and Virgo have produced a large catalogue of \ac{GW} data covering
+%both \ac{BBH} and \ac{BNS} signals~\cite{1811.12907}. Over the next five years
+%we expect the number of detections to increase to be upwards of $\sim180$
+%\ac{BNS} and $\sim400$ BBH events per year~\cite{1304.0670,1811.12907}. This
+%large influx in the number of detections will put an increased amount of
+%pressure on the current \ac{GW} inference methods used for parameter
+%estimation.  
 
 %
 % From GW detection, to parameter estimation
 %
-Much of the \ac{LIGO} analysis effort over the past several years has been
-focused on the detection of \acp{GW}. This has been the primary focus of many,
-due to the difficulty associated with identifying \ac{GW} waveforms buried in
-in large amount of noise to a high degree of certainty. The detection problem
-has largely been solved through the use of matched template
-filtering~\cite{0264-9381-33-21-215004}. Once a \ac{GW} has been identified
-through matched template filtering, Bayesian inference is used to extract
-information about the source parameters of the detected \ac{GW} event.
+The problem of detecting \acp{GW} has largely been solved through the use of
+template based matched-filtering~\cite{0264-9381-33-21-215004}, a process
+recently replicated using machine learning
+techniques~\cite{GEORGE201864,PhysRevLett.120.141103,GebKilParHarSch}. Once a
+\ac{GW} has been identified through this process, Bayesian inference, known to
+be the optimal approach~\cite{2009CQGra..26o5017S}, is used to extract
+information about the source parameters of the detected \ac{GW} signal.
 
 %
 % Set up parameter estimation problem
 %
-In the standard Bayesian \ac{GW} inference approach, we assume that we are
-given both a signal model and a noise model. Both the signal and the 
-noise model may have unknown parameters we are interested in inferring. 
-Each parameter is given a prior astrophysically motivated probability 
-distribution. In our case, we have additive noise which is modelled as 
-a Gaussian (in reality, the data is not truly Gaussian). Given a noisy
-\ac{GW} waveform, we would like to find an optimal procedure for retrieving
-some finite set of unknown \ac{GW} parameters. Our procedure should be able
-to give us an accurate estimate of the parameters of our observed signal, while
-also accounting for the uncertainty which arises from having multiple noise
-realizations of our observed data able to be mapped to one parameter
-estimate.
+In the standard Bayesian \ac{GW} inference approach, we assume a signal and
+noise model and both may have unknown parameters that we are either interested
+in inferring or prefer to marginalise away. Each parameter is given a prior
+astrophysically motivated probability distribution and in the \ac{GW} case, we
+typically assume a Gaussian additive noise model (in reality, the data is not
+truly Gaussian). Given a noisy \ac{GW} waveform, we would like to find an
+optimal procedure for inferring some set of the unknown \ac{GW} parameters.
+Such a procedure should be able to give us an accurate estimate of the
+parameters of our observed signal, whilst accounting for the uncertainty
+arising from the noise in the data.
 
 %
 % Describe Bayes Theorem
 %
-According to Bayes Theorem, a posterior for a set of parameters can be
-represented as
+According to Bayes Theorem, a posterior probability distribution on a set of
+parameters, conditional on the measured data, can be represented as
 %
-\begin{align}\label{eq:bayes_theorem}
-    p(x|y) &\propto p(y|x) p(x),
+\begin{align}\label{eq:bayes_theorem} 
+p(x|y) &\propto p(y|x) p(x), 
 \end{align}
 %
 where $x$ are the parameters, $y$ is the observed data, $p(x|y)$ is the
-posterior, $p(y|x)$ is the likelihood, and $p(x)$ is the prior we put on our
-parameter distribution. The constant of proportionality, which we omit here, is
+posterior, $p(y|x)$ is the likelihood, and $p(x)$ is the prior on the
+parameters. The constant of proportionality, which we omit here, is
 $p(y)$, the probability of our data, known as the Bayesian evidence or the
 marginal likelihood. We typically ignore $p(y)$ since it is a constant and for
 parameter estimation purposes we are only interested in the shape of the
 posterior.
 
+%
+% brief statement on the sampling algorithms
+%
 Due to the size of the parameter space typically encountered in \ac{GW}
-parameter estimation and the large quantities of data used, we must
-stochastically sample the parameter space in order to estimate the posterior.
-Sampling is done using a variety of techniques including nested
-sampling~\cite{cpnest,dynesty} and Markov chain Monte Carlo
+parameter estimation and the volume of data analysed, we must stochastically
+sample the parameter space in order to estimate the posterior.  Sampling is
+done using a variety of techniques including Nested
+Sampling~\cite{skilling2006,cpnest,dynesty} and Markov chain Monte Carlo
 methods~\cite{emcee,ptemcee}. The primary software tools used by the \ac{LIGO}
 parameter estimation analysis are \texttt{LALInference} and
-\texttt{Bilby}~\cite{1409.7215,1811.02042}, which contain many different
-sampling methods.  
+\texttt{Bilby}~\cite{1409.7215,1811.02042}, which affer multiple sampling
+methods.  
   
 %
 % Intro to machine learning section
@@ -245,53 +263,14 @@ inference~\cite{1904.06264,NIPS2015_5775}, text to image
 inference~\cite{1512.00570}, high-resolution synthetic image
 generation~\cite{1612.00005} and the fitting of incomplete heterogeneous
 data~\cite{1807.03653}. It is this type of machine learning network that we
-utilize to accuratelly approximate the Bayesian posterior $p(x|y)$, which is
-known to be the optimal result ~\cite{2009CQGra..26o5017S}.
-
-%
-% What is an autoencoder?
-%
-Conditional variational autoencoders are a form of variational autoencoder
-which are conditioned on an observation, where in our case the observation is a
-1-dimensional \ac{GW} time series signal $y$. The autoencoders from which
-variational autoencoders are derived are typically used for problems involving
-image reconstruction and/or dimensionality reduction. They perform a regression
-task whereby the autoencoder attempts to predict its own given input (model the
-identity function) through a limited and therefore distilled representation of
-the input parameter space. An autoencoder is composed of two neural networks,
-an encoder and a decoder~\cite{LIOU20083150}. The encoder network takes as
-input an vector, where the number of dimensions is a fixed number predefined by
-the user. The encoder converts the input vector into a (typically) lower
-dimensional space, referred to as the {\it{latent space}}. A representation of
-the data in the latent space is passed to the decoder network which generates a
-reconstruction of the original input data to the encoder network. Through
-training, the two sub-networks learn a how to efficiently represent a dataset
-within a lower dimensional latent space which will take on the most important
-properties of our input training data. In this way, the data can be compressed
-with little loss of fidelity. Additionally, the decoder simultaneously learns
-to decode the latent space representation and reconstruct that data back to its
-original form (the input data). 
-
-%
-% What is a variational autoencoder?
-%
-The primary difference between a variational autoencoder~\cite{1812.04405} and
-an autoencoder concerns the method by which locations within the latent space
-are produced. In our variant of the variational autoender, the output of the
-encoder is interpreted as a set of parameters governing statistical
-distributions (in our case the means and variances of multivariant Gaussians).
-In proceeding to the decoder network, samples are randomly drawn from these
-distributions ($z$) and fed into the decoder, therefore adding an element of
-variation into the process. Therefore a particular input can have infinitely
-many outputs. In both the decoder and the encoder networks we use
-fully-connected layers (although this is not a constraint and any trainable
-network architecture may be used).
+apply in the \ac{GW} case to accurately approximate the Bayesian posterior
+$p(x|y)$.
 
 %
 % Brief introduction to loss functions used in the neural networks
 %
 The construction of a \ac{CVAE} begins with the definition of a quantity to be
-minimised (referred to as a loss or cost function). We can relate that aim to
+minimised (referred to as a cost function). We can relate that aim to
 that of approximating the posterior distribution by minimising the cross
 entropy, defined as
 %
@@ -304,7 +283,7 @@ distribution that we will use neural networks to construct and which we aim to
 be equal to the true posterior. In this case $\theta$ represents a set of
 trainable neural network parameters. Starting from this point it is possible to
 derive a computable form for the cross-entropy that is reliant on a set of
-unknown functions that can be modelled by the components of variational encoder
+unknown functions that can be modelled by variational encoder
 and decoder neural networks. The details of the derivation are described in
 Sec.~\ref{sec:methods} and in~\cite{1904.06264}. The final form of the
 cross-entropy loss function is given by the bound
@@ -319,69 +298,38 @@ and requires three fully-connected networks; two encoder networks (labelled
 $\textrm{E}_1$, $\textrm{E}_2$ in Fig.~\ref{fig:network_config}) representing
 the functions $r_{\theta_{1}}(z|y)$ and $q_{\phi}(z|x,y)$ respectively, and one
 decoder network (D) representing the function $r_{\theta_{2}}(x|z,y)$. The
-function $\text{KL}(\cdot||\cdot)$ denotes the Kulback-Leibler divergence. In
-practice, during the training procedure the various integrations that are part
-of the derivation are approximated by a sum over $N$ training data samples at
-each stage of training. Training is performed via a series of steps detailed in
-Sec.~\ref{sec:methods}.
+function $\text{KL}(\cdot||\cdot)$ denotes the Kulback-Leibler divergence and
+the variable $z$ represents locations within the \emph{latent space}.  This
+latter object is typically a lower dimensional space within which the encoder
+networks attempt to represent their input data. 
+
+In practice, during the training procedure the various integrations that are
+part of the derivation are approximated by a sum over a batch of $N$ training
+data samples at each stage of training. Training is performed via a series of
+steps detailed in Sec.~\ref{sec:methods}.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
     \caption{\label{fig:network_config} This figure illustrates our neural
-network training/testing operations. During training (left-hand side), 
-a training set of noisy
-\ac{GW} signals ($y$) and their corresponding true parameters ($x$) are given
-as input to encoder network $\textrm{E}_2$, while only $y$ is 
-given to $\textrm{E}_1$. The K-L divergence (Eq.~\ref{eq:kl}) is computed
-between the moments of latent space representations. We then sample from a
-multivariate Gaussian whose mean and variances are defined by $\mu^{j}_{2}$, 
-which is given as input to the decoder network. We take the first two
-moments $\mu^{j}_x$ of the predictions from the decoder network, along with our
-training parameters $x$ and compute a cost function Eq. \ref{eq:cost}. After
-having trained our networks, we test (right-hand side) using only $\textrm{E}_1$ and the decoder.
-The decoder returns a multi-dimensional Gaussian function that describes 
-the likelihood/posterior and so we simply sample from it. A more 
-detailed description of the network can be found in the letter text.} 
+network training/testing operations. During training (left-hand side), a
+training set of noisy \ac{GW} signals ($y$) and their corresponding true
+parameters ($x$) are given as input to encoder network $\textrm{E}_2$, while
+only $y$ is given to $\textrm{E}_1$. The K-L divergence (Eq.~\ref{eq:kl}) is
+computed between the moments of latent space representations. We then sample
+from a multivariate Gaussian whose mean and variances are defined by
+$\mu^{j}_{2}$, which is given as input to the decoder network. We take the
+first two moments $\mu^{j}_x$ of the predictions from the decoder network,
+along with our training parameters $x$ and compute a cost function Eq.
+\ref{eq:cost}. After having trained our networks, we test (right-hand side)
+using only $\textrm{E}_1$ and the decoder.  The decoder returns a
+multi-dimensional Gaussian function that describes the likelihood/posterior and
+so we simply sample from it. A more detailed description of the network can be
+found in the letter text.}  % word count 152 
 \end{figure}
 
 %
-% Some practical aspects of the training
+% word count ~1500 - approx 9 words per line
 %
-The losses computed from the K-L divergence and the cost function are summed
-and then back-propagated through all three networks (E1, E2, and D).  As is
-standard practice in machine learning applications, the loss is computed over a
-batch of training samples and repeated for a pre-defined number of iterations.
-For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
-size of $128$ training samples and a learning rate of $10^{-4}$ was sufficient.
-We used a total of $10^6$ training samples in order to adequately cover the
-\ac{BBH} parameter space.  We additionally ensure that an (effectively)
-infinite number of noise realizations are employed by making sure that every
-time a training sample is used it is given a unique noise realisation despite
-only having a finite number of waveforms. Each neural network is three layers
-deep and has $2048$ neurons in each layer, has a latent space dimension of $64$. 
-Training is considered complete when
-both components to the loss function have converged to approximately constant
-values.
-
-%
-% Test procedure
-%
-After training has completed and we wish to use the network for inference we
-follow the procedure described in the right hand panel of
-Fig.~\ref{fig:network_config}. Given a new $y$ data sample (not taken from the
-training set) we simply input this into the encoder $\textrm{E}_1$ from which we
-obtain a single value of $\mu_{1}$ describing a distribution (conditional on the
-data $y$) in the latent space. From the multivariate Gaussian distribution
-defined by $\mu_{1}$ a random sample from the latent space is generated which,
-together with the original input test data $y$, is input into the decoder
-network D. The output of the decoder network defines the parameters of a
-multivariate Gaussian distribution in the physical parameter space from which a
-random sample is drawn. This sample is a random draw from the $r_{\theta}(x|y)$
-distribution which represents our approximation to the true posterior. A
-comprehensive representation in the form of samples drawn from the entire joint
-posterior distribution can then be obtained by simply repeating this procedure
-with the same input data (see Eq.~\ref{eq:latent_model}). A more detailed
-description is given in Sec.~\ref{sec:methods}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
@@ -397,34 +345,37 @@ description is given in Sec.~\ref{sec:methods}.
 %
 % Intro to the results - what are we trying to do?
 %
-We present results on $256$ \ac{GW} test waveforms in simulated advanced detector noise and compare
-between the existing Bayesian approaches and the \ac{CVAE}. Posteriors produced
-by the \texttt{Bilby} inference library~\cite{1811.02042} are used as a
-benchmark in order to assess the efficiency and quality of our machine learning
-approach with the existing most optimal method for posterior sampling.
+We present results on $256$ single detector \ac{GW} test waveforms in simulated advanced
+detector noise~\cite{aligo_noisecurves} and compare between the existing
+Bayesian approaches and the \ac{CVAE}. Posteriors produced by the
+\texttt{Bilby} inference library~\cite{1811.02042} are used as a benchmark in
+order to assess the efficiency and quality of our machine learning approach
+with the existing method for posterior sampling.
 
 %
 % describe the Bilby analysis 
 %
-For the benchmark analysis we assume that 5 parameters are unknown and use a
-uniform prior on both black hole masses $m_1$ and $m_2$, which we allow to
-range from $35$---$80$ solar masses, a uniform phase ($\phi_0$) prior spanning
-$0$---$2\pi$ radians, a uniform distance ($d_{\text{L}})$ prior
-%~\chris{we might
-%want to change this to be a $d$-squared prior to demonstrate the application of
-%priors in the \texttt{VItamin} training stage.} 
-from $1$---$3$~Gpc, and a time of
-coalescence ($t_{\text{c}}$) prior ranging from
-$0.65$---$0.85$~seconds from the
-start of the segment. The remainder of the parameters (sky position, binary
-inclination angle, polarisation angle, and black hole spins) are all fixed at
-constant values. We use timeseries durations of $1$~second with a sampling
-frequency of $256$~Hz and the waveform model used is
-\texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
-20Hz. For each input test waveform we run the benchmark analysis using multiple
-sampling algorithms available within \texttt{Bilby} and for each algorithm we
-run twice with different sampling random seeds. For each run and sampler we
-extract $5000$ samples from the posterior on the 5 physical parameters.  
+For the benchmark analysis we assume that 5 parameters are unknown: the
+component masses $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the time of
+coalescence $t_0}$, and the phase at coalescence $\phi_0$. For each
+parameters we use a uniform prior with ranges defined in
+Table~\ref{tab:prior_ranges}.
+%both black hole masses $m_1$ and $m_2$, which we allow to range accross
+%$[35,80]$ solar masses, a uniform phase ($\phi_0$) prior spanning $[0,2\pi]$
+%radians, a uniform distance ($d_{\text{L}})$ prior ~\chris{we might want to
+%change this to be a $d$-squared prior to demonstrate the application of priors
+%in the \texttt{VItamin} training stage.} between $[1,3]$~Gpc, and a uniform
+%time of coalescence ($t_{\text{c}}$) prior ranging between
+%$[0.65,0.85]$~seconds from the start of the $1$ second duration data segment.
+%The remainder of the parameters are set to the following fixed values: sky
+%position ($\alpha=?,\beta=?$), binary inclination angle ($\iota=0$),
+%polarisation angle ($\psi=0$), and black hole spins set to zero).
+We use a sampling frequency of $256$~Hz and a timeseries duration of 1 second.
+The waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
+minimum cutoff frequency of $20$Hz. For each input test waveform we run the
+benchmark analysis using multiple sampling algorithms available within
+\texttt{Bilby}. For each run and sampler we extract $5000$ samples from the
+posterior on the 5 physical parameters.  
 
 %
 % the VItamin process
@@ -432,17 +383,18 @@ extract $5000$ samples from the posterior on the 5 physical parameters.
 The \ac{CVAE} training process used as input $10^{6}$ waveforms corresponding
 to parameters drawn from the same priors as assumed for the benchmark analysis.
 The waveforms are also of identical duration, sampling frequency, and waveform
-model and when each waveform is placed within a training batch it is given a
-unique detector noise realisation. The data are then whitened using the same
-advanced detector \ac{PSD}~\cite{2016LRR....19....1A} from which the simulated
-noise is generated. The \ac{CVAE} posterior results are produced by passing our
-256 whitened noisy testing set of \ac{GW} waveforms as input into the testing
-path of the pre-trained \ac{CVAE}. For each input waveform we sample until we
-have generated $5000$ posterior samples on 4 physical parameters
-($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of the full
-5-dimensional space to demonstrate that nuisance parameters (such as $\phi_0$)
-can (if desired) be marginalized out within the \ac{CVAE} procedure itself,
-rather than after training. 
+model as used in the benchmark analysis. When each waveform is placed within a
+training batch it is given a unique detector noise realisation after which the
+data is whitened using the same advanced detector
+\ac{PSD}~\cite{2016LRR....19....1A} from which the simulated noise is
+generated. The \ac{CVAE} posterior results are produced by passing our $256$
+whitened noisy testing set of \ac{GW} waveforms as input into the testing path
+of the pre-trained \ac{CVAE}~\ref{fig:network_config}. For each input waveform
+we sample until we have generated $5000$ posterior samples on 4 physical
+parameters ($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of
+the full 5-dimensional space to demonstrate that nuisance parameters (such as
+$\phi_0$) can (if desired) be marginalized out within the \ac{CVAE} procedure
+itself, rather than after training. 
 
 %
 % 1-D overlap results
@@ -460,19 +412,21 @@ the diagonal. Blue and red vertical lines represent the $5$---$95\%$
 non-symmetric confidence bounds for \texttt{Bilby} and variational inference
 respectively. Black crosses and vertical lines denote the true parameter values
 of the simulated signal.
-} 
+} % word count 102
 \end{figure*}
 
 %
 % discuss the corner plot results
 %
 We can immediately illustrate the accuracy of our machine learning predictions
-by directly plotting posteriors (generated using the samples) generated by our
+by directly plotting posteriors generated using the output samples from our
 \ac{CVAE} and \texttt{Bilby} approaches superimposed on each other. We show
 this for one example test dataset in Fig.~\ref{fig:corner_plot}, where the
-strong agreement between both \texttt{Bilby} and the \ac{CVAE} can be clearly
-seen. We provide additional test case example corner plots in the
-methods section. 
+strong agreement between both \texttt{Bilby} (blue) and the \ac{CVAE} (red) is
+clear. 
+
+%We provide additional test case example corner plots in the methods
+%section. 
 %\hunter{Add more corner plots in methods
 %section}~\chris{Maybe, but more corner plots aren't going to convince people.
 %We need to agregate the results into a single figure somehow (like the KL
@@ -491,7 +445,7 @@ divergence is then computed between all samplers with every other sampler
 (including themselves) over all 256 \ac{GW} test cases. The distributions of the
 resulting KL divergence values are then plotted, with each color representing a
 different sampler combination. Both the $x$ and $y$ axes are scaled
-logarithmically for readability.} 
+logarithmically for readability.} % word count 85 
 \end{figure}
 %
 
@@ -500,7 +454,7 @@ logarithmically for readability.}
 %
 Each independent sampler (including \ac{CVAE}) is run twice on the same test
 data to produce samples from the corresponding posterior. We then compute the
-KL-divergence between output distributions from each sampler with itself and
+\ac{KL}-divergence between output distributions from each sampler with itself and
 each sampler with all other samplers. For distributions that are identical the
 KL-divergence is equal to zero but since we are representing our posterior
 distributions using finite numbers of samples, identical distributions should
@@ -526,7 +480,7 @@ denotes the predicted cumulative distribution.
 %~\chris{we might have to work on
 %the description of the axes - maybe use the same notation that has been used in
 %the GW PE papers that include p-p plots.
-}
+} % word count 45
 \end{figure}
 %
 
@@ -559,26 +513,24 @@ The speed at which posterior samples are generated for all samplers used,
 including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is
 defined as the total time (in seconds) to produce $\sim 5000$ samples for each
 sampler. The dominating computational cost of running \texttt{VItamin} lies in
-the training time, which can take of order several hours to complete. 
-Completion is determined by comparing posteriors produced 
-by the machine learning model and those of \texttt{Bilby} iteratively 
-during training. We 
-additionally look to see whether the loss curves (Fig. \ref{fig:loss_log}) have flattened out. We use a single Tesla 
-V-100 GPU with $16$ Gb of RAM on an NVIDIA DGX-1 machine 
-at the LIGO Livingston site.
-Once trained there is no need to retrain the network and it may be run
-on any new input data of the same format. Reliable posterior estimates can then
-be expected if the data contain signals whose true parameters lie within the
-prior space over which the network has been trained and whose noise
-characteristics are consistent with that used in training. For our test case of
-\ac{BBH} signals \texttt{VItamin} produces samples from the posterior at a rate
-which is $\sim 6$---$7$ orders of magnitude faster than current inference
-techniques, representing a dramatic speed-up in performance. It should be noted
-that run-time for the Bayesian samplers is also dependent on the choice of
-sampler hyper-parameters, so total run-time may vary according to specific
-configuration choices. We choose Bayesian sampler hyper-parameters based on
-standard default configurations defined in the \texttt{Bilby}
-documentation~\cite{1811.02042}. 
+the training time, which can take of order several hours to complete.
+Completion is determined by comparing posteriors produced by the machine
+learning model and those of \texttt{Bilby} iteratively during training. We
+additionally look to see whether the loss curves (Fig. \ref{fig:loss_log}) have
+flattened out. We use a single Tesla V-100 GPU with $16$ Gb of RAM on an NVIDIA
+DGX-1 machine at the LIGO Livingston site.  Once trained there is no need to
+retrain the network and it may be run on any new input data of the same format.
+Reliable posterior estimates can then be expected if the data contain signals
+whose true parameters lie within the prior space over which the network has
+been trained and whose noise characteristics are consistent with that used in
+training. For our test case of \ac{BBH} signals \texttt{VItamin} produces
+samples from the posterior at a rate which is $\sim 6$---$7$ orders of
+magnitude faster than current inference techniques, representing a dramatic
+speed-up in performance. It should be noted that run-time for the Bayesian
+samplers is also dependent on the choice of sampler hyper-parameters, so total
+run-time may vary according to specific configuration choices. We choose
+Bayesian sampler hyper-parameters based on standard default configurations
+defined in the \texttt{Bilby} documentation~\cite{1811.02042}. 
  
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
@@ -612,6 +564,10 @@ VItamin & - & - & \bm{$2\times 10^{-3}$} & 1 \\
 \end{tabular}
 \label{Tab:speed}
 \end{table}
+
+%
+% word count ~960 - approx 9.6 words per line
+%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONCLUSIONS
@@ -710,6 +666,9 @@ signals and to analyses of \ac{GW} data beyond that of ground based
 experiments. Given the abundant benefits of this method, we hope that a variant
 of this of approach will form the basis for all \ac{GW} parameter estimation
 over the next several decades to come.
+%
+% word count ~780 - approx 10.7 words per line
+%
 
 %
 % acknowledge people and funding agencies
@@ -724,6 +683,10 @@ acknowledge the Science and Technology Facilities Council of the United
 Kingdom. CM and SH are supported by the Science and Technology Research Council
 (grant No.~ST/~L000946/1) and the European Cooperation in Science and
 Technology (COST) action CA17137.
+%
+% word count 80 
+%
+
 
 %% Here is the endmatter stuff: Supplementary Info, etc.
 %% Use \item's to separate, default label is "Acknowledgements"
@@ -745,6 +708,45 @@ Technology (COST) action CA17137.
 %\verb|\subsection| commands.  Methods section should be less than
 %800 words and if it is less than 200 words, it can be incorporated
 %into the main text.
+
+%
+% What is an autoencoder?
+%
+Conditional variational autoencoders are a form of variational autoencoder
+which are conditioned on an observation, where in our case the observation is a
+1-dimensional \ac{GW} time series signal $y$. The autoencoders from which
+variational autoencoders are derived are typically used for problems involving
+image reconstruction and/or dimensionality reduction. They perform a regression
+task whereby the autoencoder attempts to predict its own given input (model the
+identity function) through a limited and therefore distilled representation of
+the input parameter space. An autoencoder is composed of two neural networks,
+an encoder and a decoder~\cite{LIOU20083150}. The encoder network takes as
+input an vector, where the number of dimensions is a fixed number predefined by
+the user. The encoder converts the input vector into a (typically) lower
+dimensional space, referred to as the {\it{latent space}}. A representation of
+the data in the latent space is passed to the decoder network which generates a
+reconstruction of the original input data to the encoder network. Through
+training, the two sub-networks learn a how to efficiently represent a dataset
+within a lower dimensional latent space which will take on the most important
+properties of our input training data. In this way, the data can be compressed
+with little loss of fidelity. Additionally, the decoder simultaneously learns
+to decode the latent space representation and reconstruct that data back to its
+original form (the input data).
+
+%
+% What is a variational autoencoder?
+%
+The primary difference between a variational autoencoder~\cite{1812.04405} and
+an autoencoder concerns the method by which locations within the latent space
+are produced. In our variant of the variational autoender, the output of the
+encoder is interpreted as a set of parameters governing statistical
+distributions (in our case the means and variances of multivariate Gaussians).
+In proceeding to the decoder network, samples are randomly drawn from these
+distributions ($z$) and fed into the decoder, therefore adding an element of
+variation into the process. Therefore a particular input can have infinitely
+many outputs. In both the decoder and the encoder networks we use
+fully-connected layers (although this is not a constraint and any trainable
+network architecture may be used).
 
 %
 % A description of the loss function derivation 
@@ -914,8 +916,29 @@ function loss (blue), KL (orange) and total loss (green). The cost  loss and KL
 are both derived in the methods section and the total loss is simply a
 summation of the two. We plot the value of each loss as a function of the log
 of the number of training iterations where one iteration is defined as a
-training session over one batch of signals.}
+training session over one batch of signals.} % word count 73
 \end{figure}
+
+%
+% Priors
+%
+\begin{table}
+\centering
+\caption{The uniform prior boundaries used on the \ac{BBH} signal parameters for the benchmark
+and the \ac{CVAE} analyses.}
+\begin{tabular}[t]{lcccc}
+\toprule
+Parameter name & symbol & min & max & units \\
+\hline
+mass 1 & $m_1$ & 35 & 80 & solar masses \\
+mass 2 & $m_2$ & 35 & 80 & solar masses \\
+luminosity distance & $d_{\text{L}}$ & 1 & 3 & Gpc \\
+time of coalescence & $t_{0}$ & 0.65 & 0.85 & seconds \\
+phase at coalscence & $\phi_{0}$ & 0 & $2\pi$ & radians \\
+\botrule
+\end{tabular}
+\label{tab:prior_ranges}
+\end{table}
 
 When the network has been trained it can be used for the inference of unknown
 physical parameters given a new single instance of measured data $y$. To do
@@ -1002,6 +1025,41 @@ parameter space.
 \end{itemize}
 %
 
+%
+% Some practical aspects of the training
+%
+As is standard practice in machine learning applications, the cost
+is computed over a batch of training samples and repeated for a pre-defined
+number of iterations. For our purposes, we found that $\sim3\times10^6$
+training iterations, a batch size of $128$ training samples and a learning rate
+of $10^{-4}$ was sufficient.  We used a total of $10^6$ training samples in
+order to adequately cover the \ac{BBH} parameter space.  We additionally ensure
+that an (effectively) infinite number of noise realizations are employed by
+making sure that every time a training sample is used it is given a unique
+noise realisation despite only having a finite number of waveforms. Each neural
+network is three layers deep and has $2048$ neurons in each layer, has a latent
+space dimension of $64$.  Training is considered complete when both components
+to the loss function have converged to approximately constant values.
+
+%
+% Test procedure
+%
+After training has completed and we wish to use the network for inference we
+follow the procedure described in the right hand panel of
+Fig.~\ref{fig:network_config}. Given a new $y$ data sample (not taken from the
+training set) we simply input this into the encoder $\textrm{E}_1$ from which we
+obtain a single value of $\mu_{1}$ describing a distribution (conditional on the
+data $y$) in the latent space. From the multivariate Gaussian distribution
+defined by $\mu_{1}$ a random sample from the latent space is generated which,
+together with the original input test data $y$, is input into the decoder
+network D. The output of the decoder network defines the parameters of a
+multivariate Gaussian distribution in the physical parameter space from which a
+random sample is drawn. This sample is a random draw from the $r_{\theta}(x|y)$
+distribution which represents our approximation to the true posterior. A
+comprehensive representation in the form of samples drawn from the entire joint
+posterior distribution can then be obtained by simply repeating this procedure
+with the same input data (see Eq.~\ref{eq:latent_model}). A more detailed
+description is given in Sec.~\ref{sec:methods}.
 
 \bibliographystyle{apsrev4-1}
 \bibliography{references}% Produces the bibliography via BibTeX.
