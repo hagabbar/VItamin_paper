@@ -371,7 +371,7 @@ We use a sampling frequency of $256$~Hz and a timeseries duration of 1 second.
 The waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
-\texttt{Bilby}. For each run and sampler we extract $5000$ samples from the
+\texttt{Bilby}. For each run and sampler we extract $3000$ samples from the
 posterior on the 5 physical parameters.  
 
 %
@@ -390,7 +390,7 @@ networks and need not be performed with the true \ac{PSD}.}. The \ac{CVAE}
 posterior results are produced by passing our $256$ whitened noisy testing set
 of \ac{GW} waveforms as input into the testing path of the pre-trained
 \ac{CVAE}~\ref{fig:network_config}. For each input waveform we sample until we
-have generated $5000$ posterior samples on 4 physical parameters
+have generated $3000$ posterior samples on 4 physical parameters
 ($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of the full
 5-dimensional space to demonstrate that nuisance parameters (such as $\phi_0$)
 can (if desired) be marginalized out within the \ac{CVAE} procedure itself,
@@ -474,7 +474,7 @@ existing samplers.
     \caption{\label{fig:pp_plot} One dimensional P-P plots on 4 parameters 
     for every 5 independent samplers 
     (defined in the main text) using 256
-unique test samples and $5000$ posterior sample predictions per test sample.
+unique test samples and $3000$ posterior sample predictions per test sample.
 The $x$-axis denotes the theoretical cumulative distribution whereas the y-axis
 denotes the predicted cumulative distribution.
 %~\chris{we might have to work on
@@ -511,7 +511,7 @@ a different sampler and each line representing a different physical parameter.
 %
 The speed at which posterior samples are generated for all samplers used,
 including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is
-defined as the total time (in seconds) to produce $\sim 5000$ samples for each
+defined as the total time (in seconds) to produce $\sim 3000$ samples for each
 sampler. The dominating computational cost of running \texttt{VItamin} lies in
 the training time, which can take of order several hours to complete.
 Completion is determined by comparing posteriors produced by the machine
@@ -548,7 +548,7 @@ defined in the \texttt{Bilby} documentation~\cite{1811.02042}.
 % 
 \begin{table}
 \centering
-\caption{Durations required to produce $5000$ posterior samples from each of
+\caption{Durations required to produce $3000$ posterior samples from each of
 the different posterior sampling approaches}
 \begin{tabular}[t]{lcccc}
 \toprule
