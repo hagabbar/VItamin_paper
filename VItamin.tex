@@ -85,8 +85,8 @@ autoencoders for gravitational-wave astronomy}
 % TO-DO LIST
 %
 % 1. Get abstract word count roughly correct - currently 240
-% 2. Get total word count roughly correct - currently (240, 680, 960, 780) =
-% 2660
+% 2. Get total word count roughly correct - currently (195, 680, 960, 620) =
+% 2455
 % 3. Clean captions and check word count
 % 4. Fix all plots
 % 5. Tidy Methods section
@@ -96,6 +96,7 @@ autoencoders for gravitational-wave astronomy}
 % 9. Fix references - check limit
 % 10. Maybe change title
 % 11. Maybe add extra plots to methods section
+% 12. Do a spell check
 
 \acrodef{GW}[GW]{gravitational wave}
 \acrodef{BBH}[BBH]{binary black hole}
@@ -132,9 +133,8 @@ autoencoders for gravitational-wave astronomy}
 %
 % background
 %
-The third \ac{LIGO} and Virgo observing run is well under way and we are now in
-an era where \ac{GW} detection is commonplace~\cite{PhysRevLett.116.061102,
-PhysRevX.6.041015,PhysRevLett.119.161101}. As the sensitivity of the global
+\ac{GW} detection is now commonplace~\cite{PhysRevLett.116.061102,
+PhysRevX.6.041015,PhysRevLett.119.161101} and as the sensitivity of the global
 network of \ac{GW} detectors improves, we will observe $\mathcal{O}(100)$s of
 transient \ac{GW} events per year~\cite{1409.7215}. For each of these events
 the current methods used to estimate their source parameters employ optimally
@@ -145,15 +145,13 @@ approaches~\cite{1409.7215}.
 %
 For \ac{BBH} signals, existing \ac{GW} analyses can take $\mathcal{O}(10^{5} -
 10^{6})$ seconds to complete~\cite{1409.7215} and for \ac{BNS}
-signals this timescale increases by at least an order of magnitude
+signals this increases by at least an order of magnitude
 ~\cite{PhysRevLett.119.161101}. It is for this latter class of signal (and
 \ac{NSBH} systems) that counterpart \ac{EM} signatures are expected, containing
 prompt emission on timescales of 1 second -- 1 minute. The current fastest
 method for alerting \ac{EM} follow-up observers~\cite{2016PhRvD..93b4013S}, can
 provide estimates in $\mathcal{O}(1)$ minute, on a limited range of key source
-parameters. Given the deluge of expected signals, and the scientifc gains to be
-made through speed improvement it is imperative that a significantly more
-efficient parameter estimation method be developed.
+parameters. 
 %
 % results
 %
@@ -289,9 +287,9 @@ Sec.~\ref{sec:methods} and in~\cite{1904.06264}. The final form of the
 cross-entropy loss function is given by the bound
 %
 \begin{align}\label{eq:cost3}
-H \lesssim -\frac{1}{N}\sum_{n=1}^{N}&\left[\log
-r_{\theta_{2}}(x_{n}|z_{n},y_{n})\right.\nonumber\\
-&\left.-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\right].
+H \lesssim -\frac{1}{N}\sum_{n=1}^{N}&\Big[\log
+r_{\theta_{2}}(x_{n}|z_{n},y_{n})\nonumber\\
+&-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\Big].
 \end{align}
 %
 and requires three fully-connected networks; two encoder networks (labelled
@@ -357,7 +355,8 @@ with the existing method for posterior sampling.
 %
 For the benchmark analysis we assume that 5 parameters are unknown: the
 component masses $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the time of
-coalescence $t_0$, and the phase at coalescence $\phi_0$. For each
+
+coalescence $t_{0}$, and the phase at coalescence $\phi_0$. For each
 parameters we use a uniform prior with ranges defined in
 Table~\ref{tab:prior_ranges}.
 %both black hole masses $m_1$ and $m_2$, which we allow to range accross
@@ -387,14 +386,17 @@ model as used in the benchmark analysis. When each waveform is placed within a
 training batch it is given a unique detector noise realisation after which the
 data is whitened using the same advanced detector
 \ac{PSD}~\cite{2016LRR....19....1A} from which the simulated noise is
-generated. The \ac{CVAE} posterior results are produced by passing our $256$
-whitened noisy testing set of \ac{GW} waveforms as input into the testing path
-of the pre-trained \ac{CVAE}~\ref{fig:network_config}. For each input waveform
-we sample until we have generated $5000$ posterior samples on 4 physical
-parameters ($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of
-the full 5-dimensional space to demonstrate that nuisance parameters (such as
-$\phi_0$) can (if desired) be marginalized out within the \ac{CVAE} procedure
-itself, rather than after training. 
+generated\footnote{Although we whiten the data as input to our network the
+whitening is simply to scale the input to a level more suitable to neural
+networks and need not be performed with the true \ac{PSD}.}. The \ac{CVAE}
+posterior results are produced by passing our $256$ whitened noisy testing set
+of \ac{GW} waveforms as input into the testing path of the pre-trained
+\ac{CVAE}~\ref{fig:network_config}. For each input waveform we sample until we
+have generated $5000$ posterior samples on 4 physical parameters
+($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of the full
+5-dimensional space to demonstrate that nuisance parameters (such as $\phi_0$)
+can (if desired) be marginalized out within the \ac{CVAE} procedure itself,
+rather than after training. 
 
 %
 % 1-D overlap results
@@ -584,90 +586,81 @@ VItamin & - & - & \bm{$2\times 10^{-3}$} & 1 \\
 %
 % recap and main result
 %
-There are currently a variety of challenges within the field of \ac{GW}
-parameter estimation including, and not limited to, accounting for detector
-artefacts (non-Gaussian transient "glitches") in the data, time-dependent
-variations (non-stationarity) of the detector noise power spectrum density,
-systematic uncertainties in the waveform models themselves and decreasing the
-latency with which parameter estimates are produced~\cite{1409.7215}. In this
-letter we have demonstrated that we are able to reproduce, to a high degree of
-accuracy, Bayesian posterior probability distributions generated through
-machine learning. This is accomplished using \acp{CVAE} trained on simulated
-\ac{GW} signals and does not require the input of precomputed posterior
-estimates. We have demonstrated that our neural network model which, when
-trained, can reproduce complete and accurate posterior estimates in
+In this letter we have demonstrated that we are able to reproduce, to a high
+degree of accuracy, Bayesian posterior probability distributions generated
+through machine learning. This is accomplished using \acp{CVAE} trained on
+simulated \ac{GW} signals and does not require the input of precomputed
+posterior estimates. We have demonstrated that our neural network model which,
+when trained, can reproduce complete and accurate posterior estimates in
 $\mathcal{O}(1)$ milliscond, can achieve the same quality of results as the
 trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 
 %
-% discuss the near term CBC implications and why this is a game-changer
+% CBC implications and why this is a game-changer - speed for EM followup
 %
 The significance of our results is most evident in the orders of magnitude
 increase in speed over existing approaches. This increase will help the
 LIGO-Virgo collaboration alert \ac{EM} follow-up partners with minimum latency.
 Improved low-latency alerts will be especially pertinent for signals from
-\ac{BNS}, like GW170817 \cite{PhysRevLett.119.161101}, and \ac{NSBH} signals where
-parameter estimation will no longer be limiting factor\footnote{The complete
+\ac{BNS} mergers (e.g. GW170817~\cite{PhysRevLett.119.161101}) and \ac{NSBH} signals where
+parameter estimation speed will no longer be limiting factor\footnote{The complete
 low-latency pipeline includes a number of steps. The process of \ac{GW} data
 aquisition is followed by the transfer of data. There is then the corresponding
 analysis and the subsequent communication of results to the \ac{EM} astronomy
 community after which there are physical aspects such as slewing observing
 instruments to the correct pointing.} in observing the prompt \ac{EM} emission
 expected on shorter time scales than is acheivable with existing \ac{LVC}
-analysis tools such as Bayestar~\cite{2016PhRvD..93b4013S}. The predicted number of
-future detections of \ac{BNS} mergers ($\sim 180$) will severely
-strain the \ac{GW} cummunity's current computational resources using existing
-Bayesian methods. Our approach will provide (potentially) full-parameter
-estimation on \ac{CBC} signals in seconds on a single \ac{GPU}. Our trained
-network is also incredibly modular, and can be shared and used easily by any
-user to produce results. The specific analysis described in the letter assumes
-a uniform prior on the signal parameters but this is a choice and the network
-can be trained with any prior the user demands. However, posterior samples
-obtained using a network trained on the uniform prior are essentially samples
-from the likelihood. Users then have the option to (cheaply) resample from the
-posterior according to their own prior choices. We also note that our method
-will be invaluable for population studies since populations may now be
-generated and analysed in a full-Bayesian manner on a vastly reduced and
-therefore tractable time scale. 
+analysis tools such as Bayestar~\cite{2016PhRvD..93b4013S}. 
+
+%
+% CBC implications and why this is a game-changer - faster, modular
+%
+The predicted number of future detections of \ac{BNS} mergers ($\sim
+180$~\cite{1304.0670,1811.12907}) will severely strain the \ac{GW} community's
+current computational resources using existing Bayesian methods. Future
+iterations of our approach will provide full-parameter estimation on \ac{CBC}
+signals in $<1$ second on a single \ac{GPU}. Our trained network is also
+incredibly modular, and can be shared and used easily by any user to produce
+results. The specific analysis described in the letter assumes a uniform prior
+on the signal parameters. However, this is a choice and the network can be
+trained with any prior the user demands or users can cheaply resample
+accordingly from the output of the network trained on the uniform prior. We
+also note that our method will be invaluable for population studies since
+populations may now be generated and analysed in a full-Bayesian manner on a
+vastly reduced time scale. 
 
 %
 % future work, current limitations and prospects
 %
-\ac{GW} data is typically sampled at 16kHz and downsampled to more managable
-rates dependent on the signal class being analysed. For \ac{BBH} signals this
-is usually chosen as $1$---$4$ KHz dependent upon mass of binary wheras we have
-chosen to use the noticably low sampling rate of 256Hz largely in order to
+For \ac{BBH} signals, \ac{GW} data is usually sampled at $1$---$4$ KHz
+dependent upon the mass of binary. We have chosen to use the noticably low
+sampling rate of 256Hz and a single detector configuration largely in order to
 decrease the computational time required to develop our approach. We do not
 anticipate any problems in extending our analysis to higher sampling
 frequencies other than an increase in training time and a larger burden on the
-\ac{GPU} memory. The lower sampling rate naturally limited our chosen \ac{BBH}
+\ac{GPU} memory. Our lower sampling rate naturally limited the chosen \ac{BBH}
 mass parameter space to high mass signals. We similarly do not anticipate that
 extending the parameter space to lower masses will lead to problems but do
 expect that a larger number of training samples may be required. Future work
 will incorporate a multi-detector configuration at which point parameter
-estimation can be extended to sky localisation. In this work we have elected to
-use a single detector configuration so that we may again decrease the
-computational time required to develop the approach.
+estimation will be extended to sky localisation. 
 
 %
 % Non gaussian noise and the final statement
 %
-In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts. To
-account for this noise within our scheme, we would train our network using
-samples of real detector noise (preferably recent examples to best reflect the
-state of the detectors). Our method has the added advantage of not being
-dependent on the choice of \ac{PSD} used for whitening, unlike current Bayesian
-methods. The whitening procedure applied to the training data for the \ac{CVAE}
-is simply to rescale the input to a scale more suitable to neural networks
-whereas for existing methods assumptions on the \ac{PSD} directly affect the
-posterior results. Our work can naturally be expanded to include the full range
-of \ac{CBC} signal types but also to any and all other parameterised \ac{GW}
-signals and to analyses of \ac{GW} data beyond that of ground based
-experiments. Given the abundant benefits of this method, we hope that a variant
-of this of approach will form the basis for all \ac{GW} parameter estimation
-over the next several decades to come.
+In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts and
+time-dependent variation in the detector noise \ac{PSD}. Existing methods
+incorporate a parameterised \ac{PSD} estimation into their
+inference~\cite{ref}. To account for these within our scheme, we would retrain
+our network at regular intervals using samples of real detector noise
+(preferably recent examples to best reflect the state of the detectors). Our
+work can naturally be extended to include the full range of \ac{CBC} signal
+types but also to any and all other parameterised \ac{GW} signals and to
+analyses of \ac{GW} data beyond that of ground based experiments. Given the
+abundant benefits of this method, we hope that a variant of this of approach
+will form the basis for future \ac{GW} parameter estimation.
 %
-% word count ~780 - approx 10.7 words per line
+% word count ~620
 %
 
 %
@@ -721,14 +714,14 @@ task whereby the autoencoder attempts to predict its own given input (model the
 identity function) through a limited and therefore distilled representation of
 the input parameter space. An autoencoder is composed of two neural networks,
 an encoder and a decoder~\cite{LIOU20083150}. The encoder network takes as
-input an vector, where the number of dimensions is a fixed number predefined by
+input a vector, where the number of dimensions is a fixed number predefined by
 the user. The encoder converts the input vector into a (typically) lower
 dimensional space, referred to as the {\it{latent space}}. A representation of
 the data in the latent space is passed to the decoder network which generates a
 reconstruction of the original input data to the encoder network. Through
-training, the two sub-networks learn a how to efficiently represent a dataset
+training, the two sub-networks learn how to efficiently represent a dataset
 within a lower dimensional latent space which will take on the most important
-properties of our input training data. In this way, the data can be compressed
+properties of the input training data. In this way, the data can be compressed
 with little loss of fidelity. Additionally, the decoder simultaneously learns
 to decode the latent space representation and reconstruct that data back to its
 original form (the input data).
@@ -741,30 +734,26 @@ an autoencoder concerns the method by which locations within the latent space
 are produced. In our variant of the variational autoender, the output of the
 encoder is interpreted as a set of parameters governing statistical
 distributions (in our case the means and variances of multivariate Gaussians).
-In proceeding to the decoder network, samples are randomly drawn from these
-distributions ($z$) and fed into the decoder, therefore adding an element of
-variation into the process. Therefore a particular input can have infinitely
-many outputs. In both the decoder and the encoder networks we use
-fully-connected layers (although this is not a constraint and any trainable
-network architecture may be used).
+In proceeding to the decoder network, samples from the latent space ($z$) are
+randomly drawn from these distributions and fed into the decoder, therefore
+adding an element of variation into the process. A particular input can then
+have a range of possible outputs. In both the decoder and the encoder networks
+we use fully-connected layers (although this is not a constraint and any
+trainable network architecture may be used).
 
+\subsection{Cost function derivation}
 %
 % A description of the loss function derivation 
 %
-We begin with the statement defining the aim of the analysis. We wish to obtain
-a function that reproduces the posterior distribution (the probability of our
-physical parameters $x$ given some measured data $y$). The cross entropy
-between 2 distributions is defined as
-%
-\begin{equation}\label{eq:cross_ent}
-H(p,r) = -\int dx\, p(x|y) \log r_{\theta}(x|y)
-\end{equation}
-%
-where we have made the distributions explicitly conditional on $y$ (our
-measurement). In this case $p(x|y)$ is the target distribution (the true
-posterior) and $r_{\theta}(x|y)$ is the parametric distribution that we will
-use neural networks to construct. In this case $\theta$ represents the
-trainable neural network parameters. 
+We will now derive the cost function and the corresponding network structure
+and we begin with the statement defining the aim of the analysis. We wish to
+obtain a function that reproduces the posterior distribution (the probability
+of our physical parameters $x$ given some measured data $y$). The cross entropy
+between 2 distributions is defined in Eq.~\ref{eq:cross_ent} where we have made
+the distributions explicitly conditional on $y$ (our measurement). In this case
+$p(x|y)$ is the target distribution (the true posterior) and $r_{\theta}(x|y)$
+is the parametric distribution that we will use neural networks to construct.
+The variable $\theta$ represents the trainable neural network parameters. 
 
 The cross-entropy is minimised when $p(x|y)=r_{\theta}(x|y)$ and so by
 minimising
@@ -775,7 +764,7 @@ H &= -\text{E}_{p(y)}\left[\int dx\,p(x|y) \log r_{\theta}(x|y)\right]
 % 
 where $\text{E}_{p(y)}[\cdot]$ indicates the expectation value over the
 distribution of measurements $y$, we therefore make the parameteric distribution
-as similar to the target for all possible measurements $y$.
+as similar as possible to the target for all possible measurements $y$.
 
 Converting the expectation value into an integral over $y$ weighted by $p(y)$
 and applying Bayes theorem we obtain
@@ -786,10 +775,9 @@ H &= -\int dx\,p(x)\int dy\,p(y|x)\log r_{\theta}(x|y)
 %
 where $p(x)$ is the prior distribution on the physical parameters $x$.
 
-The conditional variational autoencoder network outlined in
-Fig.~\ref{fig:network_config} makes use of a conditional latent variable model.
-Our parameteric model is constructed from the product of 2 seperate
-distributions marginalised over the latent space
+The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} makes use of a
+conditional latent variable model and our parameteric model is constructed from
+the product of 2 seperate distributions marginalised over the latent space
 %
 \begin{align}\label{eq:latent_model}
 r_{\theta}(x|y) &= \int dz\,r_{\theta_{1}}(z|y)r_{\theta_{2}}(x|z,y).
@@ -807,14 +795,16 @@ to minimise $H$ over the $\theta_{1}$ and $\theta_{2}$ would be enough to solve
 this problem. However, as shown in~\cite{NIPS2015_5775} this is an intractable
 problem and a network cannot be trained directly to do this. Instead we define
 a recognition function $q_{\phi}(z|x,y)$ that will be used to derive an
-\ac{ELBO}.
+\ac{ELBO}. Here we use $\phi$ to represent the trainable parameters of an
+encoder network ($\text{E}_{2}$).
 
 Let us first define the \ac{KL} divergence between 2 of our
 distributions as
 %
 \begin{align}\label{eq:kl}
-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{2}}(z|x,y)\right] &= \int dz\,
-\log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta_{2}}(z|x,y)}\right).
+\text{KL}&\left[q_{\phi}(z|x,y)||r_{\theta_{2}}(z|x,y)\right] = \\
+&\int dz\,q_{\phi}(z|x,y)
+\log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta_{2}}(z|x,y)}\right).\nonumber
 \end{align}
 %  
 It can be shown that after some manipulation that
@@ -841,7 +831,7 @@ $\phi$) that minimised the \ac{KL}-divergence then we can state that
 After some further manipulation of Eq.~\ref{eq:elbo2} we find that
 %
 \begin{align}\label{eq:logr}
-\log r_{\theta}(x|y) &\geq  \text{E}_{q_{\phi}(z|x,y)}\left[\log
+\log r_{\theta}(x|y) \geq  &\text{E}_{q_{\phi}(z|x,y)}\left[\log
 r_{\theta_{2}}(x|z,y)\right] \nonumber\\
 &-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right].
 \end{align}
@@ -850,7 +840,7 @@ We can now substitute this inequality into Eq.~\ref{eq:cost1} (our cost
 function) to obtain
 %
 \begin{align}\label{eq:cost2}
-H \leq & -\int dx\, p(x)\int dy\,p(y|x)
+H \leq  -\int dx\, p(x)\int dy &\,p(y|x)
 \left\{\text{E}_{q_{\phi}(z|x,y)}\left[\log r_{\theta_{2}}(x|z,y)\right]
 \right.\nonumber\\
 &-\left.\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\right\}  
