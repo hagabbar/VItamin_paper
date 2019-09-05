@@ -299,12 +299,11 @@ decoder network (D) representing the function $r_{\theta_{2}}(x|z,y)$. The
 function $\text{KL}(\cdot||\cdot)$ denotes the Kulback-Leibler divergence and
 the variable $z$ represents locations within the \emph{latent space}.  This
 latter object is typically a lower dimensional space within which the encoder
-networks attempt to represent their input data. 
-
-In practice, during the training procedure the various integrations that are
-part of the derivation are approximated by a sum over a batch of $N$ training
-data samples at each stage of training. Training is performed via a series of
-steps detailed in Sec.~\ref{sec:methods}.
+networks attempt to represent their input data. In practice, during the
+training procedure the various integrations that are part of the derivation are
+approximated by a sum over a batch of $N$ training data samples (indexed by $n$
+above) at each stage of training. Training is performed via a series of steps
+detailed in Sec.~\ref{sec:methods}.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
@@ -740,6 +739,7 @@ have a range of possible outputs. In both the decoder and the encoder networks
 we use fully-connected layers (although this is not a constraint and any
 trainable network architecture may be used).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cost function derivation}
 %
 % A description of the loss function derivation 
@@ -840,22 +840,15 @@ function) to obtain
 %
 \begin{align}\label{eq:cost2}
 H \leq  -\int dx\, p(x)\int dy &\,p(y|x)
-\left\{\text{E}_{q_{\phi}(z|x,y)}\left[\log r_{\theta_{2}}(x|z,y)\right]
-\right.\nonumber\\
-&-\left.\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\right\}  
+\Big[\text{E}_{q_{\phi}(z|x,y)}\left[\log r_{\theta_{2}}(x|z,y)\right]
+\nonumber\\
+&-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\Big]  
 \end{align}
 %
 which can in practice be approximated as a stochastic integral over draws of
 $x$ from the prior, $y$ from the likelihood function $p(y|x)$, and from the
-recognition function, giving us Eq.~\ref{eq:cost3}.
-
-In this case we draw $N$ sets of physical parameter, corresponding data
-sets, and draws from the recognition function. It is important to note that
-whilst it is true that the \ac{KL}-divergence between the $q_{\phi}(z|x,y)$ and
-$r_{\theta_{2}}(z|x,y)$ (seen in Eq.~\ref{eq:elbo1}) should be minimised and in
-an ideal case be equal to zero, that is not the case for the \ac{KL}-divergence in
-Eq.~\ref{eq:cost3}. In this case our aim is to minimise $H$ which implies that
-the \ac{KL}-divergence should be low but not necessarily zero.
+recognition function, giving us Eq.~\ref{eq:cost3}, the actual function
+evaluated within the training procedure.
 
 We have now set up a system composed of 3 functions that have well defined
 inputs and outputs where the mapping of those inputs to outputs is governed by
@@ -866,32 +859,30 @@ inputs and outputs appropriately to compute the cost function $H$ and
 back-propogate cost function derivatives to update the network parameters. The
 network structure shown in Fig.~\ref{fig:network_config} shows how for a batch
 of $N$ sets of $x$ and corresponding $y$ values first both $x$ and $y$ are fed
-into the encoder 2 network that produces the means and variances of the latent
-space $z$ describing the $q_{\phi}(z|x,y)$ distribution function. Next (the
-order does not matter) the data $y$ alone is passed into the encoder 1 network
-that produces the means and variances of the latent space $z$ describing the
-$r_{\theta_{1}}(z|y)$ distribution function. Given the parameters of these
+into the encoder 2 network that produces the means and variances describing the
+$q_{\phi}(z|x,y)$ distribution in the latent space $z$. Next (the order does
+not matter) the data $y$ alone is passed into the encoder 1 network that
+produces the means and variances describing the $r_{\theta_{1}}(z|y)$
+distribution function in the latent space. Given the parameters of these
 Gaussian (diagonal covariance matrix) distributions the $\text{KL}$-divergence
-is computed as
+within the cost function is computed as
 %
 \begin{align}\label{eq:klgauss}
-\text{KL}&\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] =
-\\
+\text{KL}&\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] = \\
 &\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
 \frac{(\mu_{r,j}-\mu_{q,j})^{2}}{\sigma_{r,j}^{2}}+
 \log\left(\frac{\sigma_{r,j}^{2}}{\sigma_{q,j}^{2}}\right)\right] -
-\frac{n_{z}}{2}\nonumber 
-\end{align}
+\frac{n_{z}}{2}\nonumber \end{align}
 %
-where those labelled and indexed parameters output from the encoder networks are
-denoted by $\mu$ and $\sigma$.
+where those labelled and indexed parameters output from the encoder networks
+are denoted by $\mu$ and $\sigma$.
 
 To evaluate the first term within the cost function (Eq.~\ref{eq:cost3}) we
 require the data $y$ and a randomly drawn $z$ value from the latent space defined
 by $q_{\phi}(z|x,y)$. These are then passed as input into the decoder network D
 that produces the means and variances in the physical parameter space $x$ describing
 the $r_{\theta_{2}}(x|z,y)$ distribution function. With the function now well
-defined we simply evaluate the function at the values of the input $x_{n}$
+defined we simply evaluate the function at the input $x_{n}$
 values. Training of the network proceeds until a convergence of the cost is
 seen. 
 
@@ -946,8 +937,24 @@ distribution one would repeat the procedure with the same input data
 $\mathcal{O}(1000)$ times from which parameter confidence bounds can be
 determined.      
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The training procedure}
 %
-% Training procedure
+% Introduce the training process
+%
+Having set up a cost function composed of 3 probability functions that have
+well defined inputs and outputs where the mapping of those inputs to outputs is
+governed by the parameter sets $\theta_{1},\theta_{2},\phi$. These parameters
+are the weights and biases of 3 neural networks acting as (variational)
+encoder, decoder, and encoder respectively. To train such a network one must
+connect the inputs and outputs appropriately to compute the cost function $H$
+and back-propogate cost function derivatives to update the network parameters.
+The network structure shown schematically in Fig.~\ref{fig:network_config}
+shows how for a batch of $N$ sets of $x$ and corresponding $y$ values, the cost
+function is computed during each iteration of training. 
+
+%
+% Go through the training step by step
 %
 Training is performed via a series of steps illustrated in
 Fig.~\ref{fig:network_config}.
@@ -983,29 +990,74 @@ Gaussian but, as we will show, this does \emph{not} imply that our final output
 posterior estimates will also be multivariate Gaussians.
 %
 \item Finally the loss component described by the K-L divergence between the
-distributions described by $\mu^{j}_1$ and $\mu^{j}_2$ is computed. For further
-details on training and the full derivation of the loss functions, see methods
-subsection \textit{Loss function derivation}. Here we highlight that we do not
-desire that the network tries to make these 2 distributions equal to each
-other. Rather, we want the ensemble network to minimise the total loss (of
-which this is a component).
+distributions described by $\mu^{j}_1$ and $\mu^{j}_2$ is computed using
+%
+\begin{align}\label{eq:klgauss}
+\text{KL}&\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] = \\
+&\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
+\frac{(\mu_{r,j}-\mu_{q,j})^{2}}{\sigma_{r,j}^{2}}+
+\log\left(\frac{\sigma_{r,j}^{2}}{\sigma_{q,j}^{2}}\right)\right] -
+\frac{n_{z}}{2}.\nonumber \end{align}
+%
+Here we highlight that we do not desire that the network tries to make these 2
+distributions equal to each other. Rather, we want the ensemble network to
+minimise the total cost (of which this is a component).
 %
 \end{itemize}
 
-We then repeat the following 3 steps to
-obtain new samples from the posterior
+%
+% Some practical aspects of the training
+%
+As is standard practice in machine learning applications, the cost
+is computed over a batch of training samples and repeated for a pre-defined
+number of iterations. 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Network and Training parameters}
+%
+% Describe the specific network hyperparameters
+%
+For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
+size of $128$ training samples and a learning rate of $10^{-4}$ was sufficient.
+We used a total of $10^6$ training samples in order to adequately cover the
+\ac{BBH} parameter space. We additionally ensure that an (effectively)
+infinite number of noise realizations are employed by making sure that every
+time a training sample is used it is given a unique noise realisation despite
+only having a finite number of waveforms. Each neural network
+($\text{E}_1$,$\text{E}_2$,D) is composed of 3 fully connected layers and has
+$2048$ neurons in each layer with ReLU activation functions between layers. We
+use a latent space dimension of $64$ and we consider training complete when
+both components to the loss function have converged to approximately constant
+values.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The testing procedure}
 %~\chris{Hunter, note that we only need to
 %do the first pass through E1 only once for a given peice of data do the real
 %cost is only in the other steps. This will likely only change the timing by
 %~25\% so it might not be worth doing the tests again. Just bear it in mind.}
 %
+%
+% Introduce the testing procedure
+%
+After training has completed and we wish to use the network for inference we
+follow the procedure described in the right hand panel of
+Fig.~\ref{fig:network_config}. Given a new $y$ data sample (not taken from the
+training set) we simply input this into the encoder $\textrm{E}_1$ from which we
+obtain a single value of $\mu_{1}$ describing a distribution (conditional on the
+data $y$) in the latent space. We then repeat the following steps:
+
+%
+% Go through the testing step by step
+%
 \begin{itemize}
 %
-\item We randomly draw a latent space sample $z_1$.
+\item We randomly draw a latent space sample $z_1$ from the latent space
+distribution defined by $\mu_1$.
 %
-\item Our $z_1$ sample and the corresponding $y$ data are fed as input to our
-pre-trained decoder network. The decoder network returns a set of moments
+\item Our $z_1$ sample and the corresponding original $y$ data are fed as input to our
+pre-trained decoder network (D). The decoder network returns a set of moments
 $\mu^{x}_1$ which describe a multivariate Gaussian distribution in the physical
 parameter space.
 %
@@ -1015,40 +1067,11 @@ parameter space.
 %
 
 %
-% Some practical aspects of the training
+% Final testing thoughts
 %
-As is standard practice in machine learning applications, the cost
-is computed over a batch of training samples and repeated for a pre-defined
-number of iterations. For our purposes, we found that $\sim3\times10^6$
-training iterations, a batch size of $128$ training samples and a learning rate
-of $10^{-4}$ was sufficient.  We used a total of $10^6$ training samples in
-order to adequately cover the \ac{BBH} parameter space.  We additionally ensure
-that an (effectively) infinite number of noise realizations are employed by
-making sure that every time a training sample is used it is given a unique
-noise realisation despite only having a finite number of waveforms. Each neural
-network is three layers deep and has $2048$ neurons in each layer, has a latent
-space dimension of $64$.  Training is considered complete when both components
-to the loss function have converged to approximately constant values.
-
-%
-% Test procedure
-%
-After training has completed and we wish to use the network for inference we
-follow the procedure described in the right hand panel of
-Fig.~\ref{fig:network_config}. Given a new $y$ data sample (not taken from the
-training set) we simply input this into the encoder $\textrm{E}_1$ from which we
-obtain a single value of $\mu_{1}$ describing a distribution (conditional on the
-data $y$) in the latent space. From the multivariate Gaussian distribution
-defined by $\mu_{1}$ a random sample from the latent space is generated which,
-together with the original input test data $y$, is input into the decoder
-network D. The output of the decoder network defines the parameters of a
-multivariate Gaussian distribution in the physical parameter space from which a
-random sample is drawn. This sample is a random draw from the $r_{\theta}(x|y)$
-distribution which represents our approximation to the true posterior. A
-comprehensive representation in the form of samples drawn from the entire joint
+A comprehensive representation in the form of samples drawn from the entire joint
 posterior distribution can then be obtained by simply repeating this procedure
-with the same input data (see Eq.~\ref{eq:latent_model}). A more detailed
-description is given in Sec.~\ref{sec:methods}.
+with the same input data (see Eq.~\ref{eq:latent_model}).
 
 \bibliographystyle{apsrev4-1}
 \bibliography{references}% Produces the bibliography via BibTeX.
