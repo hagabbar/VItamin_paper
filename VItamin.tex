@@ -84,19 +84,21 @@ autoencoders for gravitational-wave astronomy}
 
 % TO-DO LIST
 %
-% 1. Get abstract word count roughly correct - currently 240
+% 1. Get abstract word count roughly correct - currently 195 (done)
 % 2. Get total word count roughly correct - currently (195, 680, 960, 620) =
 % 2455
-% 3. Clean captions and check word count
-% 4. Fix all plots
-% 5. Tidy Methods section
-% 6. Polish language throughout
-% 7. Check acronymns for consistency
+% 3. Clean captions and check word count (done)
+% 4. Fix all plots (done)
+% 5. Tidy Methods section (done)
+% 6. Polish language throughout (done)
+% 7. Check acronyms for consistency
 % 8. Check names and variables for consistency (KL, VItamin, etc...)
 % 9. Fix references - check limit
 % 10. Maybe change title
 % 11. Maybe add extra plots to methods section
-% 12. Do a spell check
+% 12. Do a spell check (done)
+% 13. Fix acknowledgments (done)
+% 14. Clean codes and add ref to github
 
 \acrodef{GW}[GW]{Gravitational wave}
 \acrodef{BBH}[BBH]{binary black hole}
@@ -104,19 +106,14 @@ autoencoders for gravitational-wave astronomy}
 \acrodef{CBC}[CBC]{compact binary coalescence}
 \acrodef{BNS}[BNS]{binary neutron star}
 \acrodef{NSBH}[NSBH]{neutron star black hole}
-\acrodef{SNR}[SNR]{signal-to-noise ratio}
 \acrodef{PSD}[PSD]{power spectral density}
-\acrodef{FFT}[FFT]{fast Fourier transform}
-\acrodef{CNN}[CNN]{convolutional neural network}
-\acrodef{ROC}[ROC]{receiver operator characteristic}
 \acrodef{ELBO}[ELBO]{evidence lower bound}
 \acrodef{LIGO}[LIGO]{advanced Laser Interferometer Gravitational wave Observatory}
 \acrodef{CVAE}[CVAE]{conditional variational autoencoder}
-\acrodef{AD}[AD]{Anderson-Darling}
-\acrodef{KS}[KS]{Kolmogorov-Smirnoff}
 \acrodef{KL}[KL]{Kullback–Leibler}
 \acrodef{GPU}[GPU]{graphics processing unit}
 \acrodef{LVC}[LVC]{LIGO-Virgo Collaboration}
+\acrodef{PP}[p-p]{probability-probability}
 
 %
 % Introductory paragraph describing the content of the letter
@@ -244,7 +241,7 @@ done using a variety of techniques including Nested
 Sampling~\cite{skilling2006,cpnest,dynesty} and Markov chain Monte Carlo
 methods~\cite{emcee,ptemcee}. The primary software tools used by the \ac{LIGO}
 parameter estimation analysis are \texttt{LALInference} and
-\texttt{Bilby}~\cite{1409.7215,1811.02042}, which affer multiple sampling
+\texttt{Bilby}~\cite{1409.7215,1811.02042}, which offer multiple sampling
 methods.  
   
 %
@@ -307,21 +304,20 @@ detailed in Sec.~\ref{sec:methods}.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
-    \caption{\label{fig:network_config} This figure illustrates our neural
-network training/testing operations. During training (left-hand side), a
-training set of noisy \ac{GW} signals ($y$) and their corresponding true
-parameters ($x$) are given as input to encoder network $\textrm{E}_2$, while
-only $y$ is given to $\textrm{E}_1$. The K-L divergence (Eq.~\ref{eq:kl}) is
-computed between the moments of latent space representations. We then sample
-from a multivariate Gaussian whose mean and variances are defined by
-$\mu^{j}_{2}$, which is given as input to the decoder network. We take the
-first two moments $\mu^{j}_x$ of the predictions from the decoder network,
-along with our training parameters $x$ and compute a cost function Eq.
-\ref{eq:cost}. After having trained our networks, we test (right-hand side)
-using only $\textrm{E}_1$ and the decoder.  The decoder returns a
-multi-dimensional Gaussian function that describes the likelihood/posterior and
-so we simply sample from it. A more detailed description of the network can be
-found in the letter text.}  % word count 152 
+    \caption{\label{fig:network_config} The configuration of the \ac{CVAE} neural
+network. During training (left-hand side), a training set of noisy \ac{GW}
+signals ($y$) and their corresponding true parameters ($x$) are given as input
+to encoder network $\textrm{E}_2$, while only $y$ is given to $\textrm{E}_1$.
+The K-L divergence (Eq.~\ref{eq:kl}) is computed between the encoder output
+latent space representations forming one component of the total cost function.
+Samples from the $\text{E}_{2}$ latent space representation are generated and
+passed to the decoder network D together with the original input data $y$.  The
+output of the decoder describes a distribution in the physical space and the
+\ac{ELBO} cost component $L$ is computed by evaluating that distribution at the
+value of the original input $x$. When performed in batches this scheme allows
+the computation of the total cost function Eq.~\ref{eq:cost}.  After having
+trained the network, we test (right-hand side) using only the $\textrm{E}_1$
+encoder and the decoder D to produce samples from the posterior $p(x|y)$.}
 \end{figure}
 
 %
@@ -336,18 +332,18 @@ found in the letter text.}  % word count 152
 % standard approach and the new one. Define training and test data and how Bilby
 % is run on all test data for comparison. How do we then train our network. How
 % do we then produce results on the test data. Here you refer to results plots
-% but try to not make conclusion statememnts (just descriptive). Also include the
+% but try to not make conclusion statements (just descriptive). Also include the
 % speed analysis here.
 %
 %
 % Intro to the results - what are we trying to do?
 %
-We present results on $256$ single detector \ac{GW} test waveforms in simulated advanced
-detector noise~\cite{aligo_noisecurves} and compare between the existing
-Bayesian approaches and the \ac{CVAE}. Posteriors produced by the
-\texttt{Bilby} inference library~\cite{1811.02042} are used as a benchmark in
-order to assess the efficiency and quality of our machine learning approach
-with the existing method for posterior sampling.
+We present results on $256$ single detector \ac{GW} test \ac{BBH} waveforms in
+simulated advanced detector noise~\cite{aligo_noisecurves} and compare between
+variants of the existing Bayesian approaches and the \ac{CVAE}. Posteriors
+produced by the \texttt{Bilby} inference library~\cite{1811.02042} are used as
+a benchmark in order to assess the efficiency and quality of our machine
+learning approach with the existing method for posterior sampling.
 
 %
 % describe the Bilby analysis 
@@ -355,18 +351,11 @@ with the existing method for posterior sampling.
 For the benchmark analysis we assume that 5 parameters are unknown: the
 component masses $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the time of
 coalescence $t_{0}$, and the phase at coalescence $\phi_0$. For each
-parameters we use a uniform prior with ranges defined in
+parameters we use a uniform prior with ranges and fixed values defined in
 Table~\ref{tab:prior_ranges}.
-%both black hole masses $m_1$ and $m_2$, which we allow to range accross
-%$[35,80]$ solar masses, a uniform phase ($\phi_0$) prior spanning $[0,2\pi]$
-%radians, a uniform distance ($d_{\text{L}})$ prior ~\chris{we might want to
+%~\chris{we might want to
 %change this to be a $d$-squared prior to demonstrate the application of priors
-%in the \texttt{VItamin} training stage.} between $[1,3]$~Gpc, and a uniform
-%time of coalescence ($t_{\text{c}}$) prior ranging between
-%$[0.65,0.85]$~seconds from the start of the $1$ second duration data segment.
-%The remainder of the parameters are set to the following fixed values: sky
-%position ($\alpha=?,\beta=?$), binary inclination angle ($\iota=0$),
-%polarisation angle ($\psi=0$), and black hole spins set to zero).
+%in the \texttt{VItamin} training stage.} 
 We use a sampling frequency of $256$~Hz and a timeseries duration of 1 second.
 The waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
@@ -392,9 +381,9 @@ of \ac{GW} waveforms as input into the testing path of the pre-trained
 \ac{CVAE}~\ref{fig:network_config}. For each input waveform we sample until we
 have generated $3000$ posterior samples on 4 physical parameters
 ($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of the full
-5-dimensional space to demonstrate that nuisance parameters (such as $\phi_0$)
-can (if desired) be marginalized out within the \ac{CVAE} procedure itself,
-rather than after training. 
+5-dimensional space to demonstrate that parameters (such as $\phi_0$ in this
+case) can (if desired) be marginalized out within the \ac{CVAE} procedure
+itself, rather than after training. 
 
 %
 % 1-D overlap results
@@ -408,22 +397,24 @@ solid (blue) contours are the posteriors output from our benchmark analysis
 (\texttt{Bilby} using the dynesty sampler). In each case the contour boundaries
 enclose $68,90$ and $95\%$ probability. One dimensional histograms of the
 posterior distribution for each parameter from both methods are plotted along
-the diagonal. Blue and red vertical lines represent the $5$---$95\%$
-non-symmetric confidence bounds for \texttt{Bilby} and variational inference
-respectively. Black crosses and vertical lines denote the true parameter values
-of the simulated signal.
-} % word count 102
+the diagonal. Blue and red vertical lines represent the $5$---$95\%$ symmetric
+confidence bounds for \texttt{Bilby} and variational inference respectively.
+Black crosses and vertical black lines denote the true parameter values of the
+simulated signal. The original whitened noisy timeseries $y$ and the noise-free
+signal are plotted in blue and cyan respectively in the upper right hand
+panel. The test signal was simulated with optimal signal-to-noise ratio of
+13.9.}
 \end{figure*}
 
 %
 % discuss the corner plot results
 %
 We can immediately illustrate the accuracy of our machine learning predictions
-by directly plotting posteriors generated using the output samples from our
-\ac{CVAE} and \texttt{Bilby} approaches superimposed on each other. We show
-this for one example test dataset in Fig.~\ref{fig:corner_plot}, where the
-strong agreement between both \texttt{Bilby} (blue) and the \ac{CVAE} (red) is
-clear. 
+by directly plotting 2 and 1-dimensional marginalised posteriors generated
+using the output samples from our \ac{CVAE} and \texttt{Bilby} approaches
+superimposed on each other. We show this for one example test dataset in
+Fig.~\ref{fig:corner_plot} where the strong agreement between both
+\texttt{Bilby} (blue) and the \ac{CVAE} (red) is clear. 
 
 %We provide additional test case example corner plots in the methods
 %section. 
@@ -433,54 +424,15 @@ clear.
 %values). I think something based on the 1-D intervals would be nice.}
 
 %
-% K-L divergence results
-%
-\begin{figure}
-    \includegraphics[width=\columnwidth]{images/hist-kl.png}
-    \caption{\label{fig:kl_results} We plot the KL-divergence values of
-five independent samplers against each
-other over the same 256 \ac{GW} test waveforms. Posterior samples are computed
-for each of the 256 \ac{GW} waveforms using each sampler twice. A KL
-divergence is then computed between all samplers with every other sampler
-(including themselves) over all 256 \ac{GW} test cases. The distributions of the
-resulting KL divergence values are then plotted, with each color representing a
-different sampler combination. Both the $x$ and $y$ axes are scaled
-logarithmically for readability.} % word count 85 
-\end{figure}
-%
-
-%
-% discuss the KL results
-%
-Each independent sampler (including \ac{CVAE}) is run twice on the same test
-data to produce samples from the corresponding posterior. We then compute the
-\ac{KL}-divergence between output distributions from each sampler with itself and
-each sampler with all other samplers. For distributions that are identical the
-KL-divergence is equal to zero but since we are representing our posterior
-distributions using finite numbers of samples, identical distributions should
-result in KL-divergence values $<1$. In Fig.~\ref{fig:kl_results} we show the
-distributions of these KL-divergences for the 256 test \ac{GW} samples where
-we see that samplers compared with themselves produce KL values that are
-generally $<1$ with the exception of the Emcee sampler. More importantly we see
-that the \ac{CVAE} approach when compared to the existing samplers have KL
-values that match the values produced when comparing between 2 different
-existing samplers.
-
-%
 % P-P plot
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/latest_pp_plot.png}
-    \caption{\label{fig:pp_plot} One dimensional P-P plots on 4 parameters 
-    for every 5 independent samplers 
-    (defined in the main text) using 256
-unique test samples and $3000$ posterior sample predictions per test sample.
-The $x$-axis denotes the theoretical cumulative distribution whereas the y-axis
-denotes the predicted cumulative distribution.
-%~\chris{we might have to work on
-%the description of the axes - maybe use the same notation that has been used in
-%the GW PE papers that include p-p plots.
-} % word count 45
+    \caption{\label{fig:pp_plot} One-dimensional \ac{PP} plots for each
+parameter and each benchmark sampler and \texttt{VItamin}.  The curves were
+constructed using the 256 test datasets. The dashed black diagonal line
+indicates the ideal result.   
+}
 \end{figure}
 %
 
@@ -491,47 +443,44 @@ denotes the predicted cumulative distribution.
 %throw in a reference to existing PE group papers that use it. Nature readers
 %will have never seen one before. We also have to wait until we get better P-P
 %plot curves for our approach before we warrant adding it to the paper.} 
-In order to show that our results are consistent with the truth, we have
-additionally plotted probability-probability (p-p) plots in
-Fig.~\ref{fig:pp_plot}. On the x axis is plotted the theoretical distribution, 
-defined as the probability contained within a credibility interval associated 
-with the truth. 
-On the y axis is plotted the predicted cumulative
-distribution, defined as the fraction of predicted values contained within 
-the credibility interval defined by the truth \cite{1409.7215}.
-Predictions from the \ac{CVAE} consistent with the black dashed diagonal line
-is indicative that the Bayesian probability distributions are consistent with
-the frequentest interpretation - that the truth will lie inside the $X\%$
-probability contour with a frequency of $X\%$ of the time.  We plot empirical
-results as those represented in the coloured lines, with each color representing 
-a different sampler and each line representing a different physical parameter. 
+A standard test used within the \ac{GW} parameter estimation community is the
+production of so-called \ac{PP} plots which we show for our analysis in
+Fig.~\ref{fig:pp_plot}. The plot is constructed by computing a p-value for each
+output test posterior on a particular parameter evaluated at the true
+simulation parameter value (the fraction of posterior samples $>$ the
+simulation value). We then plot the cumulative distribution of these
+values~\cite{1409.7215}. Curves consistent with the black dashed diagonal line
+indicate that the 1-dimensional Bayesian probability distributions are
+consistent with the frequentist interpretation - that the truth will lie within
+an interval containing $X\%$ of the posterior probability with a frequency of
+$X\%$ of the time. It is clear to see that our new approach shows deviations
+from the diagonal that are entirely consistent with those observed in all
+benchmark samplers. In Fig.~\ref{fig:kl_results} (see Sec.~\ref{sec:methods}) we
+also show distributions of the \ac{KL} divergence statistic between all
+samplers on the joint posterior distributions. It is clear that the \ac{KL}
+divergences between \texttt{VItamin} and any other sampler are consistent with the
+distributions between any 2 existing benchmark samplers.      
 
 %
 % discuss the speed of the analysis
 %
-The speed at which posterior samples are generated for all samplers used,
-including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time is
-defined as the total time (in seconds) to produce $\sim 3000$ samples for each
-sampler. The dominating computational cost of running \texttt{VItamin} lies in
-the training time, which can take of order several hours to complete.
-Completion is determined by comparing posteriors produced by the machine
-learning model and those of \texttt{Bilby} iteratively during training. We
-additionally look to see whether the loss curves (Fig. \ref{fig:loss_log}) have
-flattened out. We use a single Tesla V-100 GPU with $16$ Gb of RAM on an NVIDIA
-DGX-1 machine at the LIGO Livingston site.  Once trained there is no need to
-retrain the network and it may be run on any new input data of the same format.
-Reliable posterior estimates can then be expected if the data contain signals
-whose true parameters lie within the prior space over which the network has
-been trained and whose noise characteristics are consistent with that used in
-training. For our test case of \ac{BBH} signals \texttt{VItamin} produces
-samples from the posterior at a rate which is $\sim 6$---$7$ orders of
-magnitude faster than current inference techniques, representing a dramatic
-speed-up in performance. It should be noted that run-time for the Bayesian
-samplers is also dependent on the choice of sampler hyper-parameters, so total
-run-time may vary according to specific configuration choices. We choose
-Bayesian sampler hyper-parameters based on standard default configurations
-defined in the \texttt{Bilby} documentation~\cite{1811.02042}. 
- 
+The dominating computational cost of running \texttt{VItamin} lies in the
+training time, which can take of order several hours to complete.  Completion
+is determined by comparing posteriors produced by the machine learning model
+and those of \texttt{Bilby} iteratively during training. We additionally assess
+whether the cost curves (Fig.~\ref{fig:loss_log}) have flattened out. We use
+single Nvidia Tesla V100 \acp{GPU} with $16/32$ Gb of RAM although home-use
+"gaming" \ac{GPU} cards are equally fast for this application. We stress that
+once trained, there is no need to retrain the network unless the user wishes to
+use different priors $p(x)$ or assume different noise characteristics.   The
+speed at which posterior samples are generated for all samplers used, including
+\texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time for the benchmark
+samplers is defined as the time to complete their analyses when configured
+using their default parameters~\cite{1811.02042}. For \texttt{VItamin} this
+time is defined as the total time to produce $3000$ samples. For our test case
+of \ac{BBH} signals \texttt{VItamin} produces samples from the posterior at a
+rate which is $\sim 6$---$7$ orders of magnitude faster than current inference
+techniques, representing a dramatic speed-up in performance. 
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
 %aren't convincing, is a plot displaying 1D confidence bounds compared between
@@ -548,18 +497,21 @@ defined in the \texttt{Bilby} documentation~\cite{1811.02042}.
 % 
 \begin{table}
 \centering
-\caption{Durations required to produce $3000$ posterior samples from each of
-the different posterior sampling approaches}
+\caption{Durations required to produce samples from each of
+the different posterior sampling approaches.}
 \begin{tabular}[t]{lcccc}
 \toprule
-& & run time (sec) & & \\
-& min & max & median & Ratio \\
+& \multicolumn{3}{c}{run time (seconds)} & \\
+& min & max & median & ratio \\
 \hline
-Dynesty & 602 & 1538 & 774 & $2.6\times 10^{-6}$ \\
+Dynesty\footnote{The benchmark samplers all produced $\mathcal{O}(3000-
+10000)$ samples dependent on the default sampling parameters used.} & 602 & 1538 & 774 & $2.6\times 10^{-6}$ \\
 Emcee & 2005 & 11927 & 4351 & $4.6\times 10^{-7}$ \\
 Ptemcee & 3354 & 12771 & 4982 & $4.0\times 10^{-7}$ \\
 Cpnest & 1431 & 5405 & 2287 & $8.8\times 10^{-7}$ \\
-VItamin & - & - & \bm{$2\times 10^{-3}$} & 1 \\
+\texttt{VItamin}\footnote{For the \texttt{VItamin} sampler $3000$ samples are
+produced as representative of a typical posterior. The run time is independent
+of the signal content in the data and is therefore constant for all test cases.} & \multicolumn{3}{c}{\bm{$2\times 10^{-3}$}} & 1 \\
 \botrule
 \end{tabular}
 \label{Tab:speed}
@@ -590,7 +542,7 @@ through machine learning. This is accomplished using \acp{CVAE} trained on
 simulated \ac{GW} signals and does not require the input of precomputed
 posterior estimates. We have demonstrated that our neural network model which,
 when trained, can reproduce complete and accurate posterior estimates in
-$\mathcal{O}(1)$ milliscond, can achieve the same quality of results as the
+$\mathcal{O}(1)$ millisecond, can achieve the same quality of results as the
 trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 
 %
@@ -603,11 +555,11 @@ Improved low-latency alerts will be especially pertinent for signals from
 \ac{BNS} mergers (e.g. GW170817~\cite{PhysRevLett.119.161101}) and \ac{NSBH} signals where
 parameter estimation speed will no longer be limiting factor\footnote{The complete
 low-latency pipeline includes a number of steps. The process of \ac{GW} data
-aquisition is followed by the transfer of data. There is then the corresponding
+acquisition is followed by the transfer of data. There is then the corresponding
 analysis and the subsequent communication of results to the \ac{EM} astronomy
 community after which there are physical aspects such as slewing observing
 instruments to the correct pointing.} in observing the prompt \ac{EM} emission
-expected on shorter time scales than is acheivable with existing \ac{LVC}
+expected on shorter time scales than is achievable with existing \ac{LVC}
 analysis tools such as Bayestar~\cite{2016PhRvD..93b4013S}. 
 
 %
@@ -630,8 +582,8 @@ vastly reduced time scale.
 %
 % future work, current limitations and prospects
 %
-For \ac{BBH} signals, \ac{GW} data is usually sampled at $1$---$4$ KHz
-dependent upon the mass of binary. We have chosen to use the noticably low
+For \ac{BBH} signals, \ac{GW} data is usually sampled at $1$---$4$ kHz
+dependent upon the mass of binary. We have chosen to use the noticeably low
 sampling rate of 256Hz and a single detector configuration largely in order to
 decrease the computational time required to develop our approach. We do not
 anticipate any problems in extending our analysis to higher sampling
@@ -646,7 +598,7 @@ estimation will be extended to sky localisation.
 %
 % Non gaussian noise and the final statement
 %
-In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts and
+In reality, \ac{GW} detectors are affected by non-Gaussian noise artifacts and
 time-dependent variation in the detector noise \ac{PSD}. Existing methods
 incorporate a parameterised \ac{PSD} estimation into their
 inference~\cite{ref}. To account for these within our scheme, we would retrain
@@ -667,12 +619,13 @@ will form the basis for future \ac{GW} parameter estimation.
 \section{Acknowledgements.}
 %
 We would like to acknowledge valuable input from the LIGO-Virgo Collaboration,
-specifically from the parameter estimation and machine-learning working groups.
-We thank Nvidia for the generous donation of a Tesla V-100 GPU used in addition
-to \ac{LVC} computational resources. The authors also gratefully
-acknowledge the Science and Technology Facilities Council of the United
-Kingdom. CM and SH are supported by the Science and Technology Research Council
-(grant No.~ST/~L000946/1) and the European Cooperation in Science and
+specifically from Will Farr and the parameter estimation and machine-learning
+working groups. We would additionally like to thank Szabi Marka for posing this
+challenge to us. We thank Nvidia for the generous donation of a Tesla V-100 GPU
+used in addition to \ac{LVC} computational resources. The authors also
+gratefully acknowledge the Science and Technology Facilities Council of the
+United Kingdom. CM and SH are supported by the Science and Technology Research
+Council (grant No.~ST/~L000946/1) and the European Cooperation in Science and
 Technology (COST) action CA17137.
 %
 % word count 80 
@@ -729,7 +682,7 @@ original form (the input data).
 %
 The primary difference between a variational autoencoder~\cite{1812.04405} and
 an autoencoder concerns the method by which locations within the latent space
-are produced. In our variant of the variational autoender, the output of the
+are produced. In our variant of the variational autoencoder, the output of the
 encoder is interpreted as a set of parameters governing statistical
 distributions (in our case the means and variances of multivariate Gaussians).
 In proceeding to the decoder network, samples from the latent space ($z$) are
@@ -762,7 +715,7 @@ H &= -\text{E}_{p(y)}\left[\int dx\,p(x|y) \log r_{\theta}(x|y)\right]
 \end{align}
 % 
 where $\text{E}_{p(y)}[\cdot]$ indicates the expectation value over the
-distribution of measurements $y$, we therefore make the parameteric distribution
+distribution of measurements $y$, we therefore make the parametric distribution
 as similar as possible to the target for all possible measurements $y$.
 
 Converting the expectation value into an integral over $y$ weighted by $p(y)$
@@ -775,14 +728,14 @@ H &= -\int dx\,p(x)\int dy\,p(y|x)\log r_{\theta}(x|y)
 where $p(x)$ is the prior distribution on the physical parameters $x$.
 
 The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} makes use of a
-conditional latent variable model and our parameteric model is constructed from
-the product of 2 seperate distributions marginalised over the latent space
+conditional latent variable model and our parametric model is constructed from
+the product of 2 separate distributions marginalised over the latent space
 %
 \begin{align}\label{eq:latent_model}
 r_{\theta}(x|y) &= \int dz\,r_{\theta_{1}}(z|y)r_{\theta_{2}}(x|z,y).
 \end{align}
 %  
-We have used $\theta_{1}$ and $\theta_{2}$ to indidate that the 2 seperate
+We have used $\theta_{1}$ and $\theta_{2}$ to indicate that the 2 separate
 networks modelling these distributions will be trained on these parameter sets
 respectively. Both new conditional distributions are modelled as $n_{z}$
 dimensional multivariate uncorrelated Gaussian distributions (governed by their
@@ -856,7 +809,7 @@ the parameter sets $\theta_{1},\theta_{2},\phi$. These parameters are the
 weights and biases of 3 neural networks acting as (variational) encoder,
 decoder, and encoder respectively. To train such a network one must connect the
 inputs and outputs appropriately to compute the cost function $H$ and
-back-propogate cost function derivatives to update the network parameters. The
+back-propagate cost function derivatives to update the network parameters. The
 network structure shown in Fig.~\ref{fig:network_config} shows how for a batch
 of $N$ sets of $x$ and corresponding $y$ values first both $x$ and $y$ are fed
 into the encoder 2 network that produces the means and variances describing the
@@ -891,12 +844,11 @@ seen.
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/inv_losses_log.png}
-\caption{\label{fig:loss_log} We plot here three loss curves; the cost
-function loss (blue), KL (orange) and total loss (green). The cost  loss and KL
-are both derived in the methods section and the total loss is simply a
-summation of the two. We plot the value of each loss as a function of the log
-of the number of training iterations where one iteration is defined as a
-training session over one batch of signals.} % word count 73
+\caption{\label{fig:loss_log} The cost as a function of training iteration. We
+show the \ac{ELBO} cost function component (blue), the \ac{KL} divergence
+component (orange) and total cost (green). The total cost is simply a
+summation of the 2 components and one training iteration is defined as
+training over one batch of signals.}
 \end{figure}
 
 %
@@ -904,17 +856,26 @@ training session over one batch of signals.} % word count 73
 %
 \begin{table}
 \centering
-\caption{The uniform prior boundaries used on the \ac{BBH} signal parameters for the benchmark
+\caption{The uniform prior boundaries and fixed parameter values used on the \ac{BBH} signal parameters for the benchmark
 and the \ac{CVAE} analyses.}
 \begin{tabular}[t]{lcccc}
 \toprule
 Parameter name & symbol & min & max & units \\
 \hline
 mass 1 & $m_1$ & 35 & 80 & solar masses \\
-mass 2 & $m_2$ & 35 & 80 & solar masses \\
+mass 2 & $m_2$\footnote{Additionally $m_2$ is constrained such that
+$m_{2}<m_{1}$.} & 35 & 80 & solar masses \\
 luminosity distance & $d_{\text{L}}$ & 1 & 3 & Gpc \\
 time of coalescence & $t_{0}$ & 0.65 & 0.85 & seconds \\
-phase at coalscence & $\phi_{0}$ & 0 & $2\pi$ & radians \\
+phase at coalescence & $\phi_{0}$ & 0 & $2\pi$ & radians \\
+\hline
+right ascension & $\alpha$ & \multicolumn{2}{c}{1.375} & radians \\
+declination & $\delta$ & \multicolumn{2}{c}{-1.2108} & radians \\
+inclination & $\iota$ & \multicolumn{2}{c}{0} & radians \\
+polarisation & $\psi$ & \multicolumn{2}{c}{0} & radians \\
+spins & - & \multicolumn{2}{c}{0} & - \\
+epoch & - & \multicolumn{2}{c}{1126259642} & GPS time \\
+detector & - & \multicolumn{2}{c}{H1} & - \\
 \botrule
 \end{tabular}
 \label{tab:prior_ranges}
@@ -948,7 +909,7 @@ governed by the parameter sets $\theta_{1},\theta_{2},\phi$. These parameters
 are the weights and biases of 3 neural networks acting as (variational)
 encoder, decoder, and encoder respectively. To train such a network one must
 connect the inputs and outputs appropriately to compute the cost function $H$
-and back-propogate cost function derivatives to update the network parameters.
+and back-propagate cost function derivatives to update the network parameters.
 The network structure shown schematically in Fig.~\ref{fig:network_config}
 shows how for a batch of $N$ sets of $x$ and corresponding $y$ values, the cost
 function is computed during each iteration of training. 
@@ -978,7 +939,7 @@ giving us samples $z_{2}$ within the latent space.
 \item These samples, along with their corresponding $y$ data, then go to the
 decoder D which outputs $\mu_{x}$, a set of parameters (much like
 $\mu^{j}_{1},\mu^{j}_{2}$) that define the moments of a multivariate Gaussian
-ditribution in the $x$ space.
+distribution in the $x$ space.
  %
 \item The first term of the loss function (Eq.~\ref{eq:cost3}) is then computed
 by evaluating the probability density defined by $\mu_x$ at the true $x$
@@ -1016,10 +977,10 @@ number of iterations.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Network and Training parameters}
 %
-% Describe the specific network hyperparameters
+% Describe the specific network hyper-parameters
 %
 For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
-size of $128$ training samples and a learning rate of $10^{-4}$ was sufficient.
+size of $512$ training samples and a learning rate of $10^{-4}$ was sufficient.
 We used a total of $10^6$ training samples in order to adequately cover the
 \ac{BBH} parameter space. We additionally ensure that an (effectively)
 infinite number of noise realizations are employed by making sure that every
@@ -1027,14 +988,15 @@ time a training sample is used it is given a unique noise realisation despite
 only having a finite number of waveforms. Each neural network
 ($\text{E}_1$,$\text{E}_2$,D) is composed of 3 fully connected layers and has
 $2048$ neurons in each layer with ReLU activation functions between layers. We
-use a latent space dimension of $64$ and we consider training complete when
+use a latent space dimension of $8$ and we consider training complete when
 both components to the loss function have converged to approximately constant
-values.
+values or when comparisons with benchmark test posteriors indicate no
+significant changes in the output posterior.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The testing procedure}
 %~\chris{Hunter, note that we only need to
-%do the first pass through E1 only once for a given peice of data do the real
+%do the first pass through E1 only once for a given piece of data do the real
 %cost is only in the other steps. This will likely only change the timing by
 %~25\% so it might not be worth doing the tests again. Just bear it in mind.}
 %
@@ -1072,6 +1034,42 @@ parameter space.
 A comprehensive representation in the form of samples drawn from the entire joint
 posterior distribution can then be obtained by simply repeating this procedure
 with the same input data (see Eq.~\ref{eq:latent_model}).
+
+%
+% K-L divergence results
+%
+\subsection{Additional tests}
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{images/hist-kl.png}
+    \caption{\label{fig:kl_results} Distributions of \ac{KL}-divergence values
+between posteriors produced by different samplers. The \ac{KL} divergence is
+computed between all samplers with every other sampler over all 256 \ac{GW}
+test cases. The distributions of the resulting \ac{KL} divergence values are
+then plotted, with each color representing a different sampler combination
+including \texttt{VItamin} as one of the sampler pairs. The grey distributions
+represent the results from all benchmark sampler pairs for comparison. Both the
+$x$ and $y$ axes are scaled logarithmically for readability.} 
+\end{figure}
+%
+
+%
+% discuss the KL results
+%
+The \ac{KL} divergence between 2 distributions is a measure of their similarity
+and we use this to compare the output posterior estimates between samplers for
+the same input test data. To do this we run each independent sampler (including
+the \ac{CVAE}) on the same test data to produce samples from the corresponding
+posterior. We then compute the \ac{KL}-divergence between output distributions
+from each sampler with itself and each sampler with all other samplers. For
+distributions that are identical the \ac{KL}-divergence is equal to zero but
+since we are representing our posterior distributions using finite numbers of
+samples, identical distributions should result in KL-divergence values $<1$. In
+Fig.~\ref{fig:kl_results} we show the distributions of these
+\ac{KL}-divergences for the 256 test \ac{GW} samples where we see that the
+\ac{CVAE} approach when compared to the benchmark samplers have distributions
+consistent with those produced when comparing between 2 different benchmark
+samplers.
 
 \bibliographystyle{apsrev4-1}
 \bibliography{references}% Produces the bibliography via BibTeX.
