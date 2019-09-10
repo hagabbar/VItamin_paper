@@ -67,7 +67,7 @@ autoencoders for gravitational-wave astronomy}
 \author{Chris Messenger$^1$}
 \author{Ik Siong Heng$^1$}
 \author{Francesco Tonolini$^2$}
-\author{\& Roderick Murray-Smith$^2$}
+\author{Roderick Murray-Smith$^2$}
 
 \affiliation{
  SUPA, School of Physics and Astronomy$^1$, \\
@@ -216,7 +216,7 @@ arising from the noise in the data.
 %
 % Describe Bayes Theorem
 %
-According to Bayes Theorem, a posterior probability distribution on a set of
+According to Bayes' Theorem, a posterior probability distribution on a set of
 parameters, conditional on the measured data, can be represented as
 %
 \begin{align}\label{eq:bayes_theorem} 
@@ -286,7 +286,7 @@ cross-entropy loss function is given by the bound
 \begin{align}\label{eq:cost3}
 H \lesssim -\frac{1}{N}\sum_{n=1}^{N}&\Big[\log
 r_{\theta_{2}}(x_{n}|z_{n},y_{n})\nonumber\\
-&-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\Big].
+&-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\Big],
 \end{align}
 %
 and requires three fully-connected networks; two encoder networks (labelled
@@ -351,7 +351,7 @@ learning approach with the existing method for posterior sampling.
 For the benchmark analysis we assume that 5 parameters are unknown: the
 component masses $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the time of
 coalescence $t_{0}$, and the phase at coalescence $\phi_0$. For each
-parameters we use a uniform prior with ranges and fixed values defined in
+parameter we use a uniform prior with ranges and fixed values defined in
 Table~\ref{tab:prior_ranges}.
 %~\chris{we might want to
 %change this to be a $d$-squared prior to demonstrate the application of priors
@@ -392,9 +392,9 @@ itself, rather than after training.
     \includegraphics[width=\textwidth]{images/corner_testcase0.png}
     \caption{\label{fig:corner_plot} Corner plot showing 2 and 1-dimensional
 marginalised posterior distributions for one example test dataset. Filled (red)
-contours represent the posteriors obtained form the \ac{CVAE} approach and
+contours represent the posteriors obtained from the \ac{CVAE} approach and
 solid (blue) contours are the posteriors output from our benchmark analysis
-(\texttt{Bilby} using the dynesty sampler). In each case the contour boundaries
+(\texttt{Bilby} using the dynesty sampler). In each case, the contour boundaries
 enclose $68,90$ and $95\%$ probability. One dimensional histograms of the
 posterior distribution for each parameter from both methods are plotted along
 the diagonal. Blue and red vertical lines represent the $5$---$95\%$ symmetric
@@ -573,7 +573,7 @@ signals in $<1$ second on a single \ac{GPU}. Our trained network is also
 incredibly modular, and can be shared and used easily by any user to produce
 results. The specific analysis described in the letter assumes a uniform prior
 on the signal parameters. However, this is a choice and the network can be
-trained with any prior the user demands or users can cheaply resample
+trained with any prior the user demands, or users can cheaply resample
 accordingly from the output of the network trained on the uniform prior. We
 also note that our method will be invaluable for population studies since
 populations may now be generated and analysed in a full-Bayesian manner on a
@@ -713,7 +713,7 @@ The cross-entropy is minimised when $p(x|y)=r_{\theta}(x|y)$ and so by
 minimising
 %
 \begin{align}\label{eq:cost1}
-H &= -\text{E}_{p(y)}\left[\int dx\,p(x|y) \log r_{\theta}(x|y)\right]
+H &= -\text{E}_{p(y)}\left[\int dx\,p(x|y) \log r_{\theta}(x|y)\right],
 \end{align}
 % 
 where $\text{E}_{p(y)}[\cdot]$ indicates the expectation value over the
@@ -721,7 +721,7 @@ distribution of measurements $y$, we therefore make the parametric distribution
 as similar as possible to the target for all possible measurements $y$.
 
 Converting the expectation value into an integral over $y$ weighted by $p(y)$
-and applying Bayes theorem we obtain
+and applying Bayes' theorem we obtain
 %
 \begin{align}\label{eq:cost1}
 H &= -\int dx\,p(x)\int dy\,p(y|x)\log r_{\theta}(x|y)
@@ -761,10 +761,10 @@ distributions as
 \log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta_{2}}(z|x,y)}\right).\nonumber
 \end{align}
 %  
-It can be shown that after some manipulation that
+It can be shown, after some manipulation, that
 %
 \begin{align}\label{eq:elbo1}
-\log r_{\theta}(x|y) &= L + \text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{?}}(z|x,y)\right]
+\log r_{\theta}(x|y) &= L + \text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{?}}(z|x,y)\right],
 \end{align}
 %
 where the \ac{ELBO} $L$ is given by
@@ -797,7 +797,7 @@ function) to obtain
 H \leq  -\int dx\, p(x)\int dy &\,p(y|x)
 \Big[\text{E}_{q_{\phi}(z|x,y)}\left[\log r_{\theta_{2}}(x|z,y)\right]
 \nonumber\\
-&-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\Big]  
+&-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\Big],  
 \end{align}
 %
 which can in practice be approximated as a stochastic integral over draws of
@@ -827,7 +827,7 @@ within the cost function is computed as
 &\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
 \frac{(\mu_{r,j}-\mu_{q,j})^{2}}{\sigma_{r,j}^{2}}+
 \log\left(\frac{\sigma_{r,j}^{2}}{\sigma_{q,j}^{2}}\right)\right] -
-\frac{n_{z}}{2}\nonumber \end{align}
+\frac{n_{z}}{2},\nonumber \end{align}
 %
 where those labelled and indexed parameters output from the encoder networks
 are denoted by $\mu$ and $\sigma$.
@@ -891,7 +891,7 @@ Eq.~\ref{eq:latent_model}. To do this using the network we first obtain the
 parameters governing the function $r_{\theta_{1}}(z|y)$ by passing the data $y$
 into the encoder 1 network. Using the output means and variances on the latent space
 $z$ we then draw from that space to obtain a random latent space realisation.
-This $z$ value and the original $y$ data is then input into the decoder network
+This $z$ value and the original $y$ data are then input into the decoder network
 which outputs the mean and variance parameters governing the function
 $r_{\theta_{2}}(x|z,y)$. The next step is to draw a random $x$ realisation from
 that function. This is representative of a posterior sample from the target
@@ -988,7 +988,7 @@ We used a total of $10^6$ training samples in order to adequately cover the
 infinite number of noise realizations are employed by making sure that every
 time a training sample is used it is given a unique noise realisation despite
 only having a finite number of waveforms. Each neural network
-($\text{E}_1$,$\text{E}_2$,D) is composed of 3 fully connected layers and has
+($\text{E}_1$, $\text{E}_2$, D) is composed of 3 fully connected layers and has
 $2048$ neurons in each layer with ReLU activation functions between layers. We
 use a latent space dimension of $8$ and we consider training complete when
 both components to the loss function have converged to approximately constant
