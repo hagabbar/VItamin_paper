@@ -280,7 +280,7 @@ trainable neural network parameters. Starting from this point it is possible to
 derive a computable form for the cross-entropy that is reliant on a set of
 unknown functions that can be modelled by variational encoder
 and decoder neural networks. The details of the derivation are described in
-Sec.~\ref{sec:methods} and in~\cite{1904.06264}. The final form of the
+the methods section and in~\cite{1904.06264}. The final form of the
 cross-entropy loss function is given by the bound
 %
 \begin{align}\label{eq:cost3}
@@ -300,7 +300,7 @@ networks attempt to represent their input data. In practice, during the
 training procedure the various integrations that are part of the derivation are
 approximated by a sum over a batch of $N$ training data samples (indexed by $n$
 above) at each stage of training. Training is performed via a series of steps
-detailed in Sec.~\ref{sec:methods}.
+detailed in the methods section.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
@@ -315,7 +315,7 @@ passed to the decoder network D together with the original input data $y$.  The
 output of the decoder describes a distribution in the physical space and the
 \ac{ELBO} cost component $L$ is computed by evaluating that distribution at the
 value of the original input $x$. When performed in batches this scheme allows
-the computation of the total cost function Eq.~\ref{eq:cost}.  After having
+the computation of the total cost function Eq.~\ref{eq:cost3}.  After having
 trained the network, we test (right-hand side) using only the $\textrm{E}_1$
 encoder and the decoder D to produce samples from the posterior $p(x|y)$.}
 \end{figure}
@@ -393,7 +393,7 @@ itself, rather than after training.
     \caption{\label{fig:corner_plot} Corner plot showing 2 and 1-dimensional
 marginalised posterior distributions for one example test dataset. Filled (red)
 contours represent the posteriors obtained from the \ac{CVAE} approach and
-solid (blue) contours are the posteriors output from our benchmark analysis
+solid (blue) contours are the posteriors output from our baseline analysis
 (\texttt{Bilby} using the dynesty sampler). In each case, the contour boundaries
 enclose $68,90$ and $95\%$ probability. One dimensional histograms of the
 posterior distribution for each parameter from both methods are plotted along
@@ -468,9 +468,12 @@ The dominating computational cost of running \texttt{VItamin} lies in the
 training time, which can take of order several hours to complete.  Completion
 is determined by comparing posteriors produced by the machine learning model
 and those of \texttt{Bilby} iteratively during training. We additionally assess
-whether the cost curves (Fig.~\ref{fig:loss_log}) have flattened out. We use
+whether the cost curves (Fig.~\ref{fig:loss_log}) have converged, such that 
+their slope is near-zero. We use a 
 single Nvidia Tesla V100 \acp{GPU} with $16/32$ Gb of RAM although home-use
-"gaming" \ac{GPU} cards are equally fast for this application. We stress that
+"gaming" \ac{GPU} cards are equally fast for this application. 
+
+We stress that
 once trained, there is no need to retrain the network unless the user wishes to
 use different priors $p(x)$ or assume different noise characteristics.   The
 speed at which posterior samples are generated for all samplers used, including
@@ -570,8 +573,7 @@ The predicted number of future detections of \ac{BNS} mergers ($\sim
 180$~\cite{1304.0670,1811.12907}) will severely strain the \ac{GW} community's
 current computational resources using existing Bayesian methods. Future
 iterations of our approach will provide full-parameter estimation on \ac{CBC}
-signals in $<1$ second on a single \ac{GPU}. Our trained network is also
-incredibly modular, and can be shared and used easily by any user to produce
+signals in $<1$ second on a single \ac{GPU}. Our trained network is also modular, and can be shared and used easily by any user to produce
 results. The specific analysis described in the letter assumes a uniform prior
 on the signal parameters. However, this is a choice and the network can be
 trained with any prior the user demands, or users can cheaply resample
@@ -599,7 +601,7 @@ estimation will be extended to sky localisation.
 %
 % Non gaussian noise and the final statement
 %
-In reality, \ac{GW} detectors are affected by non-Gaussian noise artifacts and
+In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts and
 time-dependent variation in the detector noise \ac{PSD}. Existing methods
 incorporate a parameterised \ac{PSD} estimation into their
 inference~\cite{ref}. To account for these within our scheme, we would retrain
