@@ -664,9 +664,10 @@ which are conditioned on an observation, where in our case the observation is a
 variational autoencoders are derived are typically used for problems involving
 image reconstruction and/or dimensionality reduction. They perform a regression
 task whereby the autoencoder attempts to predict its own given input (model the
-identity function) through a limited and therefore distilled representation of
+identity function) through a ``bottleneck layer'', a limited  and therefore distilled representation of
 the input parameter space. An autoencoder is composed of two neural networks,
-an encoder and a decoder~\cite{LIOU20083150}. The encoder network takes as
+an encoder and a decoder~\cite{gallinari1987memoires}. %\cite{LIOU20083150}. 
+The encoder network takes as
 input a vector, where the number of dimensions is a fixed number predefined by
 the user. The encoder converts the input vector into a (typically) lower
 dimensional space, referred to as the {\it{latent space}}. A representation of
@@ -989,7 +990,7 @@ infinite number of noise realizations are employed by making sure that every
 time a training sample is used it is given a unique noise realisation despite
 only having a finite number of waveforms. Each neural network
 ($\text{E}_1$, $\text{E}_2$, D) is composed of 3 fully connected layers and has
-$2048$ neurons in each layer with ReLU activation functions between layers. We
+$2048$ neurons in each layer with ReLU \cite{nair2010rectified} activation functions between layers. We
 use a latent space dimension of $8$ and we consider training complete when
 both components to the loss function have converged to approximately constant
 values or when comparisons with benchmark test posteriors indicate no
