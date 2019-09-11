@@ -247,19 +247,29 @@ methods.
 %
 % Intro to machine learning section
 %
-Machine learning has featured prominently in many areas of gravitational wave
-research over the last few years. These techniques have shown to be
-particularly promising in signal detection
+Machine learning has featured prominently in many areas of \ac{GW} research
+over the last few years. These techniques have shown to be particularly
+promising in signal detection
 \cite{GEORGE201864,PhysRevLett.120.141103,1904.08693}, glitch classification
 \cite{1706.07446,0264-9381-34-6-064003} and earthquake prediction
-\cite{Coughlin_2017}. Recently, a type of neural network known as \ac{CVAE} was
+\cite{Coughlin_2017}. We also highlight a recent development in \ac{GW}
+parameter estimation (published in parallel and independent to this work) where
+one- or two-dimensional marginalized Bayesian posteriors are produced. This
+uses a novel approach that avoids the need to compute the likelihood or
+posterior during training (also a characteristic of the approach described in
+this letter).
+
+%
+% Introduce CVAEs
+%
+Recently, a type of neural network known as \ac{CVAE} was
 shown to perform exceptionally well when applied towards computational imaging
 inference~\cite{1904.06264,NIPS2015_5775}, text to image
 inference~\cite{1512.00570}, high-resolution synthetic image
 generation~\cite{1612.00005} and the fitting of incomplete heterogeneous
 data~\cite{1807.03653}. It is this type of machine learning network that we
 apply in the \ac{GW} case to accurately approximate the Bayesian posterior
-$p(x|y)$.
+$p(x|y)$. 
 
 %
 % Brief introduction to loss functions used in the neural networks
