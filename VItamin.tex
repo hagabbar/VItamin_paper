@@ -110,7 +110,7 @@ autoencoders for gravitational-wave astronomy}
 \acrodef{ELBO}[ELBO]{evidence lower bound}
 \acrodef{LIGO}[LIGO]{advanced Laser Interferometer Gravitational wave Observatory}
 \acrodef{CVAE}[CVAE]{conditional variational autoencoder}
-\acrodef{KL}[KL]{Kullback–Leibler}
+\acrodef{KL}[KL]{Kullback--§Leibler}
 \acrodef{GPU}[GPU]{graphics processing unit}
 \acrodef{LVC}[LVC]{LIGO-Virgo Collaboration}
 \acrodef{PP}[p-p]{probability-probability}
@@ -293,7 +293,7 @@ and requires three fully-connected networks; two encoder networks (labelled
 $\textrm{E}_1$, $\textrm{E}_2$ in Fig.~\ref{fig:network_config}) representing
 the functions $r_{\theta_{1}}(z|y)$ and $q_{\phi}(z|x,y)$ respectively, and one
 decoder network (D) representing the function $r_{\theta_{2}}(x|z,y)$. The
-function $\text{KL}(\cdot||\cdot)$ denotes the Kulback-Leibler divergence and
+function $\text{KL}(\cdot||\cdot)$ denotes the \ac{KL} divergence and
 the variable $z$ represents locations within the \emph{latent space}.  This
 latter object is typically a lower dimensional space within which the encoder
 networks attempt to represent their input data. In practice, during the
@@ -304,20 +304,22 @@ detailed in the methods section.
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{images/network_setup.png}
-    \caption{\label{fig:network_config} The configuration of the \ac{CVAE} neural
-network. During training (left-hand side), a training set of noisy \ac{GW}
-signals ($y$) and their corresponding true parameters ($x$) are given as input
-to encoder network $\textrm{E}_2$, while only $y$ is given to $\textrm{E}_1$.
-The K-L divergence (Eq.~\ref{eq:kl}) is computed between the encoder output
-latent space representations forming one component of the total cost function.
-Samples from the $\text{E}_{2}$ latent space representation are generated and
-passed to the decoder network D together with the original input data $y$.  The
-output of the decoder describes a distribution in the physical space and the
+    \caption{\label{fig:network_config} The configuration of the \ac{CVAE}
+neural network. During training (left-hand side), a training set of noisy
+\ac{GW} signals ($y$) and their corresponding true parameters ($x$) are given
+as input to encoder network $\textrm{E}_2$, while only $y$ is given to
+$\textrm{E}_1$.  The K-L divergence (Eq.~\ref{eq:kl}) is computed between the
+encoder output latent space representations (defined by $\mu_q$ and $\mu_r$)
+forming one component of the total cost function.  Samples ($z_q$) from the
+$\text{E}_{2}$ latent space representation are generated and passed to the
+decoder network D together with the original input data $y$. The output of the
+decoder ($\mu_x$) describes a distribution in the physical space and the
 \ac{ELBO} cost component $L$ is computed by evaluating that distribution at the
 value of the original input $x$. When performed in batches this scheme allows
-the computation of the total cost function Eq.~\ref{eq:cost3}.  After having
+the computation of the total cost function Eq.~\ref{eq:cost3}. After having
 trained the network, we test (right-hand side) using only the $\textrm{E}_1$
-encoder and the decoder D to produce samples from the posterior $p(x|y)$.}
+encoder and the decoder D to produce samples ($x_{\text{samp}}$) from the
+posterior $p(x|y)$.}
 \end{figure}
 
 %
@@ -455,11 +457,11 @@ consistent with the frequentist interpretation - that the truth will lie within
 an interval containing $X\%$ of the posterior probability with a frequency of
 $X\%$ of the time. It is clear to see that our new approach shows deviations
 from the diagonal that are entirely consistent with those observed in all
-benchmark samplers. In Fig.~\ref{fig:kl_results} (see Sec.~\ref{sec:methods}) we
-also show distributions of the \ac{KL} divergence statistic between all
-samplers on the joint posterior distributions. It is clear that the \ac{KL}
-divergences between \texttt{VItamin} and any other sampler are consistent with the
-distributions between any 2 existing benchmark samplers.      
+benchmark samplers. In Fig.~\ref{fig:kl_results} (see Sec.~\ref{sec:methods})
+we also show distributions of the \ac{KL} divergence statistic between all
+samplers on the joint posterior distributions. It is also clear that the
+\ac{KL} divergences between \texttt{VItamin} and any other sampler are
+consistent with the distributions between any 2 existing benchmark samplers.      
 
 %
 % discuss the speed of the analysis
@@ -504,8 +506,9 @@ techniques, representing a dramatic speed-up in performance.
 the different posterior sampling approaches.}
 \begin{tabular}[t]{lcccc}
 \toprule
-& \multicolumn{3}{c}{run time (seconds)} & \\
-& min & max & median & ratio \\
+\multirow{2}{*}{sampler} & \multicolumn{3}{c}{run time (seconds)} & \multirow{2}{*}{ratio
+$\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
+& min & max & median & \\
 \hline
 Dynesty\footnote{The benchmark samplers all produced $\mathcal{O}(3000-
 10000)$ samples dependent on the default sampling parameters used.} & 602 & 1538 & 774 & $2.6\times 10^{-6}$ \\
@@ -809,42 +812,6 @@ $x$ from the prior, $y$ from the likelihood function $p(y|x)$, and from the
 recognition function, giving us Eq.~\ref{eq:cost3}, the actual function
 evaluated within the training procedure.
 
-We have now set up a system composed of 3 functions that have well defined
-inputs and outputs where the mapping of those inputs to outputs is governed by
-the parameter sets $\theta_{1},\theta_{2},\phi$. These parameters are the
-weights and biases of 3 neural networks acting as (variational) encoder,
-decoder, and encoder respectively. To train such a network one must connect the
-inputs and outputs appropriately to compute the cost function $H$ and
-back-propagate cost function derivatives to update the network parameters. The
-network structure shown in Fig.~\ref{fig:network_config} shows how for a batch
-of $N$ sets of $x$ and corresponding $y$ values first both $x$ and $y$ are fed
-into the encoder 2 network that produces the means and variances describing the
-$q_{\phi}(z|x,y)$ distribution in the latent space $z$. Next (the order does
-not matter) the data $y$ alone is passed into the encoder 1 network that
-produces the means and variances describing the $r_{\theta_{1}}(z|y)$
-distribution function in the latent space. Given the parameters of these
-Gaussian (diagonal covariance matrix) distributions the $\text{KL}$-divergence
-within the cost function is computed as
-%
-\begin{align}\label{eq:klgauss}
-\text{KL}&\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] = \\
-&\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
-\frac{(\mu_{r,j}-\mu_{q,j})^{2}}{\sigma_{r,j}^{2}}+
-\log\left(\frac{\sigma_{r,j}^{2}}{\sigma_{q,j}^{2}}\right)\right] -
-\frac{n_{z}}{2},\nonumber \end{align}
-%
-where those labelled and indexed parameters output from the encoder networks
-are denoted by $\mu$ and $\sigma$.
-
-To evaluate the first term within the cost function (Eq.~\ref{eq:cost3}) we
-require the data $y$ and a randomly drawn $z$ value from the latent space defined
-by $q_{\phi}(z|x,y)$. These are then passed as input into the decoder network D
-that produces the means and variances in the physical parameter space $x$ describing
-the $r_{\theta_{2}}(x|z,y)$ distribution function. With the function now well
-defined we simply evaluate the function at the input $x_{n}$
-values. Training of the network proceeds until a convergence of the cost is
-seen. 
-
 %
 % loss plot
 %
@@ -887,23 +854,6 @@ detector & - & \multicolumn{2}{c}{H1} & - \\
 \label{tab:prior_ranges}
 \end{table}
 
-When the network has been trained it can be used for the inference of unknown
-physical parameters given a new single instance of measured data $y$. To do
-this one is interested in obtaining samples from the distribution
-$r_{\theta}(x|y)$ which can be obtained by evaluating
-Eq.~\ref{eq:latent_model}. To do this using the network we first obtain the
-parameters governing the function $r_{\theta_{1}}(z|y)$ by passing the data $y$
-into the encoder 1 network. Using the output means and variances on the latent space
-$z$ we then draw from that space to obtain a random latent space realisation.
-This $z$ value and the original $y$ data are then input into the decoder network
-which outputs the mean and variance parameters governing the function
-$r_{\theta_{2}}(x|z,y)$. The next step is to draw a random $x$ realisation from
-that function. This is representative of a posterior sample from the target
-distribution $p(x|y)$ and to obtain an informative description of the entire
-distribution one would repeat the procedure with the same input data
-$\mathcal{O}(1000)$ times from which parameter confidence bounds can be
-determined.      
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The training procedure}
 %
@@ -929,23 +879,24 @@ Fig.~\ref{fig:network_config}.
 \begin{itemize}
 %
 \item The encoder $\textrm{E}_1$ is given a set of training \ac{GW} signals
-($y$) and encodes $y$ into a set of variables $\mu^{j}_{1}$ defining a
-distribution in the latent space. In this case $\mu^{j}_{1}$ describes the
-first 2 central moments for each dimension of a multivariate Gaussian where $j$
-is the order of the moment ($j=1$ is the mean and $j=2$ is the variance).
+($y$) and encodes $y$ into a set of variables $\mu_q$ defining a distribution
+in the latent space. In this case $\mu_q = (\mu_{q0},\sigma^{2}_{q})$ describes
+the first 2 central moments (mean and variance) for each dimension of a
+uncorrolated (diagonal covariance) multivariate Gaussian distribution.
 %
 \item The encoder $\textrm{E}_2$ takes a combination of both the data $y$ and
 the true parameters $x$ defining the \ac{GW} signal and encodes this into
-parameters defining another multivariate Gaussian distribution in the same
-latent space. These parameters we denote by $\mu^{j}_{2}$.
+parameters defining another uncorrelated multivariate Gaussian distribution in
+the same latent space. These parameters we denote by
+$\mu_{r}=(\mu_{r0},\sigma^{2}_{r})$ again representing the means and variances.
 %
-\item We then sample from the distribution described by $\mu^{j}_{2}$
-giving us samples $z_{2}$ within the latent space.
+\item We then sample from the distribution described by $\mu_{q}$ giving us
+samples $z_{q}$ within the latent space.
 %
 \item These samples, along with their corresponding $y$ data, then go to the
-decoder D which outputs $\mu_{x}$, a set of parameters (much like
-$\mu^{j}_{1},\mu^{j}_{2}$) that define the moments of a multivariate Gaussian
-distribution in the $x$ space.
+decoder D which outputs $\mu_{x}=(\mu_{x0},\sigma^{2}_{q})$, a set of parameters (much like
+$\mu_q,\mu_r$) that define the moments of an uncorrelated  multivariate Gaussian
+distribution in the physical $x$ space.
  %
 \item The first term of the loss function (Eq.~\ref{eq:cost3}) is then computed
 by evaluating the probability density defined by $\mu_x$ at the true $x$
@@ -953,18 +904,20 @@ training values. The component of the loss allows the network to learn how to
 predict accurate values of $x$ but to also learn the intrinsic variation due to
 the noise properties of the data $y$. It is important to highlight that the
 \ac{GW} parameter predictions from the decoder D do describe a multivariate
-Gaussian but, as we will show, this does \emph{not} imply that our final output
-posterior estimates will also be multivariate Gaussians.
+Gaussian, but as is shown in our results (see Fig.~\ref{fig_corner_plot}), this
+does \emph{not} imply that our final output posterior estimates will also be
+multivariate Gaussians.
 %
-\item Finally the loss component described by the K-L divergence between the
-distributions described by $\mu^{j}_1$ and $\mu^{j}_2$ is computed using
+\item Finally the loss component described by the \ac{KL} divergence between the
+distributions described by $\mu^{q}$ and $\mu^{r}$ is computed using
 %
 \begin{align}\label{eq:klgauss}
 \text{KL}&\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] = \\
 &\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
-\frac{(\mu_{r,j}-\mu_{q,j})^{2}}{\sigma_{r,j}^{2}}+
+\frac{(\mu_{r0,j}-\mu_{q0,j})^{2}}{\sigma_{r,j}^{2}}+
 \log\left(\frac{\sigma_{r,j}^{2}}{\sigma_{q,j}^{2}}\right)\right] -
-\frac{n_{z}}{2}.\nonumber \end{align}
+\frac{n_{z}}{2}.\nonumber 
+\end{align}
 %
 Here we highlight that we do not desire that the network tries to make these 2
 distributions equal to each other. Rather, we want the ensemble network to
@@ -988,16 +941,16 @@ number of iterations.
 For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
 size of $512$ training samples and a learning rate of $10^{-4}$ was sufficient.
 We used a total of $10^6$ training samples in order to adequately cover the
-\ac{BBH} parameter space. We additionally ensure that an (effectively)
-infinite number of noise realizations are employed by making sure that every
-time a training sample is used it is given a unique noise realisation despite
-only having a finite number of waveforms. Each neural network
-($\text{E}_1$, $\text{E}_2$, D) is composed of 3 fully connected layers and has
-$2048$ neurons in each layer with ReLU \cite{nair2010rectified} activation functions between layers. We
-use a latent space dimension of $8$ and we consider training complete when
-both components to the loss function have converged to approximately constant
-values or when comparisons with benchmark test posteriors indicate no
-significant changes in the output posterior.
+\ac{BBH} parameter space. We additionally ensure that an (effectively) infinite
+number of noise realizations are employed by making sure that every time a
+training sample is used it is given a unique noise realisation despite only
+having a finite number of waveforms. Each neural network ($\text{E}_1$,
+$\text{E}_2$, D) is composed of 3 fully connected layers and has $2048$ neurons
+in each layer with ReLU~\cite{nair2010rectified} activation functions between
+layers. We use a latent space dimension of $8$ and we consider training
+complete when both components to the loss function have converged to
+approximately constant values or when comparisons with benchmark test
+posteriors indicate no significant changes in the output posterior.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The testing procedure}
@@ -1013,7 +966,7 @@ After training has completed and we wish to use the network for inference we
 follow the procedure described in the right hand panel of
 Fig.~\ref{fig:network_config}. Given a new $y$ data sample (not taken from the
 training set) we simply input this into the encoder $\textrm{E}_1$ from which we
-obtain a single value of $\mu_{1}$ describing a distribution (conditional on the
+obtain a single value of $\mu_{r}$ describing a distribution (conditional on the
 data $y$) in the latent space. We then repeat the following steps:
 
 %
@@ -1021,12 +974,12 @@ data $y$) in the latent space. We then repeat the following steps:
 %
 \begin{itemize}
 %
-\item We randomly draw a latent space sample $z_1$ from the latent space
-distribution defined by $\mu_1$.
+\item We randomly draw a latent space sample $z_r$ from the latent space
+distribution defined by $\mu_r$.
 %
-\item Our $z_1$ sample and the corresponding original $y$ data are fed as input to our
+\item Our $z_r$ sample and the corresponding original $y$ data are fed as input to our
 pre-trained decoder network (D). The decoder network returns a set of moments
-$\mu^{x}_1$ which describe a multivariate Gaussian distribution in the physical
+$\mu_{x}$ which describe a multivariate Gaussian distribution in the physical
 parameter space.
 %
 \item We then draw a random $x$ realisation from that distribution.
