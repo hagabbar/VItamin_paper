@@ -140,7 +140,7 @@ approaches~\cite{1409.7215}.
 %
 % rationale
 %
-For \ac{BBH} signals, existing \ac{GW} analyses can take $\mathcal{O}(10^{5} -
+For \ac{BBH} signals, existing complete \ac{GW} analyses can take $\mathcal{O}(10^{5} -
 10^{6})$ seconds to complete~\cite{1409.7215} and for \ac{BNS}
 signals this increases by at least an order of magnitude
 ~\cite{PhysRevLett.119.161101}. It is for this latter class of signal (and
@@ -313,7 +313,7 @@ above) at each stage of training. Training is performed via a series of steps
 detailed in the methods section.
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{images/network_setup.png}
+    \includegraphics[width=\columnwidth]{network_setup.png}
     \caption{\label{fig:network_config} The configuration of the \ac{CVAE}
 neural network. During training (left-hand side), a training set of noisy
 \ac{GW} signals ($y$) and their corresponding true parameters ($x$) are given
@@ -401,7 +401,7 @@ itself, rather than after training.
 % 1-D overlap results
 %
 \begin{figure*}
-    \includegraphics[width=\textwidth]{images/corner_testcase0.png}
+    \includegraphics[width=\textwidth]{corner_testcase0.png}
     \caption{\label{fig:corner_plot} Corner plot showing 2 and 1-dimensional
 marginalised posterior distributions for one example test dataset. Filled (red)
 contours represent the posteriors obtained from the \ac{CVAE} approach and
@@ -439,7 +439,7 @@ Fig.~\ref{fig:corner_plot} where the strong agreement between both
 % P-P plot
 %
 \begin{figure}
-    \includegraphics[width=\columnwidth]{images/latest_pp_plot.png}
+    \includegraphics[width=\columnwidth]{latest_pp_plot.png}
     \caption{\label{fig:pp_plot} One-dimensional \ac{PP} plots for each
 parameter and each benchmark sampler and \texttt{VItamin}.  The curves were
 constructed using the 256 test datasets. The dashed black diagonal line
@@ -494,8 +494,8 @@ samplers is defined as the time to complete their analyses when configured
 using their default parameters~\cite{1811.02042}. For \texttt{VItamin} this
 time is defined as the total time to produce $3000$ samples. For our test case
 of \ac{BBH} signals \texttt{VItamin} produces samples from the posterior at a
-rate which is $\sim 6$---$7$ orders of magnitude faster than current inference
-techniques, representing a dramatic speed-up in performance. 
+rate which is $\sim 6$---$7$ orders of magnitude faster than our benchmark analysis 
+using current inference techniques, representing a dramatic speed-up in performance. 
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
 %aren't convincing, is a plot displaying 1D confidence bounds compared between
@@ -521,7 +521,7 @@ $\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
 & min & max & median & \\
 \hline
 Dynesty\footnote{The benchmark samplers all produced $\mathcal{O}(3000-
-10000)$ samples dependent on the default sampling parameters used.} & 602 & 1538 & 774 & $2.6\times 10^{-6}$ \\
+	10000)$ samples dependent on the default sampling parameters used.} & 602 & 1538 & 774\footnote{The reader may note that benchmark sampler run times are a few orders of magnitude lower than what is typical of a complete \ac{BBH} analysis ($\mathcal{O}(10^{5} -10^{6})$ seconds). This is primarily due our use of a reduced parameter space, low sampling rate and choice of sampler hyperparameters.} & $2.6\times 10^{-6}$ \\
 Emcee & 2005 & 11927 & 4351 & $4.6\times 10^{-7}$ \\
 Ptemcee & 3354 & 12771 & 4982 & $4.0\times 10^{-7}$ \\
 Cpnest & 1431 & 5405 & 2287 & $8.8\times 10^{-7}$ \\
@@ -827,7 +827,7 @@ evaluated within the training procedure.
 % loss plot
 %
 \begin{figure}
-    \includegraphics[width=\columnwidth]{images/inv_losses_log.png}
+    \includegraphics[width=\columnwidth]{inv_losses_log.png}
 \caption{\label{fig:loss_log} The cost as a function of training iteration. We
 show the \ac{ELBO} cost function component (blue), the \ac{KL} divergence
 component (orange) and total cost (green). The total cost is simply a
@@ -1011,7 +1011,7 @@ with the same input data (see Eq.~\ref{eq:latent_model}).
 \subsection{Additional tests}
 %
 \begin{figure}
-    \includegraphics[width=\columnwidth]{images/hist-kl.png}
+    \includegraphics[width=\columnwidth]{hist-kl.png}
     \caption{\label{fig:kl_results} Distributions of \ac{KL}-divergence values
 between posteriors produced by different samplers. The \ac{KL} divergence is
 computed between all samplers with every other sampler over all 256 \ac{GW}
