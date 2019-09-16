@@ -130,32 +130,31 @@ for gravitational-wave astronomy}
 %
 % background
 %
-\ac{GW} detection is now commonplace~\cite{PhysRevLett.116.061102,
-PhysRevX.6.041015,PhysRevLett.119.161101} and as the sensitivity of the global
-network of \ac{GW} detectors improves, we will observe $\mathcal{O}(100)$s of
-transient \ac{GW} events per year~\cite{1409.7215}. For each of these events
-the current methods used to estimate their source parameters employ optimally
-sensitive~\cite{2009CQGra..26o5017S} but computationally costly Bayesian inference
-approaches~\cite{1409.7215}.
+\ac{GW} detection is now
+commonplace~\cite{PhysRevX.6.041015,PhysRevLett.119.161101} and as the
+sensitivity of the global network of \ac{GW} detectors improves, we will
+observe $\mathcal{O}(100)$s of transient \ac{GW} events per
+year~\cite{2018LRR....21....3A}. The current methods used to estimate their
+source parameters employ optimally sensitive~\cite{2009CQGra..26o5017S} but
+computationally costly Bayesian inference approaches~\cite{1409.7215} where
+typical analyses have taken between 6 hours and 5 days~\cite{gracedb_O3}.
 %
 % rationale
 %
-For \ac{CBC} signals typical analyses have taken between 6 hours and 5
-days~\cite{gracedb_O3} to produce complete Bayesian results. For \ac{BNS} and
-\ac{NSBH} systems prompt counterpart \ac{EM} signatures are expected on
-timescales of 1 second – 1 minute and the current fastest method for alerting
-\ac{EM} follow-up observers~\cite{2016PhRvD..93b4013S}, can provide estimates
-in $\mathcal{O}(1)$ minute, on a limited range of key source parameters. 
+For \ac{BNS} and \ac{NSBH} systems prompt counterpart \ac{EM} signatures are
+expected on timescales of 1 second – 1 minute and the current fastest method
+for alerting \ac{EM} follow-up observers~\cite{2016PhRvD..93b4013S}, can
+provide estimates in $\mathcal{O}(1)$ minute, on a limited range of key source
+parameters. 
 %
 % results
 %
 Here we show that a \ac{CVAE}~\cite{1904.06264,1812.04405} pre-trained on
-\ac{BBH} signals and without being given the precomputed posteriors can return
-Bayesian posterior probability estimates on source parameters. The training
-procedure need only be performed once for a given prior parameter space (or
-signal class) and the resulting trained machine can then generate samples
-describing the posterior distribution $\sim 7$ orders of magnitude faster than
-existing techniques.}
+\ac{BBH} signals can return Bayesian posterior probability estimates. The
+training procedure need only be performed once for a given prior parameter
+space and the resulting trained machine can then generate samples describing
+the posterior distribution $\sim 6$ orders of magnitude faster than existing
+techniques.}
 %
 % currently ~240 words - needs cutting to ~150 approx 9.6 words per line
 
@@ -188,11 +187,10 @@ existing techniques.}
 % From GW detection, to parameter estimation
 %
 The problem of detecting \acp{GW} has largely been solved through the use of
-template based matched-filtering~\cite{0264-9381-33-21-215004}, a process
-recently replicated using machine learning
-techniques~\cite{GEORGE201864,PhysRevLett.120.141103,GebKilParHarSch}. Once a
-\ac{GW} has been identified through this process, Bayesian inference, known to
-be the optimal approach~\cite{2009CQGra..26o5017S}, is used to extract
+template based matched-filtering, a process recently replicated using machine
+learning techniques~\cite{GEORGE201864,PhysRevLett.120.141103,GebKilParHarSch}.
+Once a \ac{GW} has been identified through this process, Bayesian inference,
+known to be the optimal approach~\cite{2009CQGra..26o5017S}, is used to extract
 information about the source parameters of the detected \ac{GW} signal.
 
 %
@@ -245,14 +243,14 @@ methods.
 %
 Machine learning has featured prominently in many areas of \ac{GW} research
 over the last few years. These techniques have shown to be particularly
-promising in signal detection
-\cite{GEORGE201864,PhysRevLett.120.141103,1904.08693}, glitch classification
-\cite{1706.07446,0264-9381-34-6-064003} and earthquake prediction
-\cite{Coughlin_2017}. We also highlight a recent development in \ac{GW}
-parameter estimation (published in parallel and independent to this work) where
-marginalized one- and two-dimensional marginalised Bayesian posteriors are
-produced rapidly using neural networks. This is done without the need to
-compute the likelihood or posterior during training which is also a
+promising in signal
+detection~\cite{GEORGE201864,PhysRevLett.120.141103,GebKilParHarSch}, glitch
+classification~\cite{0264-9381-34-6-064003} and earthquake
+prediction~\cite{Coughlin_2017}. We also highlight a recent development in
+\ac{GW} parameter estimation (published in parallel and independent to this
+work) where 1- and 2-dimensional marginalised Bayesian posteriors are produced
+rapidly using neural networks~\cite{2019arXiv190905966C}. This is done without
+the need to compute the likelihood or posterior during training which is also a
 characteristic of the approach described in this letter.
 
 %
@@ -364,8 +362,8 @@ Table~\ref{tab:prior_ranges}.
 %~\chris{we might want to
 %change this to be a $d$-squared prior to demonstrate the application of priors
 %in the \texttt{VItamin} training stage.} 
-We use a sampling frequency of $256$~Hz and a timeseries duration of 1 second.
-The waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
+We use a sampling frequency of $256$~Hz, a timeseries duration of 1 second, and 
+the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
 \texttt{Bilby}. For each run and sampler we extract $3000$ samples from the
@@ -380,7 +378,7 @@ The waveforms are also of identical duration, sampling frequency, and waveform
 model as used in the benchmark analysis. When each waveform is placed within a
 training batch it is given a unique detector noise realisation after which the
 data is whitened using the same advanced detector
-\ac{PSD}~\cite{2016LRR....19....1A} from which the simulated noise is
+\ac{PSD}~\cite{aligo_noisecurves} from which the simulated noise is
 generated\footnote{Although we whiten the data as input to our network the
 whitening is simply to scale the input to a level more suitable to neural
 networks and need not be performed with the true \ac{PSD}.}. The \ac{CVAE}
@@ -432,66 +430,31 @@ Fig.~\ref{fig:corner_plot} where the strong agreement between both
 %values). I think something based on the 1-D intervals would be nice.}
 
 %
-% P-P plot
+% mention the pp plot and KL distribution results
 %
-\begin{figure}
-    \includegraphics[width=\columnwidth]{latest_pp_plot.png}
-    \caption{\label{fig:pp_plot} One-dimensional \ac{PP} plots for each
-parameter and each benchmark sampler and \texttt{VItamin}.  The curves were
-constructed using the 256 test datasets. The dashed black diagonal line
-indicates the ideal result.   
-}
-\end{figure}
-%
-
-%
-% discuss pp plot result
-%
-%\chris{You need to better describe what a P-P plot is and why we use it. Maybe
-%throw in a reference to existing PE group papers that use it. Nature readers
-%will have never seen one before. We also have to wait until we get better P-P
-%plot curves for our approach before we warrant adding it to the paper.} 
-A standard test used within the \ac{GW} parameter estimation community is the
-production of so-called \ac{PP} plots which we show for our analysis in
-Fig.~\ref{fig:pp_plot}. The plot is constructed by computing a p-value for each
-output test posterior on a particular parameter evaluated at the true
-simulation parameter value (the fraction of posterior samples $>$ the
-simulation value). We then plot the cumulative distribution of these
-values~\cite{1409.7215}. Curves consistent with the black dashed diagonal line
-indicate that the 1-dimensional Bayesian probability distributions are
-consistent with the frequentist interpretation - that the truth will lie within
-an interval containing $X\%$ of the posterior probability with a frequency of
-$X\%$ of the time. It is clear to see that our new approach shows deviations
-from the diagonal that are entirely consistent with those observed in all
-benchmark samplers. In Fig.~\ref{fig:kl_results} (see Sec.~\ref{sec:methods})
-we also show distributions of the \ac{KL} divergence statistic between all
-samplers on the joint posterior distributions. It is also clear that the
-\ac{KL} divergences between \texttt{VItamin} and any other sampler are
-consistent with the distributions between any 2 existing benchmark samplers.      
+In Figs.~\ref{fig:pp_plot,fig:kl_results} (see the Methods section) we show
+the results of 2 statistical tests (the \ac{PP} plot test and \ac{KL}
+divergence tests) performed on the entire test dataset and between all
+samplers. In both cases the tests indicate that the \texttt{VItamin} sampler
+performs as well as any other sampler in comparison with the full set of
+samplers.
 
 %
 % discuss the speed of the analysis
 %
 The dominating computational cost of running \texttt{VItamin} lies in the
-training time, which can take of order several hours to complete.  Completion
-is determined by comparing posteriors produced by the machine learning model
-and those of \texttt{Bilby} iteratively during training. We additionally assess
-whether the cost curves (Fig.~\ref{fig:loss_log}) have converged, such that 
-their slope is near-zero. We use a 
-single Nvidia Tesla V100 \acp{GPU} with $16/32$ Gb of RAM although consumer grade
-``gaming" \ac{GPU} cards are equally fast for this application. 
-
-We stress that
-once trained, there is no need to retrain the network unless the user wishes to
-use different priors $p(x)$ or assume different noise characteristics.   The
-speed at which posterior samples are generated for all samplers used, including
-\texttt{VItamin}, is shown in Table~\ref{Tab:speed}. Run-time for the benchmark
-samplers is defined as the time to complete their analyses when configured
-using their default parameters~\cite{1811.02042}. For \texttt{VItamin} this
-time is defined as the total time to produce $3000$ samples. For our test case
-of \ac{BBH} signals \texttt{VItamin} produces samples from the posterior at a
-rate which is $\sim 6$---$7$ orders of magnitude faster than our benchmark analysis 
-using current inference techniques, representing a dramatic speed-up in performance. 
+training time, which can take of order several hours to complete. We stress
+that once trained, there is no need to retrain the network unless the user
+wishes to use different priors $p(x)$ or assume different noise
+characteristics. The speed at which posterior samples are generated for all
+samplers used, including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}.
+Run-time for the benchmark samplers is defined as the time to complete their
+analyses when configured using their default parameters~\cite{1811.02042}. For
+\texttt{VItamin} this time is defined as the total time to produce $3000$
+samples. For our test case of \ac{BBH} signals \texttt{VItamin} produces
+samples from the posterior at a rate which is $\sim 6$---$7$ orders of
+magnitude faster than our benchmark analysis using current inference
+techniques. 
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
 %aren't convincing, is a plot displaying 1D confidence bounds compared between
@@ -561,35 +524,34 @@ trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 % CBC implications and why this is a game-changer - speed for EM followup
 %
 The significance of our results is most evident in the orders of magnitude
-increase in speed over existing approaches. This will help the
-LIGO-Virgo collaboration alert \ac{EM} follow-up partners with minimum latency, 
-enabling tightly coupled, closed-loop control of sensing resources, for maximum information gain.
-Improved low-latency alerts will be especially pertinent for signals from
-\ac{BNS} mergers (e.g. GW170817~\cite{PhysRevLett.119.161101}) and \ac{NSBH} signals where
-parameter estimation speed will no longer be limiting factor\footnote{The complete
+increase in speed over existing approaches. Improved low-latency alerts will be
+especially pertinent for signals from \ac{BNS} mergers (e.g.
+GW170817~\cite{PhysRevLett.119.161101}) and \ac{NSBH} signals where parameter
+estimation speed will no longer be limiting factor\footnote{The complete
 low-latency pipeline includes a number of steps. The process of \ac{GW} data
-acquisition is followed by the transfer of data. There is then the corresponding
-analysis and the subsequent communication of results to the \ac{EM} astronomy
-community after which there are physical aspects such as slewing observing
-instruments to the correct pointing.} in observing the prompt \ac{EM} emission
-expected on shorter time scales than is achievable with existing \ac{LVC}
-analysis tools such as Bayestar~\cite{2016PhRvD..93b4013S}.
+acquisition is followed by the transfer of data. There is then the
+corresponding analysis and the subsequent communication of results to the
+\ac{EM} astronomy community after which there are physical aspects such as
+slewing observing instruments to the correct pointing.} in observing the prompt
+\ac{EM} emission expected on shorter time scales than is achievable with
+existing \ac{LVC} analysis tools such as Bayestar~\cite{2016PhRvD..93b4013S}.
 
 %
 % CBC implications and why this is a game-changer - faster, modular
 %
 The predicted number of future detections of \ac{BNS} mergers ($\sim
-180$~\cite{1304.0670,1811.12907}) will severely strain the \ac{GW} community's
+180$~\cite{2018LRR....21....3A}) will severely strain the \ac{GW} community's
 current computational resources using existing Bayesian methods. Future
 iterations of our approach will provide full-parameter estimation on \ac{CBC}
-signals in $<1$ second on a single \ac{GPU}. Our trained network is also modular, and can be shared and used easily by any user to produce
-results. The specific analysis described in the letter assumes a uniform prior
-on the signal parameters. However, this is a choice and the network can be
-trained with any prior the user demands, or users can cheaply resample
-accordingly from the output of the network trained on the uniform prior. We
-also note that our method will be invaluable for population studies since
-populations may now be generated and analysed in a full-Bayesian manner on a
-vastly reduced time scale. 
+signals in $<1$ second on a single \ac{GPU}. Our trained network is also
+modular, and can be shared and used easily by any user to produce results. The
+specific analysis described in the letter assumes a uniform prior on the signal
+parameters. However, this is a choice and the network can be trained with any
+prior the user demands, or users can cheaply resample accordingly from the
+output of the network trained on the uniform prior. We also note that our
+method will be invaluable for population studies since populations may now be
+generated and analysed in a full-Bayesian manner on a vastly reduced time
+scale. 
 
 %
 % future work, current limitations and prospects
@@ -935,9 +897,16 @@ minimise the total cost (of which this is a component).
 %
 % Some practical aspects of the training
 %
-As is standard practice in machine learning applications, the cost
-is computed over a batch of training samples and repeated for a pre-defined
-number of iterations. 
+As is standard practice in machine learning applications, the cost is computed
+over a batch of training samples and repeated for a pre-defined number of
+iterations. Completion of training is determined by comparing output posteriors
+on test samples with those of \texttt{Bilby} iteratively during training. This
+comparison is done using standard figures of merit such as the \ac{KL}
+divergence and the P-P plot. We also assess training completion based on
+whether the cost function and its component parts (Fig.~\ref{fig:loss_log})
+have converged. We use a single Nvidia Tesla V100 \acp{GPU} with $16/32$ Gb of
+RAM although consumer grade ``gaming" \ac{GPU} cards are equally fast for this
+application.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1006,6 +975,40 @@ with the same input data (see Eq.~\ref{eq:latent_model}).
 %
 \subsection{Additional tests}
 %
+% P-P plot
+%
+\begin{figure}
+    \includegraphics[width=\columnwidth]{latest_pp_plot.png}
+    \caption{\label{fig:pp_plot} One-dimensional \ac{PP} plots for each
+parameter and each benchmark sampler and \texttt{VItamin}.  The curves were
+constructed using the 256 test datasets. The dashed black diagonal line
+indicates the ideal result.
+}
+\end{figure}
+%
+
+%
+% discuss pp plot result
+%
+%\chris{You need to better describe what a P-P plot is and why we use it. Maybe
+%throw in a reference to existing PE group papers that use it. Nature readers
+%will have never seen one before. We also have to wait until we get better P-P
+%plot curves for our approach before we warrant adding it to the paper.}
+A standard test used within the \ac{GW} parameter estimation community is the
+production of so-called \ac{PP} plots which we show for our analysis in
+Fig.~\ref{fig:pp_plot}. The plot is constructed by computing a $p$-value for each
+output test posterior on a particular parameter evaluated at the true
+simulation parameter value (the fraction of posterior samples $>$ the
+simulation value). We then plot the cumulative distribution of these
+values~\cite{1409.7215}. Curves consistent with the black dashed diagonal line
+indicate that the 1-dimensional Bayesian probability distributions are
+consistent with the frequentist interpretation - that the truth will lie within
+an interval containing $X\%$ of the posterior probability with a frequency of
+$X\%$ of the time. It is clear to see that our new approach shows deviations
+from the diagonal that are entirely consistent with those observed in all
+benchmark samplers. 
+
+%
 \begin{figure}
     \includegraphics[width=\columnwidth]{hist-kl.png}
     \caption{\label{fig:kl_results} Distributions of \ac{KL}-divergence values
@@ -1015,7 +1018,7 @@ test cases. The distributions of the resulting \ac{KL} divergence values are
 then plotted, with each color representing a different sampler combination
 including \texttt{VItamin} as one of the sampler pairs. The grey distributions
 represent the results from all benchmark sampler pairs for comparison. Both the
-$x$ and $y$ axes are scaled logarithmically for readability.} 
+$x$ and $y$ axes are scaled logarithmically for readability.}
 \end{figure}
 %
 

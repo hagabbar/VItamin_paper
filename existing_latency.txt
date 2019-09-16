@@ -1,0 +1,37 @@
+EVENT           CLASSIFICATION                                                  EVENT TIME                      FIRST LALINFERENCE              RESULTS DELAY
+S190910h        BNS (61%), Terrestrial (39%)                                    Sept. 10, 2019 08:29:58 UTC     Sep 11, 2019 17:11:34 UTC       1 day, 8 hours, 41 minutes and 36 seconds
+S190910d        NSBH (98%), Terrestrial (2%)                                    Sept. 10, 2019 01:26:19 UTC     Sep 10, 2019 22:33:57 UTC       21 hours, 7 minutes and 38 seconds
+S190901ap       BNS (86%), Terrestrial (14%)                                    Sept. 1, 2019 23:31:01 UTC      Sep 2, 2019 11:21:59 UTC        11 hours, 50 minutes and 58 seconds
+S190829u        MassGap (90%), Terrestrial (10%)                                Aug. 29, 2019 21:05:56 UTC      Sep 3, 2019 05:02:41 UTC        4 days, 7 hours, 56 minutes and 45 seconds
+S190828l        BBH (>99%)                                                      Aug. 28, 2019 06:55:09 UTC      Aug 29, 2019 15:43:57 UTC       1 day, 8 hours, 48 minutes and 48 seconds
+S190828j        BBH (>99%)                                                      Aug. 28, 2019 06:34:05 UTC      Aug 30, 2019 07:58:27 UTC       2 days, 1 hour, 24 minutes and 22 seconds
+S190822c        BBH (>99%)                                                      Aug. 22, 2019 01:29:59 UTC      
+S190816i        NSBH (83%), Terrestrial (17%)                                   Aug. 16, 2019 13:04:31 UTC      Aug 19, 2019 10:54:50 UTC       2 days, 21 hours, 50 minutes and 19 seconds
+S190814bv       NSBH (>99%)                                                     Aug. 14, 2019 21:10:39 UTC      Aug 15, 2019 09:02:34 UTC       11 hours, 51 minutes and 55 seconds
+S190808ae       Terrestrial (57%), BNS (43%)                                    Aug. 8, 2019 22:21:21 UTC       
+S190728q        BBH (95%), MassGap (5%)                                         July 28, 2019 06:45:10 UTC      Jul 30, 2019 10:32:36 UTC       2 days, 3 hours, 47 minutes and 26 seconds
+S190727h        BBH (92%), Terrestrial (5%), MassGap (3%)                       July 27, 2019 06:03:33 UTC      Jul 31, 2019 20:08:10 UTC       4 days, 14 hours, 4 minutes and 37 seconds
+S190720a        BBH (99%), Terrestrial (1%)                                     July 20, 2019 00:08:36 UTC      Jul 21, 2019 13:54:03 UTC       1 day, 13 hours, 45 minutes and 27 seconds
+S190718y        Terrestrial (98%), BNS (2%)                                     July 18, 2019 14:35:12 UTC
+S190707q        BBH (>99%)                                                      July 7, 2019 09:33:26 UTC       Jul 9, 2019 17:48:32 UTC        2 days, 8 hours, 15 minutes and 6 seconds
+S190706ai       BBH (99%), Terrestrial (1%)                                     July 6, 2019 22:26:41 UTC       Jul 8, 2019 05:17:16 UTC        1 day, 6 hours, 50 minutes and 35 seconds
+S190701ah       BBH (93%), Terrestrial (7%)                                     July 1, 2019 20:33:06 UTC       Jul 3, 2019 02:08:14 UTC        1 day, 5 hours, 35 minutes and 8 seconds
+S190630ag       BBH (94%), MassGap (5%)                                         June 30, 2019 18:52:05 UTC      Jul 1, 2019 18:09:39 UTC        0 days, 23 hours, 17 minutes and 34 seconds
+S190602aq       BBH (99%)                                                       June 2, 2019 17:59:27 UTC       Jun 7, 2019 14:21:51 UTC        4 days, 20 hours, 22 minutes and 24 seconds
+S190524q	Terrestrial (71%), BNS (29%)                                    May 24, 2019 04:52:06 UTC
+S190521r	BBH (>99%)                                                      May 21, 2019 07:43:59 UTC       May 24, 2019 21:22:47 UTC       3 days, 13 hours, 38 minutes and 48 seconds       
+S190521g	BBH (97%), Terrestrial (3%)                                     May 21, 2019 03:02:29 UTC       May 21, 2019 09:11:04 UTC       0 days, 6 hours, 8 minutes and 35 seconds
+S190519bj	BBH (96%), Terrestrial (4%)                                     May 19, 2019 15:35:44 UTC       May 22, 2019 10:05:27 UTC	2 days, 18 hours, 29 minutes and 43 seconds
+S190517h	BBH (98%), MassGap (2%)                                         May 17, 2019 05:51:01 UTC       May 21, 2019 15:22:31 UTC       4 days, 9 hours, 31 minutes and 30 seconds
+S190513bm	BBH (94%), MassGap (5%)                                         May 13, 2019 20:54:28 UTC       May 16, 2019 14:43:37 UTC       2 days, 17 hours, 49 minutes and 9 seconds
+S190512at	BBH (99%), Terrestrial (1%)                                     May 12, 2019 18:07:14 UTC       May 17, 2019 15:27:36 UTC       4 days, 21 hours, 20 minutes and 22 seconds
+S190510g	Terrestrial (58%), BNS (42%)                                    May 10, 2019 02:59:39 UTC       Jun 3, 2019 16:19:23 UTC        24 days, 13 hours, 19 minutes and 44 seconds
+S190503bf	BBH (96%), MassGap (3%)                                         May 3, 2019 18:54:04 UTC        Jun 11, 2019 08:18:41 UTC       38 days, 13 hours, 24 minutes and 37 seconds
+S190426c	BNS (49%), MassGap (24%), Terrestrial (14%), NSBH (13%)         April 26, 2019 15:21:55 UTC     Apr 28, 2019 17:11:32 UTC       2 days, 1 hour, 49 minutes and 37 seconds
+S190425z	BNS (>99%)                                                      April 25, 2019 08:18:05 UTC	Apr 26, 2019 11:02:22 UTC       1 day, 2 hours, 44 minutes and 17 seconds
+S190421ar	BBH (97%), Terrestrial (3%)                                     April 21, 2019 21:38:56 UTC	May 3, 2019 08:18:56 UTC        11 days, 10 hours, 40 minutes and 0 seconds
+S190412m	BBH (>99%)                                                      April 12, 2019 05:30:44 UTC	
+S190408an	BBH (>99%)                                                      April 8, 2019 18:18:02 UTC      Apr 10, 2019 18:26:55 UTC       2 days, 0 hours, 8 mins 53 sec
+S190405ar	Terrestrial (>99%)                                              April 5, 2019 16:01:30 UTC	
+
+
