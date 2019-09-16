@@ -1,10 +1,10 @@
 DOCS = VItamin.pdf
 
-FIGS = ./images/corner_testcase0.png \
-       ./images/hist-kl.png \
-       ./images/inv_losses_log.png \
-       ./images/network_setup.png \
-       ./images/latest_pp_plot.png
+FIGS = ./corner_testcase0.png \
+       ./hist-kl.png \
+       ./inv_losses_log.png \
+       ./network_setup.png \
+       ./latest_pp_plot.png
 
 TABLES = 
 
