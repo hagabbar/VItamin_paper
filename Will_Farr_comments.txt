@@ -1,0 +1,47 @@
+LSC Review ------------  
+
+1. The author list is appropriate.  
+
+2. The paper uses no real data.  
+
+3. The paper makes no statements about what the LSC will or will not do (but
+see one comment below).  
+
+4. The references to work within the collaboration are appropriate.  
+
+5. LIGO references are up to date.  
+
+6. LVC computing resources are acknowledged.  
+
+One (minor) issue relevant to the LVC review is the following: in the abstract
+and throughout the paper, the authors claim that parameter estimation on a
+black hole signal takes O(10^5-10^6 seconds) (i.e. 1 to 10 days). I do not
+think this is an accurate description of our current performance (to say
+nothing of the performance of new libraries coming online for PE). For example,
+the author's own BBH PE runs took O(10^3 seconds); even allowing for these
+being very high-mass signals, the claim overstates the cost of PE by an order
+of magnitude or two.   The authors should modify this claim throughout the
+manuscript.  
+
+Scientific / Other Comments ----------------------------  
+
+A number of the LaTeX links to sections, equations, and figures return ?? at
+the moment.  
+
+It would be interesting for the authors to speculate on the performance effects
+of (1) the much better determination of, e.g., chirp mass for long signals and
+(2) the effect of the multi-modality / highly correlated shape of the
+posteriors on sky location, polarization, etc. encountered in a "full"
+parameter run.  
+
+It seems to me that there is a deep connection between the methods proposed
+here and so-called "likelihood free" analysis methods (see, for example,
+https://arxiv.org/abs/1903.00007); both attempt to learn and reproduce the
+joint distribution of parameters and data in a reduced-dimension space in order
+to produce the posterior distribution at fixed data. It would be worth some
+discussion/citation of LFI methods in the manuscript.  
+
+The implementation described in this manuscript encodes the prior in its
+distribution; there is some power in the LFI methods that attempt to learn
+instead the *likelihood* p(y | x) as these can be combined with *any* prior in
+post-processing. Could something similar be done here?
