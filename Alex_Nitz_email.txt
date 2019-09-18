@@ -1,0 +1,27 @@
+Hunter,
+
+I'm interested in your recently published paper. The results seem very
+promising. 
+
+One thing that caught my eye was the p-p plot. You are getting similar results
+as some other samples, however, none of them seem to be doing well. Do you have
+any idea what is going on here? Given the consistency between the different
+samplers you tried, is it possible you simply aren't drawing your test samples
+from your prior? You can test if the curve is deviating from the diagonal by
+the expected amount by doing a KS test . 
+
+If you compare to the plots in the pycbc inference paper, it seems to show
+significantly more deviation than what we see even for samplers which have
+*not* converged properly. Take for instance figure 3. Given you have more
+samples (256 vs 100), I would expect less deviation from the diagonal.
+
+https://arxiv.org/pdf/1807.10312.pdf
+
+On another note, we have a student who will be starting graduate school next
+month and is very interested in machine learning. He's been doing his masters
+working towards BNS detections with CNNs. Would you be open to having a call at
+some point to go over some of your results? I think we'd be interested in
+taking a further look into the kind of network you've put together.
+
+-Alex
+
