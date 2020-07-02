@@ -39,6 +39,7 @@ floatfix,
 \usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{mathtools}
 %\usepackage{booktabs}
 
 \hypersetup{
@@ -247,84 +248,101 @@ over the last few years. These techniques have shown to be particularly
 promising in signal
 detection~\cite{GEORGE201864,PhysRevLett.120.141103,GebKilParHarSch}, glitch
 classification~\cite{0264-9381-34-6-064003} and earthquake
-prediction~\cite{Coughlin_2017}. We also highlight a recent development in
-\ac{GW} parameter estimation (published in parallel and independent to this
-work) where 1- and 2-dimensional marginalised Bayesian posteriors are produced
-rapidly using neural networks~\cite{2019arXiv190905966C}. This is done without
-the need to compute the likelihood or posterior during training which is also a
-characteristic of the approach described in this letter.
+prediction~\cite{Coughlin_2017}. We also highlight \new{recent developments in
+\ac{GW} parameter estimation (independent to this work) where 1- and
+2-dimensional marginalised Bayesian posteriors are produced rapidly using
+neural networks~\cite{2019arXiv190905966C} and where normalised flows in
+conjunction with \acp{CVAE} can reproduce Bayesian posteriors for a single
+\ac{GW} detector case. These methods, including the one presented in this
+paper, are known as "likelihood-free" approaches in which there is no
+requirement for explicit likelihood evaluation. Nor is it the case that
+pre-computed posterior distributions are required in the training procedure.}
 
 %
 % Introduce CVAEs
 %
-Recently, a type of neural network known as \ac{CVAE} was
-shown to perform exceptionally well when applied towards computational imaging
+Recently, a type of neural network known as \ac{CVAE} was shown to perform
+exceptionally well when applied towards computational imaging
 inference~\cite{1904.06264,NIPS2015_5775}, text to image
 inference~\cite{1512.00570}, high-resolution synthetic image
 generation~\cite{1612.00005} and the fitting of incomplete heterogeneous
 data~\cite{1807.03653}. It is this type of machine learning network that we
 apply in the \ac{GW} case to accurately approximate the Bayesian posterior
-$p(x|y)$. 
+$p(x|y)$, \new{the probability of the \ac{GW} signal parameters given the
+measured data.} 
 
 %
 % Brief introduction to loss functions used in the neural networks
 %
 The construction of a \ac{CVAE} begins with the definition of a quantity to be
-minimised (referred to as a cost function). We can relate that aim to
-that of approximating the posterior distribution by minimising the cross
-entropy, defined as
+minimised (referred to as a cost function). \new{In our case we use the cross
+entropy}, defined as
 %
 \begin{align}\label{eq:cross_ent} 
 H(p,r) &= -\int dx\, p(x|y) \log r_{\theta}(x|y) 
 \end{align}
 %
 between the true posterior $p(x|y)$ and $r_{\theta}(x|y)$, the parametric
-distribution that we will use neural networks to construct and which we aim to
-be equal to the true posterior. In this case $\theta$ represents a set of
-trainable neural network parameters. Starting from this point it is possible to
-derive a computable form for the cross-entropy that is reliant on a set of
-unknown functions that can be modelled by variational encoder
-and decoder neural networks. The details of the derivation are described in
-the methods section and in~\cite{1904.06264}. The final form of the
-cross-entropy loss function is given by the bound
+distribution that we will use neural networks to \new{model} and which we aim
+to be equal to the true posterior. \new{The parametric model is constructed from a
+combination of 2 (encoder and decoder) neural networks $r_{\theta_1}(z|y)$ and
+$r_{\theta_2}(x|y,z)$ where
 %
-\begin{align}\label{eq:cost3}
-H \lesssim -\frac{1}{N}\sum_{n=1}^{N}&\Big[\log
-r_{\theta_{2}}(x_{n}|z_{n},y_{n})\nonumber\\
-&-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\Big],
+\begin{align}\label{eq:approx_post}
+r_{\theta}(x|y) = \int dz\,r_{\theta_1}(z|y)r_{\theta_2}(y|x,z).
 \end{align}
 %
-and requires three \new{deep convolutional neural networks}; two encoder networks (labelled
-$\textrm{E}_1$, $\textrm{E}_2$ in Fig.~\ref{fig:network_config}) representing
-the functions $r_{\theta_{1}}(z|y)$ and $q_{\phi}(z|x,y)$ respectively, and one
-decoder network (D) representing the function $r_{\theta_{2}}(x|z,y)$. The
-function $\text{KL}(\cdot||\cdot)$ denotes the \ac{KL} divergence and
-the variable $z$ represents locations within the \emph{latent space}. This
-latter object is typically a lower dimensional space within which the encoder
-networks attempt to represent their input data. In practice, during the
-training procedure the various integrations that are part of the derivation are
-approximated by a sum over a batch of $N$ training data samples (indexed by $n$
-above) at each stage of training. Training is performed via a series of steps
-detailed in the methods section.
+In this case $\theta=(\theta_1,\theta_2)$ represents a set of trainable neural
+network parameters and the variable $z$ represents locations within a
+\emph{latent space}. This latter object is typically a lower dimensional space
+within which encoder networks attempt to represent their input data.}
+
+Starting from \new{Eq.~\ref{eq:cross_ent}} it is possible to derive a
+computable \new{bound} for the cross-entropy that is reliant on \new{the
+$r_{\theta_1}$ and $r_{\theta_2}$ networks and a third "recognition" encoder network
+$q_{\phi}(z|x,y)$ governed by the trainable parameter-set $\phi$.} The details
+of the derivation are described in the methods section and
+in~\cite{1904.06264}. The final form of the cross-entropy \new{cost} function is
+given by the bound
+%
+\begin{align}\label{eq:cost3} H \lesssim
+-\frac{1}{N}\sum_{n=1}^{N}&\Big[\overbrace{\log
+r_{\theta_{2}}(x_{n}|z_{n},y_{n})}^{L}\nonumber\\
+&-\overbrace{\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]}^{\text{KL}}\Big],
+\end{align}
+%
+\new{which is also represented graphically in Fig.~\ref{fig:network_config}. The cost
+function is composed of 2 terms, the "reconstruction" cost $L$ which is a
+measure of how well the decoder network $r_{\theta_2}$ predicts the true signal
+parameters $x$, and the \ac{KL}-divergence cost that measures the similarity
+between the distributions modelled by the $r_{\theta_1}$ and $q_{\phi}$ encoder
+networks.} In practice, during the training procedure the various integrations
+\new{over the signal parameters $x$, data realisations $y$, and latent space $z$,
+are approximated by a single} sum over a batch of $N$ training data samples
+(indexed by $n$ \new{in Eq.~\ref{eq:cost3}}) at each stage of training. Training is
+performed via a series of steps detailed in the methods section.
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{network_setup.png}
+    \includegraphics[width=0.95\columnwidth]{network_setup.png}
     \caption{\label{fig:network_config} The configuration of the \ac{CVAE}
 neural network. During training (left-hand side), a training set of noisy
 \ac{GW} signals ($y$) and their corresponding true parameters ($x$) are given
-as input to encoder network $\textrm{E}_2$, while only $y$ is given to
-$\textrm{E}_1$. The \ac{KL} divergence (Eq.~\ref{eq:kl}) is computed between the
-encoder output latent space representations (defined by $\mu_q$ and $\mu_r$)
-forming one component of the total cost function.  Samples ($z_q$) from the
-$\text{E}_{2}$ latent space representation are generated and passed to the
-decoder network D together with the original input data $y$. The output of the
-decoder ($\mu_x$) describes a distribution in the physical space and the
-cost component $L$ is computed by evaluating that distribution at the
-value of the original input $x$. When performed in batches this scheme allows
-the computation of the total cost function Eq.~\ref{eq:cost3}. After having
-trained the network, we test (right-hand side) using only the $\textrm{E}_1$
-encoder and the decoder D to produce samples ($x_{\text{samp}}$) from the
-posterior $p(x|y)$.}
+as input to encoder network \new{$q_{\phi}$}, while only $y$ is given to
+encoder network \new{$r_{\theta_1}$}. The \ac{KL}-divergence (Eq.~\ref{eq:kl})
+is computed between the encoder output latent space representations
+($\mu_q$ and $\mu_r$) forming one component of the total cost function. Samples
+($z_q$) from the \new{$q_{\phi}$} latent space representation are generated and
+passed to the decoder network \new{$r_{\theta_2}$} together with the original
+input data $y$. The output of the decoder ($\mu_x$) describes a distribution in
+the physical parameter space and the cost component $L$ is computed by
+evaluating that distribution at the \new{location} of the original input $x$.
+When performed in batches this scheme allows the computation of the total cost
+function Eq.~\ref{eq:cost3}. After having trained the network \new{and
+therefore having minimised the cross-entropy $H$}, we test (right-hand side)
+using only the \new{$r_{\theta_1}$} encoder and the \new{$r_{\theta_2}$}
+decoder to produce samples ($x_{\text{samp}}$). \new{These samples are drawn
+from the distribution $r_{\theta}(x|y)$ (Eq.~\ref{eq:approx_post})
+and accurately model the true posterior $p(x|y)$.}}
 \end{figure}
 
 %
@@ -347,73 +365,80 @@ posterior $p(x|y)$.}
 %
 We present results on $256$ \new{multi}-detector \ac{GW} test \ac{BBH}
 waveforms in simulated advanced detector noise~\cite{aligo_noisecurves} \new{from
-the LIGO Hanford, Livingston and Virgo detectors}. We then compare between
+the LIGO Hanford, Livingston and Virgo detectors}. We compare between
 variants of the existing Bayesian approaches and the \ac{CVAE}. Posteriors
 produced by the \texttt{Bilby} inference library~\cite{1811.02042} are used as
 a benchmark in order to assess the efficiency and quality of our machine
-learning approach with the existing method for posterior sampling.
+learning approach with the existing methods for posterior sampling.
 
 %
 % describe the Bilby analysis 
 %
-For the benchmark analysis we assume that \new{9} parameters are unknown: the
-component masses $m_1,m_2$, the luminosity distance $d_{\text{L}}$, \new{the
-sky position $\alpha,\delta$, the binary inclination $\Theta_{jn}$, the \ac{GW}
-polarisation angle ${\psi}$}, the time of coalescence $t_{0}$, and the phase at
-coalescence $\phi_0$. For each parameter we use a uniform prior \new{with the
-exception of the declination and inclination parameters for which we use priors
-uniform in $\cos\delta$ and $\sin\Theta_{jn}$ respectively. The corresponding
-prior ranges are defined in Table~\ref{tab:prior_ranges}}.
-%~\chris{we might want to change this to be a $d$-squared prior to demonstrate
-%the application of priors in the \texttt{VItamin} training stage.} 
-We use a sampling frequency of $256$~Hz, a timeseries duration of 1 second, and
-the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
-minimum cutoff frequency of $20$Hz. For each input test waveform we run the
-benchmark analysis using multiple sampling algorithms available within
-\texttt{Bilby}. For each run and sampler we extract \new{$10^4$} samples from
-the posterior on the \new{9} physical parameters.  
+For the benchmark analysis we assume that \new{9} parameters are
+unknown\footnote{Our analysis omits the 6 additional parameters required to
+model the spin of each \ac{BBH} component mass.}: the component masses $m_1,m_2$, the
+luminosity distance $d_{\text{L}}$, \new{the sky position $\alpha,\delta$, the
+binary inclination $\Theta_{jn}$, the \ac{GW} polarisation angle ${\psi}$}, the
+time of coalescence $t_{0}$, and the phase at coalescence $\phi_0$. For each
+parameter we use a uniform prior \new{with the exception of the declination and
+inclination parameters for which we use priors uniform in $\cos\delta$ and
+$\sin\Theta_{jn}$ respectively. The corresponding prior ranges are defined in
+Table~\ref{tab:prior_ranges}}. We use a sampling frequency of $256$~Hz, a
+timeseries duration of 1 second, and the waveform model used is
+\texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
+$20$Hz. For each input test waveform we run the benchmark analysis using
+multiple sampling algorithms available within \texttt{Bilby}. For each run and
+sampler we extract \new{$\mathcal{O}(10^4)$} samples from the posterior on the
+\new{9} physical parameters.  
 
 %
 % the VItamin process
 %
-The \ac{CVAE} training process used as input \new{$10^{7}$} waveforms
-corresponding to parameters drawn from the same priors as assumed for the
-benchmark analysis.  The waveforms are also of identical duration, sampling
-frequency, and waveform model as used in the benchmark analysis. When each
-waveform is placed within a training batch it is given a unique detector noise
-realisation after which the data is whitened using the same advanced detector
-\ac{PSD}~\cite{aligo_noisecurves} from which the simulated noise is
-generated\footnote{Although we whiten the data as input to our network the
-whitening is simply to scale the input to a level more suitable to neural
-networks and need not be performed with the true \ac{PSD}.}. The \ac{CVAE}
-posterior results are produced by passing our $256$ whitened noisy testing set
-of \ac{GW} waveforms as input into the testing path of the pre-trained
+The \ac{CVAE} training process uses as input \new{$10^{7}$} \new{whitened}
+waveforms corresponding to parameters drawn from the same priors as assumed for
+the benchmark analysis. The waveforms are also of identical duration, sampling
+frequency, \new{and use the same waveform model as in} the benchmark analysis.
+\new{The signals are whitened}\footnote{\new{The whitening is used primarily to
+scale the input to a magnitude range more suitable to neural networks. The
+\emph{true} \ac{PSD} does not have to be used for whitening, but training data
+and test data must be contain signals that share the same \ac{PSD}.}}
+\new{using the same advanced detector \acp{PSD}~\cite{aligo_noisecurves} as
+assumed in the benchmark analysis}. When each whitened waveform is placed
+within a training batch it is given a unique detector \new{Gaussian} noise
+realisation \new{(after signal whitening this is simply zero mean, unit
+variance Gaussian noise)}. The \ac{CVAE} posterior results are produced by
+passing \new{each of} our $256$ whitened noisy testing set of \ac{GW} waveforms
+as input into the testing path of the pre-trained
 \ac{CVAE}~\ref{fig:network_config}. For each input waveform we sample until we
 have generated \new{$10^4$} posterior samples on \new{7} physical parameters
-($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of the full
-9-dimensional space to demonstrate that parameters (such as $\phi_0$ \new{and
-$\psi$} in this case) can (if desired) be marginalized out within the \ac{CVAE}
-procedure itself, rather than after training. 
+\new{$x=(m_1,m_2,d_{\text{L}},t_{0},\Theta_{jn},\alpha,\delta)$}. We choose to
+output a subset of the full 9-dimensional space to demonstrate that parameters
+(such as $\phi_0$ \new{and $\psi$} in this case) can (if desired) be
+marginalized out within the \ac{CVAE} procedure itself, rather than after
+training. 
 
 %
-% 1-D overlap results
+% Corner plot results
 %
 \begin{figure*}
     \includegraphics[width=\textwidth]{corner_testcase0.png}
-    \caption{\label{fig:corner_plot} Corner plot showing 2 and 1-dimensional
-marginalised posterior distributions for one example test dataset. Filled (red)
-contours represent the posteriors obtained from the \ac{CVAE} approach and
-solid (blue) contours are the posteriors output from our baseline analysis
-(\texttt{Bilby} using the dynesty sampler). In each case, the contour boundaries
-enclose $68,90$ and $95\%$ probability. One dimensional histograms of the
-posterior distribution for each parameter from both methods are plotted along
-the diagonal. Blue and red vertical lines represent the $5$---$95\%$ symmetric
-confidence bounds for \texttt{Bilby} and variational inference respectively.
-Black crosses and vertical black lines denote the true parameter values of the
-simulated signal. The original whitened noisy timeseries $y$ and the noise-free
-signal are plotted in blue and cyan respectively in the upper right hand
-panel. The test signal was simulated with optimal signal-to-noise ratio of
-13.9.}
+    \caption{\label{fig:corner_plot} Corner plot showing 1 and 2-dimensional
+marginalised posterior distributions \new{on the \ac{GW} parameters} for one
+example test dataset. Filled \new{red} contours represent the
+\new{2-dimensional joint} posteriors obtained from the \ac{CVAE} approach and
+solid \new{blue and green} contours are the \new{corresponding} posteriors
+output from our \new{benchmark} analyses (\new{using the dynesty and Ptemcee
+samplers within \texttt{Bilby}}). In each case, the contour boundaries enclose
+$68,90$ and $95\%$ probability. One dimensional histograms of the posterior
+distribution for each parameter from both methods are plotted along the
+diagonal. \new{Black vertical and horizontal lines denote the true parameter
+values of the simulated signal. At the top of the figure we include a Mollweide
+projection of the sky location posteriors from all 3 analyses. All results
+presented in this letter correspond to a 3-detector configuration but for
+clarity we only plot the H1 whitened noisy timeseries $y$ and the noise-free
+whitened signal (in blue and cyan respectively) to the right of the figure. The
+test signal was simulated with optimal multi-detector signal-to-noise ratio of
+?.}} 
 \end{figure*}
 
 %
@@ -423,42 +448,48 @@ We can immediately illustrate the accuracy of our machine learning predictions
 by directly plotting 2 and 1-dimensional marginalised posteriors generated
 using the output samples from our \ac{CVAE} and \texttt{Bilby} approaches
 superimposed on each other. We show this for one example test dataset in
-Fig.~\ref{fig:corner_plot} where the strong agreement between both
-\texttt{Bilby} (blue) and the \ac{CVAE} (red) is clear. 
-
-%We provide additional test case example corner plots in the methods
-%section. 
-%\hunter{Add more corner plots in methods
-%section}~\chris{Maybe, but more corner plots aren't going to convince people.
-%We need to agregate the results into a single figure somehow (like the KL
-%values). I think something based on the 1-D intervals would be nice.}
+Fig.~\ref{fig:corner_plot} where strong agreement between \new{2} \texttt{Bilby}
+samplers \new{(Dynesty in blue, and Ptemcee in green)} and the \ac{CVAE} (red) is
+clear. \new{It is also evident that whilst we refer to the \texttt{Bilby} sampler
+results as benchmark cases, different existing samplers do not perfectly agree
+with each other. For each of our 256 test cases we see equivelent levels of
+disparity between pairs of benchmark samplers \emph{and} between any benchmark
+sampler and our \ac{CVAE} results.}  
 
 %
-% mention the pp plot and KL distribution results
+% mention the p-p plot and KL distribution results
 %
-In Figs.~\ref{fig:pp_plot},\ref{fig:kl_results} (see the Methods section) we show
-the results of 2 statistical tests (the \ac{PP} plot test and \ac{KL}
-divergence tests) performed on the entire test dataset and between all
-samplers. In both cases the tests indicate that the \texttt{VItamin} sampler
-performs as well as any other sampler in comparison with the full set of
-samplers.
+Figures~\ref{fig:pp_plot} and \ref{fig:kl_results} (see the Methods section)
+show the results of 2 statistical tests (the \ac{PP} plot test and
+\ac{KL}-divergence tests) performed on the entire test dataset and between all
+samplers \new{(Dynesty, Ptemcee, CPnest, emcee, and \texttt{VItamin})}. \new{In
+both tests the quality of the \ac{CVAE} results are indistinguishable from the
+benchmark samplers. The \ac{PP} plot results specifically indicate that the
+Bayesian 1-dimensional marginalised posteriors from each approach are
+self-consistent from a frequentist perspective (e.g., the true values lie
+within the $X\%$ confidence interval for $X\%$ of the test cases). The second
+test computes the distribution of \ac{KL}-divergences between posteriors
+conditioned on the same test data $y$ from pairs of samplers. In all cases this
+measure of "distribution similarity" between \texttt{VItamin} and any particular
+benchmark sampler is entirely consistent with the distribution between that
+benchmark sampler and any other.}   
 
 %
 % discuss the speed of the analysis
 %
 The dominating computational cost of running \texttt{VItamin} lies in the
-training time, which can take of order several hours to complete. We stress
-that once trained, there is no need to retrain the network unless the user
-wishes to use different priors $p(x)$ or assume different noise
+training time, which can take $\mathcal{O}(10\text{s})$ hours to complete. We
+stress that once trained, there is no need to retrain the network unless the
+user wishes to use different priors $p(x)$ or assume different noise
 characteristics. The speed at which posterior samples are generated for all
 samplers used, including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}.
 Run-time for the benchmark samplers is defined as the time to complete their
-analyses when configured using their default parameters~\cite{1811.02042}. For
-\texttt{VItamin} this time is defined as the total time to produce $3000$
-samples. For our test case of \ac{BBH} signals \texttt{VItamin} produces
-samples from the posterior at a rate which is $\sim 6$---$7$ orders of
-magnitude faster than our benchmark analysis using current inference
-techniques. 
+analyses when configured \new{using the parameter choices defined in
+Table~\ref{Tab:sampler_params}}. For \texttt{VItamin}, this time is defined as
+the total time to produce $10^4$ samples. For our test case of \ac{BBH} signals
+\texttt{VItamin} produces samples from the posterior at a rate which is $\sim
+6$---$7$ orders of magnitude faster than our benchmark analysis using current
+inference techniques. 
 
 %\chris{One more thing to add, especially if the other KL, AD, and PP plots
 %aren't convincing, is a plot displaying 1D confidence bounds compared between
@@ -990,6 +1021,27 @@ indicates the ideal result.
 }
 \end{figure}
 %
+
+%
+% I feel the need, the need for clearly outlining the bilby parameter choices
+%
+\begin{table}
+\centering
+\caption{Benchmark sampler configuration parameters. Values were chosen based
+on a combination of their recommended default parameters~\cite{1811.02042} and
+private communication with the \texttt{Bilby} development team.}
+\begin{tabular}[t]{lccccc}
+\toprule
+sampler & live points & tolerance & walkers & temperatures & steps \\
+\hline
+Dynesty & & & & & \\
+Emcee & & & & &\\
+Ptemcee & & & & & \\
+Cpnest & & & & & \\
+\botrule
+\end{tabular}
+\label{Tab:sampler_params}
+\end{table}
 
 %
 % discuss pp plot result
