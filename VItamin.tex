@@ -484,13 +484,13 @@ $\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
 & min & max & median & \\
 \hline
 Dynesty\footnote{The benchmark samplers all produced $\mathcal{O}(3000-
-	10000)$ samples dependent on the default sampling parameters used.} & 602 & 1538 & 774\footnote{The reader may note that benchmark sampler run times are a few orders of magnitude lower than what is typical of a complete \ac{BBH} analysis ($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a reduced parameter space, low sampling rate and choice of sampler hyperparameters.} & $2.6\times 10^{-6}$ \\
-Emcee & 2005 & 11927 & 4351 & $4.6\times 10^{-7}$ \\
-Ptemcee & 3354 & 12771 & 4982 & $4.0\times 10^{-7}$ \\
-Cpnest & 1431 & 5405 & 2287 & $8.8\times 10^{-7}$ \\
+	10000)$ samples dependent on the default sampling parameters used.} & 11795 & 29838 & 19400\footnote{The reader may note that benchmark sampler run times are a few orders of magnitude lower than what is typical of a complete \ac{BBH} analysis ($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a reduced parameter space, low sampling rate and choice of sampler hyperparameters.} & $3.1\times 10^{-5}$ \\
+Emcee & 18838 & 69272 & 32070 & $1.9\times 10^{-5}$ \\
+Ptemcee & 17124 & 37446 & 24372 & $2.5\times 10^{-5}$ \\
+Cpnest & 9943 & 53315 & 26202 & $2.3\times 10^{-5}$ \\
 \texttt{VItamin}\footnote{For the \texttt{VItamin} sampler $3000$ samples are
 produced as representative of a typical posterior. The run time is independent
-of the signal content in the data and is therefore constant for all test cases.} & \multicolumn{3}{c}{\bm{$2\times 10^{-3}$}} & 1 \\
+of the signal content in the data and is therefore constant for all test cases.} & \multicolumn{3}{c}{\bm{$6\times 10^{-1}$}} & 1 \\
 \botrule
 \end{tabular}
 \label{Tab:speed}
