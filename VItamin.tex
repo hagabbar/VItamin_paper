@@ -54,6 +54,7 @@ floatfix,
 \newcommand{\hunter}[1]{\textbf{\textcolor{blue}{HUNTER: #1}}}
 \newcommand{\siong}[1]{\textbf{\textcolor{cyan}{SIONG: #1}}}
 \newcommand{\rod}[1]{\textbf{\textcolor{yellow}{ROD: #1}}}
+\newcommand{\new}[1]{\textcolor{red}{#1}}
 
 \begin{document}
 
@@ -110,7 +111,7 @@ for gravitational-wave astronomy}
 \acrodef{ELBO}[ELBO]{evidence lower bound}
 \acrodef{LIGO}[LIGO]{advanced Laser Interferometer Gravitational wave Observatory}
 \acrodef{CVAE}[CVAE]{conditional variational autoencoder}
-\acrodef{KL}[KL]{Kullback--§Leibler}
+\acrodef{KL}[KL]{Kullback--Leibler}
 \acrodef{GPU}[GPU]{graphics processing unit}
 \acrodef{LVC}[LVC]{LIGO-Virgo Collaboration}
 \acrodef{PP}[p-p]{probability-probability}
@@ -293,12 +294,12 @@ r_{\theta_{2}}(x_{n}|z_{n},y_{n})\nonumber\\
 &-\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]\Big],
 \end{align}
 %
-and requires three fully-connected networks; two encoder networks (labelled
+and requires three \new{deep convolutional neural networks}; two encoder networks (labelled
 $\textrm{E}_1$, $\textrm{E}_2$ in Fig.~\ref{fig:network_config}) representing
 the functions $r_{\theta_{1}}(z|y)$ and $q_{\phi}(z|x,y)$ respectively, and one
 decoder network (D) representing the function $r_{\theta_{2}}(x|z,y)$. The
 function $\text{KL}(\cdot||\cdot)$ denotes the \ac{KL} divergence and
-the variable $z$ represents locations within the \emph{latent space}.  This
+the variable $z$ represents locations within the \emph{latent space}. This
 latter object is typically a lower dimensional space within which the encoder
 networks attempt to represent their input data. In practice, during the
 training procedure the various integrations that are part of the derivation are
@@ -312,13 +313,13 @@ detailed in the methods section.
 neural network. During training (left-hand side), a training set of noisy
 \ac{GW} signals ($y$) and their corresponding true parameters ($x$) are given
 as input to encoder network $\textrm{E}_2$, while only $y$ is given to
-$\textrm{E}_1$.  The K-L divergence (Eq.~\ref{eq:kl}) is computed between the
+$\textrm{E}_1$. The \ac{KL} divergence (Eq.~\ref{eq:kl}) is computed between the
 encoder output latent space representations (defined by $\mu_q$ and $\mu_r$)
 forming one component of the total cost function.  Samples ($z_q$) from the
 $\text{E}_{2}$ latent space representation are generated and passed to the
 decoder network D together with the original input data $y$. The output of the
 decoder ($\mu_x$) describes a distribution in the physical space and the
-\ac{ELBO} cost component $L$ is computed by evaluating that distribution at the
+cost component $L$ is computed by evaluating that distribution at the
 value of the original input $x$. When performed in batches this scheme allows
 the computation of the total cost function Eq.~\ref{eq:cost3}. After having
 trained the network, we test (right-hand side) using only the $\textrm{E}_1$
@@ -344,8 +345,9 @@ posterior $p(x|y)$.}
 %
 % Intro to the results - what are we trying to do?
 %
-We present results on $256$ single detector \ac{GW} test \ac{BBH} waveforms in
-simulated advanced detector noise~\cite{aligo_noisecurves} and compare between
+We present results on $256$ \new{multi}-detector \ac{GW} test \ac{BBH}
+waveforms in simulated advanced detector noise~\cite{aligo_noisecurves} \new{from
+the LIGO Hanford, Livingston and Virgo detectors}. We then compare between
 variants of the existing Bayesian approaches and the \ac{CVAE}. Posteriors
 produced by the \texttt{Bilby} inference library~\cite{1811.02042} are used as
 a benchmark in order to assess the efficiency and quality of our machine
@@ -354,30 +356,32 @@ learning approach with the existing method for posterior sampling.
 %
 % describe the Bilby analysis 
 %
-For the benchmark analysis we assume that 5 parameters are unknown: the
-component masses $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the time of
-coalescence $t_{0}$, and the phase at coalescence $\phi_0$. For each
-parameter we use a uniform prior with ranges and fixed values defined in
-Table~\ref{tab:prior_ranges}.
-%~\chris{we might want to
-%change this to be a $d$-squared prior to demonstrate the application of priors
-%in the \texttt{VItamin} training stage.} 
-We use a sampling frequency of $256$~Hz, a timeseries duration of 1 second, and 
+For the benchmark analysis we assume that \new{9} parameters are unknown: the
+component masses $m_1,m_2$, the luminosity distance $d_{\text{L}}$, \new{the
+sky position $\alpha,\delta$, the binary inclination $\Theta_{jn}$, the \ac{GW}
+polarisation angle ${\psi}$}, the time of coalescence $t_{0}$, and the phase at
+coalescence $\phi_0$. For each parameter we use a uniform prior \new{with the
+exception of the declination and inclination parameters for which we use priors
+uniform in $\cos\delta$ and $\sin\Theta_{jn}$ respectively. The corresponding
+prior ranges are defined in Table~\ref{tab:prior_ranges}}.
+%~\chris{we might want to change this to be a $d$-squared prior to demonstrate
+%the application of priors in the \texttt{VItamin} training stage.} 
+We use a sampling frequency of $256$~Hz, a timeseries duration of 1 second, and
 the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
-\texttt{Bilby}. For each run and sampler we extract $3000$ samples from the
-posterior on the 5 physical parameters.  
+\texttt{Bilby}. For each run and sampler we extract \new{$10^4$} samples from
+the posterior on the \new{9} physical parameters.  
 
 %
 % the VItamin process
 %
-The \ac{CVAE} training process used as input $10^{6}$ waveforms corresponding
-to parameters drawn from the same priors as assumed for the benchmark analysis.
-The waveforms are also of identical duration, sampling frequency, and waveform
-model as used in the benchmark analysis. When each waveform is placed within a
-training batch it is given a unique detector noise realisation after which the
-data is whitened using the same advanced detector
+The \ac{CVAE} training process used as input \new{$10^{7}$} waveforms
+corresponding to parameters drawn from the same priors as assumed for the
+benchmark analysis.  The waveforms are also of identical duration, sampling
+frequency, and waveform model as used in the benchmark analysis. When each
+waveform is placed within a training batch it is given a unique detector noise
+realisation after which the data is whitened using the same advanced detector
 \ac{PSD}~\cite{aligo_noisecurves} from which the simulated noise is
 generated\footnote{Although we whiten the data as input to our network the
 whitening is simply to scale the input to a level more suitable to neural
@@ -385,11 +389,11 @@ networks and need not be performed with the true \ac{PSD}.}. The \ac{CVAE}
 posterior results are produced by passing our $256$ whitened noisy testing set
 of \ac{GW} waveforms as input into the testing path of the pre-trained
 \ac{CVAE}~\ref{fig:network_config}. For each input waveform we sample until we
-have generated $3000$ posterior samples on 4 physical parameters
+have generated \new{$10^4$} posterior samples on \new{7} physical parameters
 ($x=(m_1,m_2,d_{\text{L}},t_{0})$). We choose to output a subset of the full
-5-dimensional space to demonstrate that parameters (such as $\phi_0$ in this
-case) can (if desired) be marginalized out within the \ac{CVAE} procedure
-itself, rather than after training. 
+9-dimensional space to demonstrate that parameters (such as $\phi_0$ \new{and
+$\psi$} in this case) can (if desired) be marginalized out within the \ac{CVAE}
+procedure itself, rather than after training. 
 
 %
 % 1-D overlap results
