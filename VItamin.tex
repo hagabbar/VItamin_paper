@@ -290,7 +290,7 @@ combination of 2 (encoder and decoder) neural networks $r_{\theta_1}(z|y)$ and
 $r_{\theta_2}(x|y,z)$ where
 %
 \begin{align}\label{eq:approx_post}
-r_{\theta}(x|y) = \int dz\,r_{\theta_1}(z|y)r_{\theta_2}(y|x,z).
+r_{\theta}(x|y) = \int dz\,r_{\theta_1}(z|y)r_{\theta_2}(x|y,z).
 \end{align}
 %
 In this case the $\theta$ subscripts represent sets of trainable neural
@@ -307,9 +307,9 @@ in~\cite{1904.06264}. The final form of the cross-entropy \new{cost} function is
 given by the bound
 %
 \begin{align}\label{eq:cost3} H \lesssim
--\frac{1}{N}\sum_{n=1}^{N}&\Big[\overbrace{\log
+\frac{1}{N}\sum_{n=1}^{N}&\Big[\overbrace{-\log
 r_{\theta_{2}}(x_{n}|z_{n},y_{n})}^{L}\nonumber\\
-&-\overbrace{\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]}^{\text{KL}}\Big],
+&+\overbrace{\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]}^{\text{KL}}\Big],
 \end{align}
 %
 \new{which is also represented graphically in Fig.~\ref{fig:network_config}. The cost
@@ -697,18 +697,18 @@ EPSRC grant EP/M01326X/1, and RM-S EPSRC grants EP/M01326X/1 and EP/R018634/1.
 %
 % What is an autoencoder?
 %
-Conditional variational autoencoders are a form of variational autoencoder
-which are conditioned on an observation, where in our case the observation is a
+\new{A \ac{CVAE} is} a form of variational autoencoder \new{that is}
+conditioned on an observation, where in our case the observation is a
 1-dimensional \ac{GW} time series signal $y$. The autoencoders from which
 variational autoencoders are derived are typically used for problems involving
 image reconstruction and/or dimensionality reduction. They perform a regression
 task whereby the autoencoder attempts to predict its own given input (model the
-identity function) through a ``bottleneck layer'', a limited  and therefore distilled representation of
-the input parameter space. An autoencoder is composed of two neural networks,
-an encoder and a decoder~\cite{gallinari1987memoires}. %\cite{LIOU20083150}. 
-The encoder network takes as
-input a vector, where the number of dimensions is a fixed number predefined by
-the user. The encoder converts the input vector into a (typically) lower
+identity function) through a ``bottleneck layer'' --- a limited  and therefore
+distilled representation of the input parameter space. An autoencoder is
+composed of two neural networks, an encoder and a
+decoder~\cite{gallinari1987memoires}.  The encoder network takes as input a
+vector, where the number of dimensions is a fixed number predefined by the
+user. The encoder converts the input vector into a (typically) lower
 dimensional space, referred to as the {\it{latent space}}. A representation of
 the data in the latent space is passed to the decoder network which generates a
 reconstruction of the original input data to the encoder network. Through
@@ -726,29 +726,32 @@ The primary difference between a variational autoencoder~\cite{1812.04405} and
 an autoencoder concerns the method by which locations within the latent space
 are produced. In our variant of the variational autoencoder, the output of the
 encoder is interpreted as a set of parameters governing statistical
-distributions (in our case the means and variances of multivariate Gaussians).
-In proceeding to the decoder network, samples from the latent space ($z$) are
-randomly drawn from these distributions and fed into the decoder, therefore
-adding an element of variation into the process. A particular input can then
-have a range of possible outputs. In both the decoder and the encoder networks
-we use fully-connected layers (although this is not a constraint and any
-trainable network architecture may be used).
+distributions. In proceeding to the decoder network, samples from the latent
+space ($z$) are randomly drawn from these distributions and fed into the
+decoder, therefore adding an element of variation into the process. A
+particular input can then have a range of possible outputs. \new{Any trainable
+network architectures can be used in both the decoder and the encoder networks
+and within \texttt{VItamin} we use deep convolutional neural networks in both
+cases.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cost function derivation}
 %
-% A description of the loss function derivation 
+% Remind the reader about the point of the cost function 
 %
 We will now derive the cost function and the corresponding network structure
 and we begin with the statement defining the aim of the analysis. We wish to
 obtain a function that reproduces the posterior distribution (the probability
-of our physical parameters $x$ given some measured data $y$). The cross entropy
+of our physical parameters $x$ given some measured data $y$). The cross-entropy
 between 2 distributions is defined in Eq.~\ref{eq:cross_ent} where we have made
 the distributions explicitly conditional on $y$ (our measurement). In this case
 $p(x|y)$ is the target distribution (the true posterior) and $r_{\theta}(x|y)$
 is the parametric distribution that we will use neural networks to construct.
 The variable $\theta$ represents the trainable neural network parameters. 
 
+%
+% Marginalise over different data realisations 
+%
 The cross-entropy is minimised when $p(x|y)=r_{\theta}(x|y)$ and so by
 minimising
 %
@@ -760,6 +763,9 @@ where $\text{E}_{p(y)}[\cdot]$ indicates the expectation value over the
 distribution of measurements $y$, we therefore make the parametric distribution
 as similar as possible to the target for all possible measurements $y$.
 
+%
+% Use Bayes theorem to simplify
+%
 Converting the expectation value into an integral over $y$ weighted by $p(y)$
 and applying Bayes' theorem we obtain
 %
@@ -767,59 +773,67 @@ and applying Bayes' theorem we obtain
 H &= -\int dx\,p(x)\int dy\,p(y|x)\log r_{\theta}(x|y)
 \end{align}
 %
-where $p(x)$ is the prior distribution on the physical parameters $x$.
+where $p(x)$ is the prior distribution on the physical parameters $x$, \new{and
+$p(y|x)$ is the likelihood of $x$ (the probability of measuring the data $y$
+given the parameters $x$).}
 
+%
+% basic general description of the r1 and r2 network inputs and outputs
+%
 The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} makes use of a
 conditional latent variable model and our parametric model is constructed from
-the product of 2 separate distributions marginalised over the latent space
-%
-\begin{align}\label{eq:latent_model}
-r_{\theta}(x|y) &= \int dz\,r_{\theta_{1}}(z|y)r_{\theta_{2}}(x|z,y).
-\end{align}
-%  
-We have used $\theta_{1}$ and $\theta_{2}$ to indicate that the 2 separate
-networks modelling these distributions will be trained on these parameter sets
-respectively. Both new conditional distributions are modelled as $n_{z}$
-dimensional multivariate uncorrelated Gaussian distributions (governed by their
-means and variances). However, this still allows $r_{\theta}(x|y)$ to take a
-general form (although it does limit it to be unimodal).  
+the product of 2 separate distributions marginalised over the latent space as
+defined \new{in Eq.~\ref{eq:approx_post}.} We have used $\theta_{1}$ and
+$\theta_{2}$ to indicate that the 2 separate networks modelling these
+distributions will be trained on these parameter sets respectively. \new{The
+encoder $r_{\theta_1}(z|y)$ takes as input the data $y$ and outputs parameters
+that describe a probability distribution within the latent space. The decoder
+$r_{\theta_2}(x|z,y)$ takes as input a single location $z$ within the latent
+space together with the data $y$ and outputs sets of parameters describing a
+probability distribution in the physical parameter space.} 
 
+%
+% explain why we don't just stop here
+%
 One could be forgiven in thinking that by setting up networks that simply aim
 to minimise $H$ over the $\theta_{1}$ and $\theta_{2}$ would be enough to solve
 this problem. However, as shown in~\cite{NIPS2015_5775} this is an intractable
-problem and a network cannot be trained directly to do this. Instead we define
-a recognition function $q_{\phi}(z|x,y)$ that will be used to derive an
-\ac{ELBO}. Here we use $\phi$ to represent the trainable parameters of an
-encoder network ($\text{E}_{2}$).
+problem and a network cannot be trained directly to do this. Instead we
+\new{introduce} a recognition function $q_{\phi}(z|x,y)$, \new{modelled by an
+additional neural network and governed by the trainable network parameters
+$\phi$,} that will be used to derive an \ac{ELBO}.
 
-Let us first define the \ac{KL} divergence between 2 of our
-distributions as
+%
+% define the ELBO
+%
+\new{Let us first define the \ac{KL}-divergence between the recognition function and
+the distribution $r_{\theta}(z|x,y)$ as 
 %
 \begin{align}\label{eq:kl}
-\text{KL}&\left[q_{\phi}(z|x,y)||r_{\theta_{2}}(z|x,y)\right] = \\
+\text{KL}&\left[q_{\phi}(z|x,y)||r_{\theta}(z|x,y)\right] = \\
 &\int dz\,q_{\phi}(z|x,y)
-\log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta_{2}}(z|x,y)}\right).\nonumber
+\log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta}(z|x,y)r}\right),\nonumber
 \end{align}
-%  
-It can be shown, after some manipulation, that
+%   
+from which it can be shown that
 %
 \begin{align}\label{eq:elbo1}
-\log r_{\theta}(x|y) &= L + \text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{?}}(z|x,y)\right],
+\log r_{\theta}(x|y) &= \text{ELBO} + \text{KL}\left[q_{\phi}(z|x,y)||r_{\theta}(z|x,y)\right],
 \end{align}
 %
-where the \ac{ELBO} $L$ is given by
+where the \ac{ELBO} is given by
 %
 \begin{align}\label{eq:elbo2}
-L &= \int dz\,
-q_{\phi}(z|x,y)\log\left(\frac{r_{\theta_{2}}(x|z,y)r_{\theta_{1}}(z|y)}{q_{\phi}(z|x,y)}\right)
+\text{ELBO} &= \int dz\,
+q_{\phi}(z|x,y)\log\left(\frac{r_{\theta_{2}}(x|y,z)r_{\theta_{1}}(z|y)}{q_{\phi}(z|x,y)}\right).
 \end{align}
 %
-and is so-named since $\text{KL}$ cannot be negative and has a minimum of zero.
-Therefore, if we were to find a $q_{\phi}(z|x,y)$ function (optimised on
-$\phi$) that minimised the \ac{KL}-divergence then we can state that
+It is so-named since the \ac{KL}-divergence has a minimum of zero and cannot
+be negative. Therefore, if we were to find a $q_{\phi}(z|x,y)$ function (optimised on
+$\phi$) that minimised the \ac{KL}-divergence defined in Eq.~\ref{eq:kl} then we can state that
 %
 \begin{align}
-\log r_{\theta}(x|y) &\geq L.
+\log r_{\theta}(x|y) &\geq \text{ELBO}.
 \end{align}
 %
 After some further manipulation of Eq.~\ref{eq:elbo2} we find that
@@ -830,11 +844,11 @@ r_{\theta_{2}}(x|z,y)\right] \nonumber\\
 &-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right].
 \end{align}
 %
-We can now substitute this inequality into Eq.~\ref{eq:cost1} (our cost
-function) to obtain
+We can now substitute this inequality into our cost function as defined by
+Eq.~\ref{eq:cost1} to obtain}
 %
 \begin{align}\label{eq:cost2}
-H \leq  -\int dx\, p(x)\int dy &\,p(y|x)
+H \leq  -\int dx\, p(x)&\int dy \,p(y|x)
 \Big[\text{E}_{q_{\phi}(z|x,y)}\left[\log r_{\theta_{2}}(x|z,y)\right]
 \nonumber\\
 &-\text{KL}\left[q_{\phi}(z|x,y)||r_{\theta_{1}}(z|y)\right]\Big],  
@@ -850,11 +864,16 @@ evaluated within the training procedure.
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{inv_losses_log.png}
-\caption{\label{fig:loss_log} The cost as a function of training iteration. We
-show the \ac{ELBO} cost function component (blue), the \ac{KL} divergence
-component (orange) and total cost (green). The total cost is simply a
-summation of the 2 components and one training iteration is defined as
-training over one batch of signals.}
+\caption{\label{fig:loss_log} The cost as a function of training iteration.
+\new{We show the total cost function (green) together with its component parts:
+the \ac{KL}-divergence component (orange) and the reconstruction component
+(blue) which are simply summed to obtain the total. The solid curves correspond
+to the cost computed on each batch of training data and the dashed curves
+represent the cost when computed on independent validation data. The close
+agreement between training and validation cost values indicates that the
+network is not overfitting to the training data. The change in behavior of the
+cost between $10^4$ and $10^5$ iterations is a consequence of gradually
+introducing the \ac{KL} cost term contribution via an annealing process.}} 
 \end{figure}
 
 %
@@ -886,6 +905,33 @@ detector & - & \multicolumn{2}{c}{LIGO Hanford} & - \\
 \end{tabular}
 \label{tab:prior_ranges}
 \end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The network design}
+%
+% Describe the specific network architecture design
+%
+The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} makes use of a
+conditional latent variable model and our parametric model is constructed from
+the product of 2 separate distributions marginalised over the latent space as
+defined \new{in Eq.~\ref{eq:approx_post}.} We have used $\theta_{1}$ and
+$\theta_{2}$ to indicate that the 2 separate networks modelling these
+distributions will be trained on these parameter sets respectively. \new{The
+encoder $r_{\theta_1}(z|y)$ takes as inout the data $y$ and outputs $M$ sets of
+means ond variances of $n_{z}$-dimensional multivariate
+Gaussian distributions together with a length-$M$ vector of component weights. These
+outputs then describe the parameters of a $M$-component $n_{z}$-dimensional Gaussian mixture
+distribution within the latent space. The decoder $r_{\theta_2}(x|z,y)$ takes
+as input a single location within the latent space together with the data $y$
+and outputs sets of parameters describing specific distributions on subsets of
+the physical paramters $x$.}
+
+
+conditional distributions are modelled as $n_{z}$ dimensional multivariate
+uncorrelated Gaussian distributions (governed only by their means and variances).
+However, this still allows $r_{\theta}(x|y)$ to take a general form (although
+it does limit it to be unimodal).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The training procedure}
