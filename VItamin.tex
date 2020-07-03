@@ -11,7 +11,7 @@
 %preprint,
 showpacs,
 %preprintnumbers,
-%nofootinbib,
+nofootinbib,
 %nobibnotes,
 %bibnotes,
  amsmath,amssymb,
@@ -251,12 +251,13 @@ classification~\cite{0264-9381-34-6-064003} and earthquake
 prediction~\cite{Coughlin_2017}. We also highlight \new{recent developments in
 \ac{GW} parameter estimation (independent to this work) where 1- and
 2-dimensional marginalised Bayesian posteriors are produced rapidly using
-neural networks~\cite{2019arXiv190905966C} and where normalised flows in
+neural networks~\cite{2019arXiv190905966C}, and where normalised flows in
 conjunction with \acp{CVAE} can reproduce Bayesian posteriors for a single
-\ac{GW} detector case. These methods, including the one presented in this
-paper, are known as "likelihood-free" approaches in which there is no
-requirement for explicit likelihood evaluation. Nor is it the case that
-pre-computed posterior distributions are required in the training procedure.}
+\ac{GW} detector case~\cite{2020arXiv200207656G}. These methods, including the
+one presented in this paper, are known as "likelihood-free" approaches in which
+there is no requirement for explicit likelihood evaluation. Nor is it the case
+that pre-computed posterior distributions are required in the training
+procedure.}
 
 %
 % Introduce CVAEs
@@ -292,7 +293,7 @@ $r_{\theta_2}(x|y,z)$ where
 r_{\theta}(x|y) = \int dz\,r_{\theta_1}(z|y)r_{\theta_2}(y|x,z).
 \end{align}
 %
-In this case $\theta=(\theta_1,\theta_2)$ represents a set of trainable neural
+In this case the $\theta$ subscripts represent sets of trainable neural
 network parameters and the variable $z$ represents locations within a
 \emph{latent space}. This latter object is typically a lower dimensional space
 within which encoder networks attempt to represent their input data.}
@@ -321,6 +322,24 @@ networks.} In practice, during the training procedure the various integrations
 are approximated by a single} sum over a batch of $N$ training data samples
 (indexed by $n$ \new{in Eq.~\ref{eq:cost3}}) at each stage of training. Training is
 performed via a series of steps detailed in the methods section.
+
+%
+% brief mention of differences to a standard CVAE
+%
+\new{The implementation of the \ac{CVAE} that we employ in this letter has a
+number of specific features that were included so as to tailor the analysis to
+\ac{GW} signals. The details of these enhancements are described in the Methods
+section but in summary the primary modifications are as follows, 1) Each of the
+functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modeled using deep
+convolutional neural networks with multi-detector timeseries represented as
+independent input channels. 2) The $r_{\theta_1}$ encoder models a multi-modal
+Gaussian mixture model within the latent space in order to capture the
+corresponding typical multi-modal nature of \ac{GW} posterior distributions. 3)
+Physically appropriate output decoder distributions are used for each output
+parameter: von Mises-Fisher distribution on the sky location
+parameters, von Mises distributions on periodic parameters, conditional
+truncated Gaussians for the component masses, and truncated Gaussians for
+parameters with defined prior bounds.}  
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{network_setup.png}
@@ -364,18 +383,19 @@ and accurately model the true posterior $p(x|y)$.}}
 % Intro to the results - what are we trying to do?
 %
 We present results on $256$ \new{multi}-detector \ac{GW} test \ac{BBH}
-waveforms in simulated advanced detector noise~\cite{aligo_noisecurves} \new{from
-the LIGO Hanford, Livingston and Virgo detectors}. We compare between
-variants of the existing Bayesian approaches and the \ac{CVAE}. Posteriors
-produced by the \texttt{Bilby} inference library~\cite{1811.02042} are used as
-a benchmark in order to assess the efficiency and quality of our machine
-learning approach with the existing methods for posterior sampling.
+waveforms in simulated advanced detector noise~\cite{aligo_noisecurves}
+\new{from the LIGO Hanford, Livingston and Virgo detectors}. We compare between
+variants of the existing Bayesian approaches and \new{our \ac{CVAE} implementation
+which we call \texttt{VItamin}}. Posteriors produced by the \texttt{Bilby}
+inference library~\cite{1811.02042} are used as a benchmark in order to assess
+the efficiency and quality of our machine learning approach with the existing
+methods for posterior sampling.
 
 %
 % describe the Bilby analysis 
 %
 For the benchmark analysis we assume that \new{9} parameters are
-unknown\footnote{Our analysis omits the 6 additional parameters required to
+unknown~\footnote{Our analysis omits the 6 additional parameters required to
 model the spin of each \ac{BBH} component mass.}: the component masses $m_1,m_2$, the
 luminosity distance $d_{\text{L}}$, \new{the sky position $\alpha,\delta$, the
 binary inclination $\Theta_{jn}$, the \ac{GW} polarisation angle ${\psi}$}, the
@@ -394,11 +414,11 @@ sampler we extract \new{$\mathcal{O}(10^4)$} samples from the posterior on the
 %
 % the VItamin process
 %
-The \ac{CVAE} training process uses as input \new{$10^{7}$} \new{whitened}
+The \new{\texttt{VItamin}} training process uses as input \new{$10^{7}$} \new{whitened}
 waveforms corresponding to parameters drawn from the same priors as assumed for
 the benchmark analysis. The waveforms are also of identical duration, sampling
 frequency, \new{and use the same waveform model as in} the benchmark analysis.
-\new{The signals are whitened}\footnote{\new{The whitening is used primarily to
+\new{The signals are whitened}~\footnote{\new{The whitening is used primarily to
 scale the input to a magnitude range more suitable to neural networks. The
 \emph{true} \ac{PSD} does not have to be used for whitening, but training data
 and test data must be contain signals that share the same \ac{PSD}.}}
@@ -406,10 +426,10 @@ and test data must be contain signals that share the same \ac{PSD}.}}
 assumed in the benchmark analysis}. When each whitened waveform is placed
 within a training batch it is given a unique detector \new{Gaussian} noise
 realisation \new{(after signal whitening this is simply zero mean, unit
-variance Gaussian noise)}. The \ac{CVAE} posterior results are produced by
+variance Gaussian noise)}. The \new{\texttt{VItamin}} posterior results are produced by
 passing \new{each of} our $256$ whitened noisy testing set of \ac{GW} waveforms
 as input into the testing path of the pre-trained
-\ac{CVAE}~\ref{fig:network_config}. For each input waveform we sample until we
+\ac{CVAE} (Fig.~\ref{fig:network_config}). For each input waveform we sample until we
 have generated \new{$10^4$} posterior samples on \new{7} physical parameters
 \new{$x=(m_1,m_2,d_{\text{L}},t_{0},\Theta_{jn},\alpha,\delta)$}. We choose to
 output a subset of the full 9-dimensional space to demonstrate that parameters
@@ -425,7 +445,7 @@ training.
     \caption{\label{fig:corner_plot} Corner plot showing 1 and 2-dimensional
 marginalised posterior distributions \new{on the \ac{GW} parameters} for one
 example test dataset. Filled \new{red} contours represent the
-\new{2-dimensional joint} posteriors obtained from the \ac{CVAE} approach and
+\new{2-dimensional joint} posteriors obtained from \new{\texttt{VItamin}} and
 solid \new{blue and green} contours are the \new{corresponding} posteriors
 output from our \new{benchmark} analyses (\new{using the dynesty and Ptemcee
 samplers within \texttt{Bilby}}). In each case, the contour boundaries enclose
@@ -446,15 +466,15 @@ test signal was simulated with optimal multi-detector signal-to-noise ratio of
 %
 We can immediately illustrate the accuracy of our machine learning predictions
 by directly plotting 2 and 1-dimensional marginalised posteriors generated
-using the output samples from our \ac{CVAE} and \texttt{Bilby} approaches
-superimposed on each other. We show this for one example test dataset in
-Fig.~\ref{fig:corner_plot} where strong agreement between \new{2} \texttt{Bilby}
-samplers \new{(Dynesty in blue, and Ptemcee in green)} and the \ac{CVAE} (red) is
-clear. \new{It is also evident that whilst we refer to the \texttt{Bilby} sampler
-results as benchmark cases, different existing samplers do not perfectly agree
-with each other. For each of our 256 test cases we see equivelent levels of
-disparity between pairs of benchmark samplers \emph{and} between any benchmark
-sampler and our \ac{CVAE} results.}  
+using the output samples from our \new{\texttt{VItamin}} and \texttt{Bilby}
+approaches superimposed on each other. We show this for one example test
+dataset in Fig.~\ref{fig:corner_plot} where strong agreement between \new{2}
+\texttt{Bilby} samplers \new{(Dynesty in blue, and Ptemcee in green)} and the
+\ac{CVAE} (red) is clear. \new{It is also evident that whilst we refer to the
+\texttt{Bilby} sampler results as benchmark cases, different existing samplers
+do not perfectly agree with each other. For each of our 256 test cases we see
+equivelent levels of disparity between pairs of benchmark samplers \emph{and}
+between any benchmark sampler and our \ac{CVAE} results.}  
 
 %
 % mention the p-p plot and KL distribution results
@@ -463,7 +483,7 @@ Figures~\ref{fig:pp_plot} and \ref{fig:kl_results} (see the Methods section)
 show the results of 2 statistical tests (the \ac{PP} plot test and
 \ac{KL}-divergence tests) performed on the entire test dataset and between all
 samplers \new{(Dynesty, Ptemcee, CPnest, emcee, and \texttt{VItamin})}. \new{In
-both tests the quality of the \ac{CVAE} results are indistinguishable from the
+both tests the quality of the \new{\texttt{VItamin}} results are indistinguishable from the
 benchmark samplers. The \ac{PP} plot results specifically indicate that the
 Bayesian 1-dimensional marginalised posteriors from each approach are
 self-consistent from a frequentist perspective (e.g., the true values lie
@@ -548,25 +568,28 @@ of the signal content in the data and is therefore constant for all test cases.}
 %
 In this letter we have demonstrated that we are able to reproduce, to a high
 degree of accuracy, Bayesian posterior probability distributions generated
-through machine learning. This is accomplished using \acp{CVAE} trained on
+through machine learning. This is accomplished using a \ac{CVAE} trained on
 simulated \ac{GW} signals and does not require the input of precomputed
-posterior estimates. We have demonstrated that our neural network model which,
+posterior estimates. We have demonstrated that our neural network model, which
 when trained, can reproduce complete and accurate posterior estimates in
-$\mathcal{O}(1)$ millisecond, can achieve the same quality of results as the
+$\mathcal{O}(1)$ millisecond, achieves the same quality of results as the
 trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 
 %
 % CBC implications and why this is a game-changer - speed for EM followup
 %
 The significance of our results is most evident in the orders of magnitude
-increase in speed over existing approaches. Improved low-latency alerts will be
-especially pertinent for signals from \ac{BNS} mergers (e.g.
-GW170817~\cite{PhysRevLett.119.161101}) and \ac{NSBH} signals where parameter
-estimation speed will no longer be limiting factor\footnote{The complete
-low-latency pipeline includes a number of steps. The process of \ac{GW} data
-acquisition is followed by the transfer of data. There is then the
-corresponding analysis and the subsequent communication of results to the
-\ac{EM} astronomy community after which there are physical aspects such as
+increase in speed over existing algorithms. We have demonstrated the approach
+using \ac{BBH} signals but the method can also be extended for application to
+signals from \ac{BNS} mergers (e.g.  GW170817~\cite{PhysRevLett.119.161101},
+\new{and GW190425~\cite{2020ApJ...892L...3A}}) and \ac{NSBH} systems \new{where
+improved low-latency alerts will be especially pertinent.} \new{By using our
+approach,} parameter estimation speed will no longer be limiting
+factor~\footnote{\new{A} complete low-latency pipeline includes a number of
+steps. The process of \ac{GW} data acquisition is followed by the transfer of
+data. There is then the \new{corresponding candidate event identification,
+parameter estimation} analysis, and the subsequent communication of results to
+the \ac{EM} astronomy community after which there are physical aspects such as
 slewing observing instruments to the correct pointing.} in observing the prompt
 \ac{EM} emission expected on shorter time scales than is achievable with
 existing \ac{LVC} analysis tools such as Bayestar~\cite{2016PhRvD..93b4013S}.
@@ -576,33 +599,35 @@ existing \ac{LVC} analysis tools such as Bayestar~\cite{2016PhRvD..93b4013S}.
 %
 The predicted number of future detections of \ac{BNS} mergers ($\sim
 180$~\cite{2018LRR....21....3A}) will severely strain the \ac{GW} community's
-current computational resources using existing Bayesian methods. Future
-iterations of our approach will provide full-parameter estimation on \ac{CBC}
-signals in $<1$ second on a single \ac{GPU}. Our trained network is also
-modular, and can be shared and used easily by any user to produce results. The
-specific analysis described in the letter assumes a uniform prior on the signal
-parameters. However, this is a choice and the network can be trained with any
-prior the user demands, or users can cheaply resample accordingly from the
-output of the network trained on the uniform prior. We also note that our
-method will be invaluable for population studies since populations may now be
-generated and analysed in a full-Bayesian manner on a vastly reduced time
-scale. 
+current computational resources using existing Bayesian methods. We estimate
+that future iterations of our approach will provide full-parameter estimation
+on \ac{CBC} signals in $\mathcal{O}(1)$ second on a single \ac{GPU}. Our
+trained network is also modular, and can be shared and used easily by any user
+to produce results. The specific analysis described in this letter assumes a
+uniform prior on the signal parameters. However, this is a choice and the
+network can be trained with any prior the user demands, or users can cheaply
+resample accordingly from the output of the network trained on the uniform
+prior. We also note that our method will be invaluable for population studies
+since populations may now be generated and analysed in a fully-Bayesian manner
+on a vastly reduced time scale. 
 
 %
 % future work, current limitations and prospects
 %
 For \ac{BBH} signals, \ac{GW} data is usually sampled at $1$---$4$ kHz
 dependent upon the mass of binary. We have chosen to use the noticeably low
-sampling rate of 256Hz and a single detector configuration largely in order to
-decrease the computational time required to develop our approach. We do not
-anticipate any problems in extending our analysis to higher sampling
-frequencies other than an increase in training time and a larger burden on the
-\ac{GPU} memory. Our lower sampling rate naturally limited the chosen \ac{BBH}
-mass parameter space to high mass signals. We similarly do not anticipate that
-extending the parameter space to lower masses will lead to problems but do
-expect that a larger number of training samples may be required. Future work
-will incorporate a multi-detector configuration at which point parameter
-estimation will be extended to sky localisation. 
+sampling rate of 256Hz \new{in order to decrease the computational time
+required to develop our approach and the computational burden of computing our
+256 benchmark analyses for each of 4 benchmark samplers. We have been able to
+extend our analysis to $1$ kHz sampling frequencies at the cost of an $\sim4$
+fold increase in training time and a similar increase on the \ac{GPU} memory
+requirement. We note that with the exception of requiring convolutional layers
+and an increase in the amount of training data to efficiently deal with a
+multi-detector analysis, the network complexity has not increased with the
+dimensionality of the physical parameter space nor with the sampling rate of
+the input data. We therefore do not anticipate that extending the parameter
+space to lower masses and including component spin parameters will be
+problematic.} 
 
 %
 % Non gaussian noise and the final statement
@@ -611,14 +636,18 @@ In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts and
 time-dependent variation in the detector noise \ac{PSD}. Existing methods
 incorporate a parameterised \ac{PSD} estimation into their
 inference~\cite{2015PhRvD..91h4034L}. To account for these within our scheme,
-we would retrain our network at regular intervals using samples of real
+we \new{could} retrain our network at regular intervals using samples of real
 detector noise (preferably recent examples to best reflect the state of the
-detectors). Our work can naturally be extended to include the full range of
-\ac{CBC} signal types but also to any and all other parameterised \ac{GW}
-signals and to analyses of \ac{GW} data beyond that of ground based
-experiments. Given the abundant benefits of this method, we hope that a variant
-of this of approach will form the basis for future \ac{GW} parameter
-estimation.
+detectors). \new{In this case we could also apply transfer learning to speed up
+each training instance based on the previously trained network state.
+Alternatively, since the \ac{PSD} is an estimated quantity, we could
+marginalise over its uncertainty by providing training data whitened by samples
+drawn from a distribution of possible \acp{PSD}.} Our work can naturally be
+extended to include the full range of \ac{CBC} signal types but also to any and
+all other parameterised \ac{GW} signals and to analyses of \ac{GW} data beyond
+that of ground based experiments. Given the abundant benefits of this method,
+we hope that a variant of this of approach will form the basis for future
+\ac{GW} parameter estimation.
 %
 % word count ~620
 %
