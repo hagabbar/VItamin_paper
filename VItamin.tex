@@ -534,12 +534,11 @@ the different posterior sampling approaches.}
 $\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
 & min & max & median & \\
 \hline
-Dynesty\footnote{The benchmark samplers all produced $\mathcal{O}(3000-
-	10000)$ samples dependent on the default sampling parameters used.} & 11795 & 29838 & 19400\footnote{The reader may note that benchmark sampler run times are a few orders of magnitude lower than what is typical of a complete \ac{BBH} analysis ($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a reduced parameter space, low sampling rate and choice of sampler hyperparameters.} & $3.1\times 10^{-5}$ \\
-Emcee & 18838 & 69272 & 32070 & $1.9\times 10^{-5}$ \\
-Ptemcee & 17124 & 37446 & 24372 & $2.5\times 10^{-5}$ \\
-Cpnest & 9943 & 53315 & 26202 & $2.3\times 10^{-5}$ \\
-\texttt{VItamin}\footnote{For the \texttt{VItamin} sampler $3000$ samples are
+Dynesty\footnote{The benchmark samplers all produced $\mathcal{O}(10000)$ samples dependent on the default sampling parameters used.}~\cite{dynesty} & 11795 & 29838 & 19400\footnote{The reader may note that benchmark sampler run times are a few orders of magnitude lower than what is typical of a complete \ac{BBH} analysis ($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a reduced parameter space, low sampling rate and choice of sampler hyperparameters.} & $3.1\times 10^{-5}$ \\
+Emcee~\cite{emcee} & 18838 & 69272 & 32070 & $1.9\times 10^{-5}$ \\
+Ptemcee~\cite{ptemcee} & 17124 & 37446 & 24372 & $2.5\times 10^{-5}$ \\
+Cpnest~\cite{cpnest} & 9943 & 53315 & 26202 & $2.3\times 10^{-5}$ \\
+\texttt{VItamin}\footnote{For the \texttt{VItamin} sampler $10000$ samples are
 produced as representative of a typical posterior. The run time is independent
 of the signal content in the data and is therefore constant for all test cases.} & \multicolumn{3}{c}{\bm{$6\times 10^{-1}$}} & 1 \\
 \botrule
@@ -1109,10 +1108,10 @@ private communication with the \texttt{Bilby} development team.}
 \toprule
 sampler & live points & tolerance & walkers & temperatures & steps \\
 \hline
-Dynesty & & & & & \\
-Emcee & & & & &\\
-Ptemcee & & & & & \\
-Cpnest & & & & & \\
+Dynesty~\cite{dynesty} & 5000 & 0.1 & N/A & N/A & N/A \\
+Emcee~\cite{emcee} & N/A & N/A & 250 & N/A & 14000 \\
+Ptemcee~\cite{ptemcee} & N/A & N/A & 250 & 8 & 5000 \\
+Cpnest~\cite{cpnest} & 5000 & 0.1 & N/A & N/A & N/A \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
