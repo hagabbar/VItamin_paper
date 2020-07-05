@@ -458,7 +458,7 @@ presented in this letter correspond to a 3-detector configuration but for
 clarity we only plot the H1 whitened noisy timeseries $y$ and the noise-free
 whitened signal (in blue and cyan respectively) to the right of the figure. The
 test signal was simulated with optimal multi-detector signal-to-noise ratio of
-?.}} 
+17.2.}} 
 \end{figure*}
 
 %
@@ -811,7 +811,7 @@ the distribution $r_{\theta}(z|x,y)$ as
 \begin{align}\label{eq:kl}
 \text{KL}&\left[q_{\phi}(z|x,y)||r_{\theta}(z|x,y)\right] = \\
 &\int dz\,q_{\phi}(z|x,y)
-\log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta}(z|x,y)r}\right),\nonumber
+\log\left(\frac{q_{\phi}(z|x,y)}{r_{\theta}(z|x,y)}\right),\nonumber
 \end{align}
 %   
 from which it can be shown that
@@ -892,28 +892,95 @@ $m_{2}<m_{1}$.} & 35 & 80 & solar masses \\
 luminosity distance & $d_{\text{L}}$ & 1 & 3 & Gpc \\
 time of coalescence & $t_{0}$ & 0.65 & 0.85 & seconds \\
 phase at coalescence & $\phi_{0}$ & 0 & $2\pi$ & radians \\
+right ascension & $\alpha$ & 0 & $2\pi$ & radians \\
+declination & $\delta$ & $-\pi/2$ & $\pi/2$ & radians \\
+inclination & $\iota$ & 0 & $\pi$ & radians \\
+polarisation & $\psi$ & 0 & $\pi$ & radians \\
 \hline
-right ascension & $\alpha$ & \multicolumn{2}{c}{1.375} & radians \\
-declination & $\delta$ & \multicolumn{2}{c}{-1.2108} & radians \\
-inclination & $\iota$ & \multicolumn{2}{c}{0} & radians \\
-polarisation & $\psi$ & \multicolumn{2}{c}{0} & radians \\
 spins & - & \multicolumn{2}{c}{0} & - \\
-epoch & - & \multicolumn{2}{c}{1126259642} & GPS time \\
-detector & - & \multicolumn{2}{c}{LIGO Hanford} & - \\
+epoch & \multicolumn{3}{c}{1126259642} & GPS time \\
+detector & \multicolumn{3}{c}{LIGO H1, LIGO L1, Virgo} & - \\
 \botrule
 \end{tabular}
 \label{tab:prior_ranges}
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The network design}
+\subsection{Network design}
+%
+% Describe the specific network hyper-parameters
+%
+\new{TODO: describe each encoder and decoder network structure. Describe the
+decoder specific output distributions. Mention the hyper-parameter optimisation}
+
+
+
+
+For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
+size of $512$ training samples and a learning rate of $10^{-4}$ was sufficient.
+We used a total of $10^6$ training samples in order to adequately cover the
+\ac{BBH} parameter space. We additionally ensure that an (effectively) infinite
+number of noise realizations are employed by making sure that every time a
+training sample is used it is given a unique noise realisation despite only
+having a finite number of waveforms. Each neural network ($\text{E}_1$,
+$\text{E}_2$, D) is composed of 3 fully connected layers and has $2048$ neurons
+in each layer with ReLU~\cite{nair2010rectified} activation functions between
+layers. We use a latent space dimension of $8$ and we consider training
+complete when both components to the loss function have converged to
+approximately constant values or when comparisons with benchmark test
+posteriors indicate no significant changes in the output posterior.
+
 %
 % Describe the specific network architecture design
 %
-The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} makes use of a
-conditional latent variable model and our parametric model is constructed from
-the product of 2 separate distributions marginalised over the latent space as
-defined \new{in Eq.~\ref{eq:approx_post}.} We have used $\theta_{1}$ and
+The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} is constructed from
+the 3 separate neural networks modelling the encoder and decoder distributions
+$r_{\theta_1}$ and $r_{\theta_2}$ as well as the recognition function
+$q_{\phi}$. Each of these components are themselves deep convolutional networks
+consisting of a series of convolutional layers followed by a series of
+fully-connected layers. The details of each network structure are given in
+Table~\ref{Tab:network_design} where we indicate the activations used and additional
+dropout and batch-normalisation layers.
+
+%
+% I feel the need, the need to clearly define our CVAE networks
+%
+\begin{table}
+\centering
+\caption{The \texttt{VItamin} network hyper-parameters}
+\begin{tabular}[t]{ccc}
+\toprule
+$r_{\theta_1}(z|y)$ & $r_{\theta_2}(x|y,z)$ & $q_{\phi}(z|x,y)$ \\
+\hline
+(input) $y\rightarrow[256,3]$ & $y\rightarrow[256,3]$ & $y\rightarrow[256,3]$ \\
+conv\_1d(32,7,3) & conv\_1d(32,7,3) & conv\_1d(32,7,3) \\
+ReLU & ReLU & ReLU \\
+dropout(0.2) & dropout(0.2) & dropout(0.2) \\ 
+conv\_1d(32,7,16) & conv\_1d(32,7,16) & conv\_1d(32,7,16) \\
+ReLU & ReLU & ReLU \\
+dropout(0.2) & dropout(0.2) & dropout(0.2) \\
+conv\_1d(32,7) & conv\_1d(32,7) & conv\_1d(32,7) \\
+ReLU & ReLU & ReLU \\
+conv\_1d(32,7) & FC(2048) & FC(2048) \\
+conv\_1d(32,7) & FC(2048) & FC(2048) \\
+FC(2048) & $\mu_{r_2}=\left\{\begin{array}{c}
+\mu \\
+\log(\sigma^2) \end{array}\right.$ & $\mu_{q}=\left\{\begin{array}{c}
+\mu \\
+\log(\sigma^2) \end{array}\right.$ \\
+FC(2048) & & \\
+$\mu_{r_1}=\left\{\begin{array}{c}
+\text{mode weights} \\
+\mu \\
+\log(\sigma^2) \end{array}\right.$ & & \\
+\botrule
+\end{tabular}
+\label{Tab:network_design}
+\end{table}  
+
+
+
+We have used $\theta_{1}$ and
 $\theta_{2}$ to indicate that the 2 separate networks modelling these
 distributions will be trained on these parameter sets respectively. \new{The
 encoder $r_{\theta_1}(z|y)$ takes as inout the data $y$ and outputs $M$ sets of
@@ -933,7 +1000,7 @@ it does limit it to be unimodal).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The training procedure}
+\subsection{Training procedure}
 %
 % Introduce the training process
 %
@@ -1006,6 +1073,7 @@ minimise the total cost (of which this is a component).
 %
 % Some practical aspects of the training
 %
+\new{TODO: move the learning rate stuff here. Also discuss the ramp}
 As is standard practice in machine learning applications, the cost is computed
 over a batch of training samples and repeated for a pre-defined number of
 iterations. Completion of training is determined by comparing output posteriors
@@ -1016,26 +1084,6 @@ whether the cost function and its component parts (Fig.~\ref{fig:loss_log})
 have converged. We use a single Nvidia Tesla V100 \acp{GPU} with $16/32$ Gb of
 RAM although consumer grade ``gaming" \ac{GPU} cards are equally fast for this
 application.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Network and Training parameters}
-%
-% Describe the specific network hyper-parameters
-%
-For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
-size of $512$ training samples and a learning rate of $10^{-4}$ was sufficient.
-We used a total of $10^6$ training samples in order to adequately cover the
-\ac{BBH} parameter space. We additionally ensure that an (effectively) infinite
-number of noise realizations are employed by making sure that every time a
-training sample is used it is given a unique noise realisation despite only
-having a finite number of waveforms. Each neural network ($\text{E}_1$,
-$\text{E}_2$, D) is composed of 3 fully connected layers and has $2048$ neurons
-in each layer with ReLU~\cite{nair2010rectified} activation functions between
-layers. We use a latent space dimension of $8$ and we consider training
-complete when both components to the loss function have converged to
-approximately constant values or when comparisons with benchmark test
-posteriors indicate no significant changes in the output posterior.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The testing procedure}
@@ -1089,9 +1137,11 @@ with the same input data (see Eq.~\ref{eq:latent_model}).
 \begin{figure}
     \includegraphics[width=\columnwidth]{latest_pp_plot.png}
     \caption{\label{fig:pp_plot} One-dimensional \ac{PP} plots for each
-parameter and each benchmark sampler and \texttt{VItamin}.  The curves were
+parameter and each benchmark sampler and \texttt{VItamin}. The curves were
 constructed using the 256 test datasets. The dashed black diagonal line
-indicates the ideal result.
+indicates the ideal result. The best and worst-case $p$-values associated with each
+sampling method are (0.211,0.972 VItamin), (0.832,0.043 dynesty), (0.117,0.728
+ptemcee), (0.840,0.189 cpnest), (0.002,0.489 emcee). 
 }
 \end{figure}
 %
