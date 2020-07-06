@@ -1,0 +1,28 @@
+Morning Hunter,
+
+Lectures are over now.. it's a one-off graduate course organised by AEI which happens to be in a resort in Mallorca, I did 2*90 minutes on CBC signals and PE. So I'm now reading your paper by the pool.
+
+Feedback on the introduction.  I think several references are significantly out of date or inappropriate and I have a couple of shameless citation requests. 
+
+I don't think [4] is the right reference for the number of GW we will detect per year. For one thing it predates the detection. Use the observing scenarios document and the stochastic implications papers that say 1 bbh signal per 10s of minutes over the visible universe. So correct number is 10^4-5 per year.
+
+Also think [5] is not a good reference for Bayesian PE to be optimal (you use it twice in the first column). I think it shows that Bayesian detection statistic is optimally sensitive for a known population, which is an entirely different statement. Ie a statement about search sensitivity not parameter accuracy.
+
+I don't know if 10^5-6 seconds is still correct for PE on a BBH signal, I think people now get results within a few hours. Eg the LALInference public alert updates. Check this with PE experts.
+
+Not sure if ref. 3 says anything about the time required for BNS PE, if it doesn't then don't cite it on this point. 
+
+"EM signatures are expected" requires a citation I think, even if only the OSD or BNS multimessenger paper. 
+
+"7 orders of magnitude faster" also requires very careful checking against current LALInference and Bilby performance. 
+
+You say "astrophysically motivated" prior but this makes no sense for the noise model.
+
+"Noisy GW waveform" is ambiguous, it could mean a noisy calculation of the expected GW signal. You are talking about the data, not a waveform. 
+
+The statement about "primary software tools" has pnp problems. You forgot LSC and Virgo; also Bilby isn't being used by LVC yet, so this is making a promise for the collaborations, a no-no. You might also like to refer to PyCBC inference and to the IAS PE analysis, given that LVC doesn't have a monopoly on Bayesian PE any more.
+
+ML for GW detection has been used for much longer than the NN era represented by your 3 citations. Please cite Kari Hodge's paper and/or thesis on multivariate classification, and my paper with S. Kapadia ; these could be described as "candidate event ranking in non-ideal data". I think there are comparable burst ML papers but don't have the exact references.
+
+More later! 
+

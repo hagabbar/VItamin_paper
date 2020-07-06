@@ -289,7 +289,7 @@ to be equal to the true posterior. \new{The parametric model is constructed from
 combination of 2 (encoder and decoder) neural networks $r_{\theta_1}(z|y)$ and
 $r_{\theta_2}(x|y,z)$ where
 %
-\begin{align}\label{eq:approx_post}
+\begin{align}\label{eq:latent_model}
 r_{\theta}(x|y) = \int dz\,r_{\theta_1}(z|y)r_{\theta_2}(x|y,z).
 \end{align}
 %
@@ -360,7 +360,7 @@ function Eq.~\ref{eq:cost3}. After having trained the network \new{and
 therefore having minimised the cross-entropy $H$}, we test (right-hand side)
 using only the \new{$r_{\theta_1}$} encoder and the \new{$r_{\theta_2}$}
 decoder to produce samples ($x_{\text{samp}}$). \new{These samples are drawn
-from the distribution $r_{\theta}(x|y)$ (Eq.~\ref{eq:approx_post})
+from the distribution $r_{\theta}(x|y)$ (Eq.~\ref{eq:latent_model})
 and accurately model the true posterior $p(x|y)$.}}
 \end{figure}
 
@@ -659,7 +659,8 @@ we hope that a variant of this of approach will form the basis for future
 We would like to acknowledge valuable input from the LIGO-Virgo Collaboration,
 specifically from Will Farr and the parameter estimation and machine-learning
 working groups. We would additionally like to thank Szabi Marka for posing this
-challenge to us. We thank Nvidia for the generous donation of a Tesla V-100 GPU
+challenge to us \new{and the journal referees for their helpful and contstructive
+comments}. We thank Nvidia for the generous donation of a Tesla V-100 GPU
 used in addition to \ac{LVC} computational resources. The authors also
 gratefully acknowledge the Science and Technology Facilities Council of the
 United Kingdom. CM and SH are supported by the Science and Technology Research
@@ -782,7 +783,7 @@ given the parameters $x$).}
 The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} makes use of a
 conditional latent variable model and our parametric model is constructed from
 the product of 2 separate distributions marginalised over the latent space as
-defined \new{in Eq.~\ref{eq:approx_post}.} We have used $\theta_{1}$ and
+defined \new{in Eq.~\ref{eq:latent_model}.} We have used $\theta_{1}$ and
 $\theta_{2}$ to indicate that the 2 separate networks modelling these
 distributions will be trained on these parameter sets respectively. \new{The
 encoder $r_{\theta_1}(z|y)$ takes as input the data $y$ and outputs parameters
@@ -935,7 +936,7 @@ $r_{\theta_1}(z|y)$ & $r_{\theta_2}(x|y,z)$ & $q_{\phi}(z|x,y)$ \\
 \hline
 (input) $y\rightarrow[256,3]$ & $y\rightarrow[256,3]$ & $y\rightarrow[256,3]$ \\
 conv\_1d(32,7,3) & conv\_1d(32,7,3) & conv\_1d(32,7,3) \\
-ReLU & ReLU & ReLU \\
+ReLU\footnote{\cite{nair2010rectified}} & ReLU & ReLU \\
 dropout(0.2) & dropout(0.2) & dropout(0.2) \\ 
 conv\_1d(32,7,16) & conv\_1d(32,7,16) & conv\_1d(32,7,16) \\
 ReLU & ReLU & ReLU \\
@@ -1029,8 +1030,8 @@ optimisation process and also state the optimal latent space dimension chosen.}
 Our cost function is composed of 3 probability \new{distributions modelled by
 neural networks with} well defined inputs and outputs where the mapping of
 those inputs to outputs is governed by the parameter sets
-$\theta_{1},\theta_{2},\phi$. These parameters are the weights and biases of 3
-neural networks acting as (variational) encoder, decoder, and encoder
+$\theta_{1},\theta_{2}$ and $\phi$. These parameters are the weights and biases
+of 3 neural networks acting as (variational) encoder, decoder, and encoder
 respectively. To train such a network one must connect the inputs and outputs
 appropriately to compute the cost function $H$ \new{(Eq.~\ref{eq:cost3})} and
 back-propagate cost function derivatives to update the network parameters. 
@@ -1039,133 +1040,140 @@ back-propagate cost function derivatives to update the network parameters.
 % Go through the training step by step
 %
 Training is performed via a series of steps illustrated schematically in
-Fig.~\ref{fig:network_config}.
+Fig.~\ref{fig:network_config}. \new{A batch of data composed of pairs of
+timeseries $y$ and their corresponding true \ac{GW} signal parameters $x$ are
+passed as input and the following steps are applied to each element of the
+batch.}
 %
-\begin{itemize}
+\begin{enumerate}
 %
-\item The encoder $r_{\theta_1}$ is given a batch of training \ac{GW} signals
-($y$) and encodes them into a set of variables $\mu_{r_1}$ defining a
+\item \new{The encoder $q_{\phi}$ takes both the timeseries
+$y$ and the true parameters $x$ defining the \ac{GW} signal. It then encodes
+these instances into parameters $\mu_{q}$ defining an uncorrelated (diagonal covariance matrix)
+$n_z$-dimensional Gaussian distribution in the latent space.} 
+%
+\item \new{The encoder $r_{\theta_1}$ is given only the timeseries data
+$y$ and encodes it into a set of variables $\mu_{r_1}$ defining a
 multi-component multivariate Gaussian mixture distribution
-in the latent space. In this case $\mu_q = (\mu_{q0},\sigma^{2}_{q})$ describes
-the first 2 central moments (mean and variance) for each dimension of a
-uncorrolated (diagonal covariance) multivariate Gaussian distribution.
+in the latent space.}
 %
-\item The encoder $\textrm{E}_2$ takes a combination of both the data $y$ and
-the true parameters $x$ defining the \ac{GW} signal and encodes this into
-parameters defining another uncorrelated multivariate Gaussian distribution in
-the same latent space. These parameters we denote by
-$\mu_{r}=(\mu_{r0},\sigma^{2}_{r})$ again representing the means and variances.
+\item We then draw a sample from the distribution described by $\mu_{q}$ giving us
+a location $z_{q}$ within the latent space.
 %
-\item We then sample from the distribution described by $\mu_{q}$ giving us
-samples $z_{q}$ within the latent space.
-%
-\item These samples, along with their corresponding $y$ data, then go to the
-decoder D which outputs $\mu_{x}=(\mu_{x0},\sigma^{2}_{q})$, a set of parameters (much like
-$\mu_q,\mu_r$) that define the moments of an uncorrelated  multivariate Gaussian
-distribution in the physical $x$ space.
+\item This sample, along with its corresponding $y$ data, are then passed
+as input to the decoder \new{$r_{\theta_2}$. This decoder outputs $\mu_{\theta_2}$
+comprising a set of parameters that define a distribution in the physical $x$
+space.} 
  %
-\item The first term of the loss function (Eq.~\ref{eq:cost3}) is then computed
-by evaluating the probability density defined by $\mu_x$ at the true $x$
-training values. The component of the loss allows the network to learn how to
-predict accurate values of $x$ but to also learn the intrinsic variation due to
-the noise properties of the data $y$. It is important to highlight that the
-\ac{GW} parameter predictions from the decoder D do describe a multivariate
-Gaussian, but as is shown in our results (see Fig.~\ref{fig:corner_plot}), this
-does \emph{not} imply that our final output posterior estimates will also be
-multivariate Gaussians.
+\item The first term of the loss function, the reconstriction loss \new{(defined as $L$ in
+Eq.~\ref{eq:cost3})}, is then computed by evaluating the probability density
+defined by \new{$\mu_{\theta_2}$} at the true $x$ training value \new{(the average
+is then taken over the batch of input data).} 
 %
-\item Finally the loss component described by the \ac{KL} divergence between the
-distributions described by $\mu^{q}$ and $\mu^{r}$ is computed using
+\item \new{The second loss component, the \ac{KL}-divergence between
+the distributions $q_{\phi}(z|x,y)$ and $r_{\theta_1}(z|y)$ (described by
+the parameter sets $\mu_{q}$ and $\mu_{r_1}$), is approximated as 
 %
 \begin{align}\label{eq:klgauss}
-\text{KL}&\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] = \\
-&\frac{1}{2}\sum_{j=1}^{n_{z}}\left[\frac{\sigma_{q,j}^{2}}{\sigma_{r,j}^{2}} +
-\frac{(\mu_{r0,j}-\mu_{q0,j})^{2}}{\sigma_{r,j}^{2}}+
-\log\left(\frac{\sigma_{r,j}^{2}}{\sigma_{q,j}^{2}}\right)\right] -
-\frac{n_{z}}{2}.\nonumber 
+\text{KL}&\left[ q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right] \\
+&\approx \left.\log\left(\frac{q_{\phi}(z|x_n,y_n)}{r_{\theta_1}(z|y_n)}\right)\right|_{z\sim
+q_{\phi}(z|x_n,y_n)}\nonumber
 \end{align}
 %
-Here we highlight that we do not desire that the network tries to make these 2
-distributions equal to each other. Rather, we want the ensemble network to
-minimise the total cost (of which this is a component).
+where $z$ is the sample drawn from $q_{\phi}(z|x_n,y_n)$ in the 1st
+training stage. We use this single-sample Monte-Carlo integration approximation
+since the \ac{KL}-divergence between a single-component and a multi-component
+multivariate Gaussian distribution has no analytic solution (the average
+is then taken over the batch of input data).}. 
 %
-\end{itemize}
+\item \new{The 2 loss components are then summed according to Eq.~\ref{eq:cost3} and
+all trainable network parameters (defined by $\theta_1,\theta_2,\phi$) are
+updated based on the derivative of the cost function with resepct to these
+parameters.}
+%
+\end{enumerate}
+
+%
+% the ramp
+%
+\new{A problematic aspect of training relates to the behaviour of the network during
+the initial stages of training. The network has a strong tendency to become
+trapped in local minima resulting in a decreasing cost component $L$ (the
+reconstruction cost) but a non-evolving \ac{KL}-divergence term that remains
+close to zero. To avoid this state we apply an annealing process in which the
+\ac{KL}-divergence term is initially ignored but its contribution is then
+increased logarithmically from 0 to 1 between the iteration indices
+$10^4$---$10^5$. This allows the $q_{\phi}$ encoder to learn the latent space
+representation of the data via the reconstruction cost before being required to
+try to best match its distribution to that modelled by the $r_{\theta_1}$
+encoder.}   
 
 %
 % Some practical aspects of the training
 %
-\new{TODO: move the learning rate stuff here. Also discuss the ramp}
 As is standard practice in machine learning applications, the cost is computed
 over a batch of training samples and repeated for a pre-defined number of
-iterations. Completion of training is determined by comparing output posteriors
-on test samples with those of \texttt{Bilby} iteratively during training. This
-comparison is done using standard figures of merit such as the \ac{KL}
-divergence and the P-P plot. We also assess training completion based on
-whether the cost function and its component parts (Fig.~\ref{fig:loss_log})
-have converged. We use a single Nvidia Tesla V100 \acp{GPU} with $16/32$ Gb of
-RAM although consumer grade ``gaming" \ac{GPU} cards are equally fast for this
-application.
+iterations. For our purposes, we found that $\sim 10^6$ training
+iterations, a batch size of $512$ training samples and a learning rate of
+$10^{-4}$ was sufficient. We used a total of $10^7$ training samples in order
+to adequately cover the \ac{BBH} parameter space. We additionally ensure that
+an (effectively) infinite number of noise realizations are employed by making
+sure that every time a training sample is used it is given a unique noise
+realisation despite only having a finite number of waveforms.
 
-For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
-size of $512$ training samples and a learning rate of $10^{-4}$ was sufficient.
-We used a total of $10^6$ training samples in order to adequately cover the
-\ac{BBH} parameter space. We additionally ensure that an (effectively) infinite
-number of noise realizations are employed by making sure that every time a
-training sample is used it is given a unique noise realisation despite only
-having a finite number of waveforms. Each neural network ($\text{E}_1$,
-$\text{E}_2$, D) is composed of 3 fully connected layers and has $2048$ neurons
-in each layer with ReLU~\cite{nair2010rectified} activation functions between
-layers. We use a latent space dimension of $8$ and we consider training
-complete when both components to the loss function have converged to
-approximately constant values or when comparisons with benchmark test
-posteriors indicate no significant changes in the output posterior.
-
+%
+% completion of training and hardware
+%
+Completion of training is determined by comparing output posteriors on test
+samples with those of \texttt{Bilby} iteratively during training. This
+comparison is done using standard figures of merit such as the \ac{PP}-plot
+\ac{KL}-divergence \new{(see Figs.~\ref{fig:pp_plot} and
+\ref{fig:kl_results})}. We also assess training completion based on whether the
+evolution of the cost function and its component parts
+(Fig.~\ref{fig:loss_log}) have converged. We use a single Nvidia Tesla V100
+\acp{GPU} with $16/32$ Gb of RAM although consumer grade ``gaming" \ac{GPU}
+cards are equally fast for this application.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The testing procedure}
-%~\chris{Hunter, note that we only need to
-%do the first pass through E1 only once for a given piece of data do the real
-%cost is only in the other steps. This will likely only change the timing by
-%~25\% so it might not be worth doing the tests again. Just bear it in mind.}
-%
 %
 % Introduce the testing procedure
 %
 After training has completed and we wish to use the network for inference we
 follow the procedure described in the right hand panel of
 Fig.~\ref{fig:network_config}. Given a new $y$ data sample (not taken from the
-training set) we simply input this into the encoder $\textrm{E}_1$ from which we
-obtain a single value of $\mu_{r}$ describing a distribution (conditional on the
-data $y$) in the latent space. We then repeat the following steps:
+training set) we simply input this into the \new{trained} encoder $r_{\theta_1}$ from
+which we obtain a single value of \new{$\mu_{r_1}$} describing a distribution
+(conditional on the data $y$) in the latent space. We then repeat the following
+steps:
 
 %
 % Go through the testing step by step
 %
-\begin{itemize}
+\begin{enumerate}
 %
-\item We randomly draw a latent space sample $z_r$ from the latent space
-distribution defined by $\mu_r$.
+\item We randomly draw a latent space sample \new{$z_{r_1}$} from the latent space
+distribution defined by \new{$\mu_{r_1}$}.
 %
-\item Our $z_r$ sample and the corresponding original $y$ data are fed as input to our
-pre-trained decoder network (D). The decoder network returns a set of moments
-$\mu_{x}$ which describe a multivariate Gaussian distribution in the physical
-parameter space.
+\item \new{The $z_{r_1}$} sample and the corresponding original $y$ data are fed as input to our
+pre-trained decoder network $r_{\theta_2}$. The decoder network returns a set
+of parameters $\mu_{r_2}$ which describe a \new{multivariate distribution in the physical
+parameter space.}
 %
 \item We then draw a random $x$ realisation from that distribution.
 %
-\end{itemize}
+\end{enumerate}
 %
 
 %
 % Final testing thoughts
 %
-A comprehensive representation in the form of samples drawn from the entire joint
-posterior distribution can then be obtained by simply repeating this procedure
-with the same input data (see Eq.~\ref{eq:latent_model}).
+A comprehensive representation in the form of samples drawn from the entire
+joint posterior distribution can then be obtained by simply repeating this
+procedure and hence sampling from our latent model $r_{\theta}(x|y)$ (see
+Eq.~\ref{eq:latent_model}).
 
-%
-% K-L divergence results
-%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Additional tests}
 %
 % P-P plot
@@ -1173,11 +1181,11 @@ with the same input data (see Eq.~\ref{eq:latent_model}).
 \begin{figure}
     \includegraphics[width=\columnwidth]{latest_pp_plot.png}
     \caption{\label{fig:pp_plot} One-dimensional \ac{PP} plots for each
-parameter and each benchmark sampler and \texttt{VItamin}. The curves were
-constructed using the 256 test datasets. The dashed black diagonal line
+parameter and \new{for} each benchmark sampler and \texttt{VItamin}. The curves were
+constructed using the 256 test datasets \new{and the} dashed black diagonal line
 indicates the ideal result. The best and worst-case $p$-values associated with each
-sampling method are (0.211,0.972 VItamin), (0.832,0.043 dynesty), (0.117,0.728
-ptemcee), (0.840,0.189 cpnest), (0.002,0.489 emcee). 
+sampling method are (0.972,0.211 \texttt{VItamin}), (0.832,0.043 dynesty), (0.728,0.117
+ptemcee), (0.840,0.189 cpnest), (0.489,0.002 emcee). 
 }
 \end{figure}
 %
@@ -1189,15 +1197,17 @@ ptemcee), (0.840,0.189 cpnest), (0.002,0.489 emcee).
 \centering
 \caption{Benchmark sampler configuration parameters. Values were chosen based
 on a combination of their recommended default parameters~\cite{1811.02042} and
-private communication with the \texttt{Bilby} development team.}
+private communication with the \texttt{Bilby} development team. }
 \begin{tabular}[t]{lc}
 \toprule
 sampler & parameters \\
 \hline
 Dynesty~\cite{dynesty} & live-points $=5000$ tolerance $=0.1$ \\
-Ptemcee~\cite{ptemcee} & walkers $=250$ temperatures $=8$ steps $=5000$ \\
+Ptemcee~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=250\,
+\text{temperatures}=8\,
+\\ \text{steps}=5000\, \text{burn}=1000\end{array}$ \\
 Cpnest~\cite{cpnest} & live-points $=5000$ tolerance $=0.1$ \\
-Emcee~\cite{emcee} & walkers $=250$ steps $=14000$ \\
+Emcee~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=1000$ \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
@@ -1206,55 +1216,62 @@ Emcee~\cite{emcee} & walkers $=250$ steps $=14000$ \\
 %
 % discuss pp plot result
 %
-%\chris{You need to better describe what a P-P plot is and why we use it. Maybe
-%throw in a reference to existing PE group papers that use it. Nature readers
-%will have never seen one before. We also have to wait until we get better P-P
-%plot curves for our approach before we warrant adding it to the paper.}
 A standard test used within the \ac{GW} parameter estimation community is the
-production of so-called \ac{PP} plots which we show for our analysis in
-Fig.~\ref{fig:pp_plot}. The plot is constructed by computing a $p$-value for each
-output test posterior on a particular parameter evaluated at the true
-simulation parameter value (the fraction of posterior samples $>$ the
-simulation value). We then plot the cumulative distribution of these
-values~\cite{1409.7215}. Curves consistent with the black dashed diagonal line
-indicate that the 1-dimensional Bayesian probability distributions are
-consistent with the frequentist interpretation - that the truth will lie within
-an interval containing $X\%$ of the posterior probability with a frequency of
-$X\%$ of the time. It is clear to see that our new approach shows deviations
-from the diagonal that are entirely consistent with those observed in all
-benchmark samplers. 
+production of so-called \ac{PP} plots which we show for our analysis \new{and
+the benchmark comparisons} in Fig.~\ref{fig:pp_plot}. The plot is constructed
+by computing a \new{cumulative probability for each 1-dimensional marginalised}
+test posterior evaluated at the true simulation parameter value (the fraction
+of posterior samples \new{$\leq$} the simulation value). We then plot the
+cumulative distribution of these values~\cite{1409.7215}. Curves consistent
+with the black dashed diagonal line indicate that the 1-dimensional Bayesian
+probability distributions are consistent with the frequentist interpretation -
+that the truth will lie within an interval containing $X\%$ of the posterior
+probability with a frequency of $X\%$ of the time. It is clear to see that
+\new{results obtained using \texttt{VItamin}} show deviations from the diagonal
+that are entirely consistent with those observed in all benchmark samplers.
+\new{The $p$-value has also been calculated for each sampler and each parameter
+under the null-hypothesis that they are consistent with the diagonal. These
+results show that for at least 1 parameter, emcee shows inconsistency with the
+modal at the 1\% level. Dynesty has a worst case that is consistent only at the
+4\% level.  All other samplers (including \texttt{VItamin}) show consistency at
+$>10\%$ in the worst case.}    
 
 %
 \begin{figure*}
     \includegraphics[width=\textwidth]{hist-kl.png}
     \caption{\label{fig:kl_results} Distributions of \ac{KL}-divergence values
-between posteriors produced by different samplers. The \ac{KL} divergence is
-computed between all samplers with every other sampler over all 256 \ac{GW}
-test cases. The distributions of the resulting \ac{KL} divergence values are
-then plotted, with each color representing a different sampler combination
-including \texttt{VItamin} as one of the sampler pairs. The grey distributions
-represent the results from all benchmark sampler pairs for comparison. Both the
-$x$ and $y$ axes are scaled logarithmically for readability.}
+between posteriors produced by different samplers. \new{In each panel we show the
+distribution of \ac{KL}-divergences computed between a single benchmark sampler
+and every other benchmark sampler over all 256 \ac{GW} test cases (grey). Also
+plotted in each panel are the corresponding \ac{KL}-divergence distributions
+between the single benchmark sampler and the \texttt{VItamin} outputs (blue,
+green, purple, yellow).}}
+
 \end{figure*}
 %
 
 %
 % discuss the KL results
 %
-The \ac{KL} divergence between 2 distributions is a measure of their similarity
-and we use this to compare the output posterior estimates between samplers for
-the same input test data. To do this we run each independent sampler (including
-the \ac{CVAE}) on the same test data to produce samples from the corresponding
-posterior. We then compute the \ac{KL}-divergence between output distributions
-from each sampler with itself and each sampler with all other samplers. For
-distributions that are identical the \ac{KL}-divergence is equal to zero but
-since we are representing our posterior distributions using finite numbers of
-samples, identical distributions should result in KL-divergence values $<1$. In
-Fig.~\ref{fig:kl_results} we show the distributions of these
-\ac{KL}-divergences for the 256 test \ac{GW} samples where we see that the
-\ac{CVAE} approach when compared to the benchmark samplers have distributions
-consistent with those produced when comparing between 2 different benchmark
-samplers.
+The \ac{KL}-divergence \new{has been used to define the cost function of the
+\ac{CVAE} analysis, but in general it is used as measure of the similarity
+between distributions. In Fig.~\ref{fig:kl_results} we use this quantity to
+compare the output posterior estimates between samplers for the same input test
+data. To do this we run each independent sampler (including \texttt{VItamin})
+on the same test data to produce samples from the corresponding posterior. We
+then compute the \ac{KL}-divergence between the output distributions from each
+sampler with every other sampler~\cite{4839047}.  For distributions that are
+identical, the \ac{KL}-divergence {should} equal zero but since we are
+representing our posterior distributions using finite numbers of samples,
+identical distributions result in \ac{KL}-divergence values $\mathcal{O}(X)$.
+In Fig.~\ref{fig:kl_results} we show the distributions of these
+\ac{KL}-divergences for the 256 test \ac{GW} samples. In each panel we plot the
+distribution of \ac{KL}-divergences obtained when comparing one of the 4
+benchmark samplers with all other benchmark samplers (excluding
+\texttt{VItamin}). We also plot the distribution of \ac{KL}-divergences
+obtained when comparing the same sampler with \texttt{VItamin} alone. In all 4
+cases the \texttt{VItamin} results show distributions completely consistent
+with the deviations observed between benchmark samplers.}  
 
 \bibliographystyle{apsrev4-1}
 \bibliography{references}% Produces the bibliography via BibTeX.

@@ -1,0 +1,18 @@
+Hi Siong, Chris, Hunter,
+
+I enjoyed reading the recent paper draft on Neural networks for fast PE.  Very exciting work!
+https://dcc.ligo.org/P1900268
+
+Here are some minor notes, only intended to be helpful (you can ignore if not helpful):
+
+* What’s “ELBO” ?
+
+* Figure 3 shows PP plots.  While I agree VItamin seems to be doing as well as the other samplers, to my eye, none of them are doing very well.  With ~256 attempts I might expect ~6% statistical uncertainty, but this seems to be more than that (maybe?).  If so, some explanation is needed.  Also, I think there are multiple lines of the same color for multiple parameters… if so, the caption should say this.
+
+Conceptually, I’m scratching my head over the fact that all the noise realizations seemed to use the same PSD.  Notes about how realistic this is in the paper suggested retraining often as the PSD changes, but that seems strange to me.  Our PSD changes every minute or so, so I don’t think retraining for ever event is really what you imagine (or is it?).  Rather, I would have guessed you’d want a network smart enough to handle different PSDs, even if parameterized in some way (e.g. I think bayeswave models the PSD as a broken power law + some lines).  I’m guessing you have thought about this, and it might be worth adding some words to the paper to share your perspective on how to best handle this going forward.
+
+That’s all I’ve got.  Good luck!
+
+Best,
+ jonah
+
