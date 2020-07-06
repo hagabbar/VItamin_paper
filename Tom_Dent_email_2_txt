@@ -1,0 +1,21 @@
+Hi again, 
+
+I tried reading p.2 and didn't really make progress in understanding it.  There seems to be a lot of missing pieces (as well as LaTeX missing links - "in Sec.  and in [7]") and inconsistencies in notation/explanation. 
+
+How/why the CVAE is a good fit to the basic problem is not really explained as far as I can see.  I can try and guess vaguely why, but shouldn't have to.
+
+It's not clear where the reader is supposed to start to try and understand what has been done - should I read the caption to Fig.1 or the text on p.2 (which only mentions the figure in passing) ?  Should I be using one as a guide to the other .. but then why is there a bunch of different notation in each?  What are mu and z and do the _1 and _2 subscripts in the figure have anything to do with the _n subscript in the equation? 
+What is the expression in Eq. 3 used for?  It is an approximate bound on H, but how does that help you to train the thing you're training? 
+
+The text says what the latent space "typically" is but not what it is in this specific application.  Again I'd rather not be guessing what you do with it. 
+
+I get the impression that this section of the main part of the paper has been written mainly in an attempt to save space while putting any actual explanations into the 'Methods' part.  However I don't find p.2 comprehensible on its own terms.
+
+Maybe a symptom of reformatting/reworking the paper, Table II is referred to before Table I and 'VItamin' is not defined and is not used until p.3. 
+
+An actual scientific q., why are m2 and m2 bounded below at 35 when we've seen much less massive BBH?  Also are these detector or source frame masses?  Why is d_L bounded below at 1 Gpc?  Why is the prior on d_L uniform (apparently) rather than astrophysically volume- or SFR-distributed? 
+
+Table I shows a typical speedup of closer to 1e6 than 1e7 so I wouldn't claim '7 orders of magnitude' based on it, at most '6 and a bit orders' ...
+
+Cheers, 
+Tom
