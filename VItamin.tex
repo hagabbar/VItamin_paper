@@ -910,37 +910,18 @@ detector & \multicolumn{3}{c}{LIGO H1, LIGO L1, Virgo} & - \\
 %
 % Describe the specific network hyper-parameters
 %
-\new{TODO: describe each encoder and decoder network structure. Describe the
-decoder specific output distributions. Mention the hyper-parameter optimisation}
-
-
-
-
-For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
-size of $512$ training samples and a learning rate of $10^{-4}$ was sufficient.
-We used a total of $10^6$ training samples in order to adequately cover the
-\ac{BBH} parameter space. We additionally ensure that an (effectively) infinite
-number of noise realizations are employed by making sure that every time a
-training sample is used it is given a unique noise realisation despite only
-having a finite number of waveforms. Each neural network ($\text{E}_1$,
-$\text{E}_2$, D) is composed of 3 fully connected layers and has $2048$ neurons
-in each layer with ReLU~\cite{nair2010rectified} activation functions between
-layers. We use a latent space dimension of $8$ and we consider training
-complete when both components to the loss function have converged to
-approximately constant values or when comparisons with benchmark test
-posteriors indicate no significant changes in the output posterior.
 
 %
 % Describe the specific network architecture design
 %
-The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} is constructed from
+\new{The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} is constructed from
 the 3 separate neural networks modelling the encoder and decoder distributions
 $r_{\theta_1}$ and $r_{\theta_2}$ as well as the recognition function
 $q_{\phi}$. Each of these components are themselves deep convolutional networks
 consisting of a series of convolutional layers followed by a series of
 fully-connected layers. The details of each network structure are given in
 Table~\ref{Tab:network_design} where we indicate the activations used and additional
-dropout and batch-normalisation layers.
+dropout and batch-normalisation layers.}
 
 %
 % I feel the need, the need to clearly define our CVAE networks
@@ -978,53 +959,93 @@ $\mu_{r_1}=\left\{\begin{array}{c}
 \label{Tab:network_design}
 \end{table}  
 
+%
+% describe the r1 network
+%
+\new{The $r_{\theta_1}$ network takes the input timeseries data $y$ in the form of
+multi-channel 1-dimensional vectors where channels represent different \ac{GW}
+detectors. After passing through a series of convolutional and fully connected
+layers, the output then defines the parameters of a $n_z$-dimensional
+(diagonal) Gaussian mixture model in the latent space. We label these
+parameters as $\mu_{r_1}$ containing $n_z$ means and $n_z$ log-covariances
+together with the $M$ mixture component weights. The motivation for using this
+mixture model representation comes from the mult-modal nature of \ac{GW}
+posterior distributions. The encoder network can use this flexibility to
+represent the $y$ timeseries data as belonging to multiple possible latent
+space regions. Due to this added flexibility we note that the $r_{\theta_1}$
+network is generally required to be more complex to learn this more complicated
+distribution, hence the additional layers in comparison to the other network
+components.}   
 
+%
+% describe the q network
+% 
+\new{The recognition function network $q_{\phi}$ is very similar to the
+$r_{\theta_1}$ network with only 2 differences. The network takes as input the
+$y$ timeseries and the true signal parameters $x$, however, only the $y$ data
+is passed through the convolutional layers. Only after the final convolutional
+layer where the output is flattened is the $x$ data appended. It is then this
+compound timeseries data "feature-space" and true signal parameters that are
+processed using the remaining fully-connected layers. The second difference is
+that the output of the network defines a \emph{single-modal} (diagonal)
+$n_z$-dimensional Gaussian. We label these parameters as $\mu_{q}$ containing
+$n_z$ means and $n_z$ log-covariances. The rational behind this choice is that
+since the $q_{\phi}$ distribution is conditional on the true signal parameters,
+there should be no ambiguity as to which mode in the latent space that a
+particular timeseries belongs to.}      
 
-We have used $\theta_{1}$ and
-$\theta_{2}$ to indicate that the 2 separate networks modelling these
-distributions will be trained on these parameter sets respectively. \new{The
-encoder $r_{\theta_1}(z|y)$ takes as inout the data $y$ and outputs $M$ sets of
-means ond variances of $n_{z}$-dimensional multivariate
-Gaussian distributions together with a length-$M$ vector of component weights. These
-outputs then describe the parameters of a $M$-component $n_{z}$-dimensional Gaussian mixture
-distribution within the latent space. The decoder $r_{\theta_2}(x|z,y)$ takes
-as input a single location within the latent space together with the data $y$
-and outputs sets of parameters describing specific distributions on subsets of
-the physical paramters $x$.}
+%
+% describe the r2 network (bespoke output distributions)
+%
+\new{The decoder network $r_{\theta_2}$ is identical in structure to the
+$q_{\phi}$ network but with a difference in the form of their outputs. The
+$r_{\theta_2}$ output represents the parameters ($\mu_{r_2}$) that govern an
+$n_x$-dimensional distribution in the physical parameter space and we have
+carefully chosen appropriate distributions for each of the physical parameters.
+For the luminosity distance, the binary inclination, and the time of
+coalescence we have adopted truncated Gaussian distributions where the
+truncation occurs at the predefined prior boundaries of the respective
+parameter space dimensions. For the component masses we have adopted
+conditional truncated Gaussians where the conditional aspect is to ensure that
+$m_{1}\geq m_{2}$\footnote{This additional complication of requiring conditional
+decoder output distributions could be avoided if a different mass
+parameterisation were chosen, e.g., total mass and symmetric mass ratio.}. Had
+we chosen to explicitly infer the coalescence phase and polarisation angles,
+independent von Mises distributions would be applied to capture the periodic
+nature of these parameters. Finally, we use the von Mises-Fisher distribution
+to model the right ascension and declination (sky) parameters.}     
 
-
-conditional distributions are modelled as $n_{z}$ dimensional multivariate
-uncorrelated Gaussian distributions (governed only by their means and variances).
-However, this still allows $r_{\theta}(x|y)$ to take a general form (although
-it does limit it to be unimodal).
-
+%
+% decribe the hyper-parameter optimisation analysis
+%
+\new{TODO: Hunter, can you add a paragraph here describing the hyper-parameter
+optimisation process and also state the optimal latent space dimension chosen.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Training procedure}
 %
 % Introduce the training process
 %
-Having set up a cost function composed of 3 probability functions that have
-well defined inputs and outputs where the mapping of those inputs to outputs is
-governed by the parameter sets $\theta_{1},\theta_{2},\phi$. These parameters
-are the weights and biases of 3 neural networks acting as (variational)
-encoder, decoder, and encoder respectively. To train such a network one must
-connect the inputs and outputs appropriately to compute the cost function $H$
-and back-propagate cost function derivatives to update the network parameters.
-The network structure shown schematically in Fig.~\ref{fig:network_config}
-shows how for a batch of $N$ sets of $x$ and corresponding $y$ values, the cost
-function is computed during each iteration of training. 
+Our cost function is composed of 3 probability \new{distributions modelled by
+neural networks with} well defined inputs and outputs where the mapping of
+those inputs to outputs is governed by the parameter sets
+$\theta_{1},\theta_{2},\phi$. These parameters are the weights and biases of 3
+neural networks acting as (variational) encoder, decoder, and encoder
+respectively. To train such a network one must connect the inputs and outputs
+appropriately to compute the cost function $H$ \new{(Eq.~\ref{eq:cost3})} and
+back-propagate cost function derivatives to update the network parameters. 
 
 %
 % Go through the training step by step
 %
-Training is performed via a series of steps illustrated in
+Training is performed via a series of steps illustrated schematically in
 Fig.~\ref{fig:network_config}.
 %
 \begin{itemize}
 %
-\item The encoder $\textrm{E}_1$ is given a set of training \ac{GW} signals
-($y$) and encodes $y$ into a set of variables $\mu_q$ defining a distribution
+\item The encoder $r_{\theta_1}$ is given a batch of training \ac{GW} signals
+($y$) and encodes them into a set of variables $\mu_{r_1}$ defining a
+multi-component multivariate Gaussian mixture distribution
 in the latent space. In this case $\mu_q = (\mu_{q0},\sigma^{2}_{q})$ describes
 the first 2 central moments (mean and variance) for each dimension of a
 uncorrolated (diagonal covariance) multivariate Gaussian distribution.
@@ -1084,6 +1105,21 @@ whether the cost function and its component parts (Fig.~\ref{fig:loss_log})
 have converged. We use a single Nvidia Tesla V100 \acp{GPU} with $16/32$ Gb of
 RAM although consumer grade ``gaming" \ac{GPU} cards are equally fast for this
 application.
+
+For our purposes, we found that $\sim3\times10^6$ training iterations, a batch
+size of $512$ training samples and a learning rate of $10^{-4}$ was sufficient.
+We used a total of $10^6$ training samples in order to adequately cover the
+\ac{BBH} parameter space. We additionally ensure that an (effectively) infinite
+number of noise realizations are employed by making sure that every time a
+training sample is used it is given a unique noise realisation despite only
+having a finite number of waveforms. Each neural network ($\text{E}_1$,
+$\text{E}_2$, D) is composed of 3 fully connected layers and has $2048$ neurons
+in each layer with ReLU~\cite{nair2010rectified} activation functions between
+layers. We use a latent space dimension of $8$ and we consider training
+complete when both components to the loss function have converged to
+approximately constant values or when comparisons with benchmark test
+posteriors indicate no significant changes in the output posterior.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The testing procedure}
@@ -1154,14 +1190,14 @@ ptemcee), (0.840,0.189 cpnest), (0.002,0.489 emcee).
 \caption{Benchmark sampler configuration parameters. Values were chosen based
 on a combination of their recommended default parameters~\cite{1811.02042} and
 private communication with the \texttt{Bilby} development team.}
-\begin{tabular}[t]{lccccc}
+\begin{tabular}[t]{lc}
 \toprule
-sampler & live points & tolerance & walkers & temperatures & steps \\
+sampler & parameters \\
 \hline
-Dynesty~\cite{dynesty} & 5000 & 0.1 & N/A & N/A & N/A \\
-Emcee~\cite{emcee} & N/A & N/A & 250 & N/A & 14000 \\
-Ptemcee~\cite{ptemcee} & N/A & N/A & 250 & 8 & 5000 \\
-Cpnest~\cite{cpnest} & 5000 & 0.1 & N/A & N/A & N/A \\
+Dynesty~\cite{dynesty} & live-points $=5000$ tolerance $=0.1$ \\
+Ptemcee~\cite{ptemcee} & walkers $=250$ temperatures $=8$ steps $=5000$ \\
+Cpnest~\cite{cpnest} & live-points $=5000$ tolerance $=0.1$ \\
+Emcee~\cite{emcee} & walkers $=250$ steps $=14000$ \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
