@@ -528,7 +528,7 @@ inference techniques.
 \centering
 \caption{Durations required to produce samples from each of
 the different posterior sampling approaches.}
-\begin{tabular}[t]{lcccc}
+\begin{tabular}[t]{lcccc} 
 \toprule
 \multirow{2}{*}{sampler} & \multicolumn{3}{c}{run time (seconds)} & \multirow{2}{*}{ratio
 $\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
@@ -1053,8 +1053,22 @@ to model the right ascension and declination (sky) parameters.}
 %
 % decribe the hyper-parameter optimisation analysis
 %
-\new{TODO: Hunter, can you add a paragraph here describing the hyper-parameter
-optimisation process and also state the optimal latent space dimension chosen.}
+\new{We automatically tune some hyperparameters (kernel size, stride size, 
+pool size, number of modes) through Bayesian optimization 
+using Gaussian Processes~\cite{Siria2020.06.11.144253,scikit-learn}. We use the 
+\texttt{scikit-optimize} toolkit~\cite{scikit-learn} and 
+optimize on the total loss of a validation dataset which the network does not 
+have access to during training. An initial set of network hyperparameters are randomly chosen 
+according to a predefined uniform distribution. The network is then trained for 1.5 
+million iterations before the total validation loss is recorded. 
+The Gaussian Process optimization algorithm choses a new set of network hyperparameters 
+such that the total validation loss is minimized. We train a new network with the 
+updated network hyperparameters and repeat Gaussian Process optimization for 
+approximately 30 iterations until a final optimized set of hyperparameters are chosen. 
+We have found through random hyperparameter tuning that the size of the latent space 
+does not have a significant effect on training so long as the latent space 
+is greater than the total number of source parameters infered and so have chosen a 
+latent space size of 10 for the network.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Training procedure}
