@@ -447,7 +447,7 @@ marginalised posterior distributions \new{on the \ac{GW} parameters} for one
 example test dataset. Filled \new{red} contours represent the
 \new{2-dimensional joint} posteriors obtained from \new{\texttt{VItamin}} and
 solid \new{blue and green} contours are the \new{corresponding} posteriors
-output from our \new{benchmark} analyses (\new{using the dynesty and Ptemcee
+output from our \new{benchmark} analyses (\new{using the \texttt{Dynesty} and \texttt{ptemcee}
 samplers within \texttt{Bilby}}). In each case, the contour boundaries enclose
 $68,90$ and $95\%$ probability. One dimensional histograms of the posterior
 distribution for each parameter from both methods are plotted along the
@@ -469,7 +469,7 @@ by directly plotting 2 and 1-dimensional marginalised posteriors generated
 using the output samples from our \new{\texttt{VItamin}} and \texttt{Bilby}
 approaches superimposed on each other. We show this for one example test
 dataset in Fig.~\ref{fig:corner_plot} where strong agreement between \new{2}
-\texttt{Bilby} samplers \new{(Dynesty in blue, and Ptemcee in green)} and the
+\texttt{Bilby} samplers \new{(\texttt{Dynesty} in blue, and \texttt{ptemcee} in green)} and the
 \ac{CVAE} (red) is clear. \new{It is also evident that whilst we refer to the
 \texttt{Bilby} sampler results as benchmark cases, different existing samplers
 do not perfectly agree with each other. For each of our 256 test cases we see
@@ -482,7 +482,7 @@ between any benchmark sampler and our \ac{CVAE} results.}
 Figures~\ref{fig:pp_plot} and \ref{fig:kl_results} (see the Methods section)
 show the results of 2 statistical tests (the \ac{PP} plot test and
 \ac{KL}-divergence tests) performed on the entire test dataset and between all
-samplers \new{(Dynesty, Ptemcee, CPnest, emcee, and \texttt{VItamin})}. \new{In
+samplers \new{(\texttt{Dynesty}, \texttt{ptemcee}, \texttt{CPNest}, \texttt{emcee}, and \texttt{VItamin})}. \new{In
 both tests the quality of the \new{\texttt{VItamin}} results are indistinguishable from the
 benchmark samplers. The \ac{PP} plot results specifically indicate that the
 Bayesian 1-dimensional marginalised posteriors from each approach are
@@ -534,10 +534,10 @@ the different posterior sampling approaches.}
 $\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
 & min & max & median & \\
 \hline
-Dynesty\footnote{The benchmark samplers all produced $\mathcal{O}(10000)$ samples dependent on the default sampling parameters used.}~\cite{dynesty} & 11795 & 29838 & 19400\footnote{The reader may note that benchmark sampler run times are a few orders of magnitude lower than what is typical of a complete \ac{BBH} analysis ($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a reduced parameter space, low sampling rate and choice of sampler hyperparameters.} & $5.2\times 10^{-6}$ \\
-Emcee~\cite{emcee} & 18838 & 69272 & 32070 & $3.1\times 10^{-6}$ \\
-Ptemcee~\cite{ptemcee} & 17124 & 37446 & 24372 & $4.1\times 10^{-6}$ \\
-Cpnest~\cite{cpnest} & 9943 & 53315 & 26202 & $3.8\times 10^{-6}$ \\
+\texttt{Dynesty}\footnote{The benchmark samplers all produced $\mathcal{O}(10000)$ samples dependent on the default sampling parameters used.}~\cite{dynesty} & 11795 & 29838 & 19400\footnote{The reader may note that benchmark sampler run times are a few orders of magnitude lower than what is typical of a complete \ac{BBH} analysis ($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a reduced parameter space, low sampling rate and choice of sampler hyperparameters.} & $5.2\times 10^{-6}$ \\
+\texttt{emcee}~\cite{emcee} & 18838 & 69272 & 32070 & $3.1\times 10^{-6}$ \\
+\texttt{ptemcee}~\cite{ptemcee} & 17124 & 37446 & 24372 & $4.1\times 10^{-6}$ \\
+\texttt{CPNest}~\cite{cpnest} & 9943 & 53315 & 26202 & $3.8\times 10^{-6}$ \\
 \texttt{VItamin}\footnote{For the \texttt{VItamin} sampler $10000$ samples are
 produced as representative of a typical posterior. The run time is independent
 of the signal content in the data and is therefore constant for all test cases.} & \multicolumn{3}{c}{\bm{$1\times 10^{-1}$}} & 1 \\
@@ -1232,8 +1232,8 @@ Eq.~\ref{eq:latent_model}).
 parameter and \new{for} each benchmark sampler and \texttt{VItamin}. The curves were
 constructed using the 256 test datasets \new{and the} dashed black diagonal line
 indicates the ideal result. The best and worst-case $p$-values associated with each
-sampling method are (0.972,0.211 \texttt{VItamin}), (0.832,0.043 dynesty), (0.728,0.117
-ptemcee), (0.840,0.189 cpnest), (0.489,0.002 emcee). 
+sampling method are (0.972,0.211 \texttt{VItamin}), (0.832,0.043 \texttt{Dynesty}), (0.728,0.117
+\texttt{ptemcee}), (0.840,0.189 \texttt{CPNest}), (0.489,0.002 \texttt{emcee}). 
 }
 \end{figure}
 %
@@ -1250,12 +1250,12 @@ private communication with the \texttt{Bilby} development team. }
 \toprule
 sampler & parameters \\
 \hline
-Dynesty~\cite{dynesty} & live-points $=5000$ tolerance $=0.1$ \\
-Ptemcee~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=250\,
+\texttt{Dynesty}~\cite{dynesty} & live-points $=5000$ tolerance $=0.1$ \\
+\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=250\,
 \text{temperatures}=8\,
 \\ \text{steps}=5000\, \text{burn}=1000\end{array}$ \\
-Cpnest~\cite{cpnest} & live-points $=5000$ tolerance $=0.1$ \\
-Emcee~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=1000$ \\
+\texttt{CPNest}~\cite{cpnest} & live-points $=5000$ tolerance $=0.1$ \\
+\texttt{emcee}~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=1000$ \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
@@ -1280,7 +1280,7 @@ that are entirely consistent with those observed in all benchmark samplers.
 \new{The $p$-value has also been calculated for each sampler and each parameter
 under the null-hypothesis that they are consistent with the diagonal. These
 results show that for at least 1 parameter, emcee shows inconsistency with the
-modal at the 1\% level. Dynesty has a worst case that is consistent only at the
+modal at the 1\% level. \texttt{Dynesty} has a worst case that is consistent only at the
 4\% level.  All other samplers (including \texttt{VItamin}) show consistency at
 $>10\%$ in the worst case.}    
 
