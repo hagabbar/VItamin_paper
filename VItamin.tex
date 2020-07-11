@@ -117,6 +117,7 @@ for gravitational-wave astronomy}
 \acrodef{GPU}[GPU]{graphics processing unit}
 \acrodef{LVC}[LVC]{LIGO-Virgo Collaboration}
 \acrodef{PP}[p-p]{probability-probability}
+\acrodef{SNR}[SNR]{signal-to-noise ratio}
 
 %
 % Introductory paragraph describing the content of the letter
@@ -248,17 +249,18 @@ Machine learning has featured prominently in many areas of \ac{GW} research
 over the last few years. These techniques have shown to be particularly
 promising in signal
 detection~\cite{GEORGE201864,PhysRevLett.120.141103,GebKilParHarSch}, glitch
-classification~\cite{0264-9381-34-6-064003} and earthquake
-prediction~\cite{Coughlin_2017}. We also highlight \new{recent developments in
-\ac{GW} parameter estimation (independent to this work) where 1- and
+classification~\cite{0264-9381-34-6-064003}, earthquake
+prediction~\cite{Coughlin_2017}, and to augment existing Bayesian sampling
+methods~\cite{2012MNRAS.421..169G}. We also highlight \new{recent developments
+in \ac{GW} parameter estimation (independent to this work) where 1- and
 2-dimensional marginalised Bayesian posteriors are produced rapidly using
 neural networks~\cite{2019arXiv190905966C}, and where normalised flows in
 conjunction with \acp{CVAE} can reproduce Bayesian posteriors for a single
 \ac{GW} detector case~\cite{2020arXiv200207656G}. These methods, including the
-one presented in this paper, are known as ``likelihood-free'' approaches in which
-there is no requirement for explicit likelihood evaluation. Nor is it the case
-that pre-computed posterior distributions are required in the training
-procedure.}
+one presented in this paper, are known as ``likelihood-free'' approaches in
+which there is no requirement for explicit likelihood evaluation, only the need
+to sample from the likelihood. Nor is it the case that pre-computed posterior
+distributions are required in the training procedure.}
 
 %
 % Introduce CVAEs
@@ -270,8 +272,10 @@ inference~\cite{1512.00570}, high-resolution synthetic image
 generation~\cite{1612.00005} and the fitting of incomplete heterogeneous
 data~\cite{1807.03653}. It is this type of machine learning network that we
 apply in the \ac{GW} case to accurately approximate the Bayesian posterior
-$p(x|y)$, \new{the probability of the \ac{GW} signal parameters given the
-measured data.} 
+$p(x|y)$, \new{where $x$ represents the physical parameters that govern the
+\ac{GW} signal, and are the quantities we are interested in inferring. The data
+$y$ represents the noisy measurement containing the \ac{GW} signal and obtained
+from a network of \ac{GW} detectors.} 
 
 %
 % Brief introduction to loss functions used in the neural networks
@@ -286,9 +290,9 @@ H(p,r) &= -\int dx\, p(x|y) \log r_{\theta}(x|y)
 %
 between the true posterior $p(x|y)$ and $r_{\theta}(x|y)$, the parametric
 distribution that we will use neural networks to \new{model} and which we aim
-to be equal to the true posterior. \new{The parametric model is constructed from a
-combination of 2 (encoder and decoder) neural networks $r_{\theta_1}(z|y)$ and
-$r_{\theta_2}(x|y,z)$ where
+to be equal to the true posterior. \new{The parametric model is
+constructed from a combination of 2 (encoder and decoder) neural networks
+$r_{\theta_1}(z|y)$ and $r_{\theta_2}(x|y,z)$ where
 %
 \begin{align}\label{eq:latent_model}
 r_{\theta}(x|y) = \int dz\,r_{\theta_1}(z|y)r_{\theta_2}(x|y,z).
@@ -313,16 +317,16 @@ r_{\theta_{2}}(x_{n}|z_{n},y_{n})}^{L}\nonumber\\
 &+\overbrace{\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]}^{\text{KL}}\Big],
 \end{align}
 %
-\new{which is also represented graphically in Fig.~\ref{fig:network_config}. The cost
-function is composed of 2 terms, the ``reconstruction'' cost $L$ which is a
-measure of how well the decoder network $r_{\theta_2}$ predicts the true signal
-parameters $x$, and the \ac{KL}-divergence cost that measures the similarity
-between the distributions modelled by the $r_{\theta_1}$ and $q_{\phi}$ encoder
-networks.} In practice, during the training procedure the various integrations
-\new{over the signal parameters $x$, data realisations $y$, and latent space $z$,
-are approximated by a single} sum over a batch of $N$ training data samples
-(indexed by $n$ \new{in Eq.~\ref{eq:cost3}}) at each stage of training. Details
-of the training procedure are given in the methods section.
+\new{which is also represented graphically in Fig.~\ref{fig:network_config}.
+The cost function is composed of 2 terms, the ``reconstruction'' cost $L$ which
+is a measure of how well the decoder network $r_{\theta_2}$ predicts the true
+signal parameters $x$, and the \ac{KL}-divergence cost that measures the
+similarity between the distributions modelled by the $r_{\theta_1}$ and
+$q_{\phi}$ encoder networks. In practice, for each iteration of the training
+procedure, the integrations over $x,y$ and $z$ are approximated by a sum over
+$N$ draws from the user defined prior $p(x)$, the known likelihood $p(y|x)$,
+and the recognition function $q_{\phi}(z|,x,y)$. Details of the training
+procedure are given in the methods section.}  
 
 %
 % brief mention of differences to a standard CVAE
@@ -397,20 +401,21 @@ methods for posterior sampling.
 %
 For the benchmark analysis we assume that \new{9} parameters are
 unknown~\footnote{Our analysis omits the 6 additional parameters required to
-model the spin of each \ac{BBH} component mass.}: the component masses $m_1,m_2$, the
-luminosity distance $d_{\text{L}}$, \new{the sky position $\alpha,\delta$, the
-binary inclination $\Theta_{jn}$, the \ac{GW} polarisation angle ${\psi}$}, the
-time of coalescence $t_{0}$, and the phase at coalescence $\phi_0$. For each
-parameter we use a uniform prior \new{with the exception of the declination and
-inclination parameters for which we use priors uniform in $\cos\delta$ and
-$\sin\Theta_{jn}$ respectively. The corresponding prior ranges are defined in
-Table~\ref{tab:prior_ranges}}. We use a sampling frequency of $256$~Hz, a
-timeseries duration of 1 second, and the waveform model used is
-\texttt{IMRPhenomPv2}~\cite{1809.10113} with a minimum cutoff frequency of
-$20$Hz. For each input test waveform we run the benchmark analysis using
-multiple sampling algorithms available within \texttt{Bilby}. For each run and
-sampler we extract \new{$\mathcal{O}(10^4)$} samples from the posterior on the
-\new{9} physical parameters.  
+model the spin of each \ac{BBH} component mass.}: the component masses
+$m_1,m_2$, the luminosity distance $d_{\text{L}}$, \new{the sky position
+$\alpha,\delta$, the binary inclination $\Theta_{jn}$, the \ac{GW} polarisation
+angle ${\psi}$}, the time of coalescence $t_{0}$, and the phase at coalescence
+$\phi_0$. For each parameter we use a uniform prior \new{with the exception of
+the declination and inclination parameters for which we use priors uniform in
+$\cos\delta$ and $\sin\Theta_{jn}$ respectively. The corresponding prior ranges
+are defined in Table~\ref{tab:prior_ranges} and result in an \ac{SNR}
+distribution that peaks at $\text{SNR}\approx 9$ and ranging between 0 and 75}.
+We use a sampling frequency of $256$~Hz, a timeseries duration of 1 second, and
+the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
+minimum cutoff frequency of $20$Hz. For each input test waveform we run the
+benchmark analysis using multiple sampling algorithms available within
+\texttt{Bilby}. For each run and sampler we extract \new{$\mathcal{O}(10^4)$}
+samples from the posterior on the \new{9} physical parameters.  
 
 %
 % the VItamin process
@@ -538,6 +543,10 @@ $\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
 \texttt{Dynesty}\footnote{The benchmark samplers all produced
 $\mathcal{O}(10000)$ samples dependent on the default sampling parameters
 used.}~\cite{dynesty} & 11795 & 29838 & 19400
+\footnote{We note that there are a growing number of specialised
+techniques~\cite{2016PhRvD..94d4031S,2019PhRvD..99h4026W,2019PhRvD.100d3030T}
+designed to speed up traditional sampling algorithms that could be used to
+reduce the runtimes quoted here by $\mathcal{O}(1-2)$ orders of magnitude.}
 %\footnote{The reader may note that benchmark sampler run times are a few orders
 %of magnitude lower than what is typical of a complete \ac{BBH} analysis
 %($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a
@@ -588,12 +597,13 @@ trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 %
 The significance of our results is most evident in the orders of magnitude
 increase in speed over existing algorithms. We have demonstrated the approach
-using \ac{BBH} signals but the method can also be extended for application to
-signals from \ac{BNS} mergers (e.g.  GW170817~\cite{PhysRevLett.119.161101},
+using \ac{BBH} signals but \new{with additional work to increase sample rate
+and signal duration,} the method can also be extended for application to
+signals from \ac{BNS} mergers (e.g., GW170817~\cite{PhysRevLett.119.161101},
 \new{and GW190425~\cite{2020ApJ...892L...3A}}) and \ac{NSBH} systems \new{where
 improved low-latency alerts will be especially pertinent.} \new{By using our
 approach,} parameter estimation speed will no longer be limiting
-factor~\footnote{\new{A} complete low-latency pipeline includes a number of
+factor\footnote{\new{A} complete low-latency pipeline includes a number of
 steps. The process of \ac{GW} data acquisition is followed by the transfer of
 data. There is then the \new{corresponding candidate event identification,
 parameter estimation} analysis, and the subsequent communication of results to
@@ -784,7 +794,7 @@ H &= -\int dx\,p(x)\int dy\,p(y|x)\log r_{\theta}(x|y)
 %
 where $p(x)$ is the prior distribution on the physical parameters $x$, \new{and
 $p(y|x)$ is the likelihood of $x$ (the probability of measuring the data $y$
-given the parameters $x$).}
+given the parameters $x$)}. 
 
 %
 % basic general description of the r1 and r2 network inputs and outputs
@@ -866,7 +876,14 @@ H \leq  -\int dx\, p(x)&\int dy \,p(y|x)
 which can in practice be approximated as a stochastic integral over draws of
 $x$ from the prior, $y$ from the likelihood function $p(y|x)$, and from the
 recognition function, giving us Eq.~\ref{eq:cost3}, the actual function
-evaluated within the training procedure.
+evaluated within the training procedure. In standard sampling algorithms it is
+required that the likelihood is calculated explicitly during the exploration of
+the parameter space and hence an analytic noise and signal model must be
+assumed. For a \ac{CVAE} implementation we are required only to sample from
+the likelihood distribution, i.e., generate simulated noisy measurements given a
+set of signal parameters. This gives us the option of avoiding the assumption
+of detector noise Gaussianity in the future by training the \ac{CVAE} using "real"
+non-Gaussian detector noise.
 
 %
 % loss plot
