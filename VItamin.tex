@@ -317,7 +317,7 @@ final form of the cross-entropy \new{cost} function is given by the bound
 
 %
 \begin{align}\label{eq:cost3} H \lesssim
-\frac{1}{N}\sum_{n=1}^{N}&\Big[\overbrace{-\log
+\frac{1}{N}\sum_{n=1}^{N_{\text{b}}}&\Big[\overbrace{-\log
 r_{\theta_{2}}(x_{n}|z_{n},y_{n})}^{L}\nonumber\\
 &+\overbrace{\text{KL}\left[q_{\phi}(z|x_{n},y_{n})||r_{\theta_{1}}(z|y_{n})\right]}^{\text{KL}}\Big],
 \end{align}
@@ -328,10 +328,10 @@ is a measure of how well the decoder network $r_{\theta_2}$ predicts the true
 signal parameters $x$, and the \ac{KL}-divergence cost that measures the
 similarity between the distributions modelled by the $r_{\theta_1}$ and
 $q_{\phi}$ encoder networks. In practice, for each iteration of the training
-procedure, the integrations over $x,y$ and $z$ are approximated by a sum over
-$N$ draws from the user defined prior $p(x)$, the known likelihood $p(y|x)$,
-and the recognition function $q_{\phi}(z|,x,y)$. Details of the training
-procedure are given in the methods section.}  
+procedure, the integrations over $x,y$ and $z$ are approximated by a sum over a
+batch of $N_{\text{b}}$ draws from the user defined prior $p(x)$, the known
+likelihood $p(y|x)$, and the recognition function $q_{\phi}(z|,x,y)$. Details
+of the training procedure are given in the methods section.}  
 
 %
 % brief mention of differences to a standard CVAE
@@ -342,11 +342,11 @@ number of specific features that were included so as to tailor the analysis to
 section but in summary the primary modifications are as follows, 1) Each of the
 functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modeled using deep
 convolutional neural networks with multi-detector timeseries represented as
-independent input channels. 2) The $r_{\theta_1}$ encoder models a multi-modal
-Gaussian mixture model within the latent space in order to capture the
-corresponding typical multi-modal nature of \ac{GW} posterior distributions. 3)
-Physically appropriate output decoder distributions are used for each output
-parameter: von Mises-Fisher distribution on the sky location
+independent input channels. 2) The $r_{\theta_1}$ encoder models an $M=12$ component
+Gaussian mixture model within the $n_{z}=10$ dimensional latent space in order
+to capture the corresponding typical multi-modal nature of \ac{GW} posterior
+distributions. 3) Physically appropriate output decoder distributions are used
+for each output parameter: von Mises-Fisher distribution on the sky location
 parameters, von Mises distributions on periodic parameters, conditional
 truncated Gaussians for the component masses, and truncated Gaussians for
 parameters with defined prior bounds.}  
@@ -405,7 +405,7 @@ methods for posterior sampling.
 % describe the Bilby analysis 
 %
 For the benchmark analysis we assume that \new{9} parameters are
-unknown~\footnote{Our analysis omits the 6 additional parameters required to
+unknown\footnote{Our analysis omits the 6 additional parameters required to
 model the spin of each \ac{BBH} component mass.}: the component masses
 $m_1,m_2$, the luminosity distance $d_{\text{L}}$, \new{the sky position
 $\alpha,\delta$, the binary inclination $\Theta_{jn}$, the \ac{GW} polarisation
@@ -968,21 +968,21 @@ dropout and batch-normalisation layers.}
 \backslashbox{Layer}{Network} & $r_{\theta_1}(z|y)$ & $r_{\theta_2}(x|y,z)$ & $q_{\phi}(z|x,y)$ \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Input $y$} & \multirow{2}{*}{[256,3]\footnote{the shape of the
-data [1-dimensional dataset length, No. channels]}} &
+\multirow{2}{*}{Input $y$} & \multirow{2}{*}{[256,3]\footnote{The shape of the
+data [1-dimensional dataset length, No. channels].}} &
 \multirow{2}{*}{[256,3]} & \multirow{2}{*}{[256,3]} \\
 & & & \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Layer 1} & conv(5,3,33)\footnote{1-dimensional
-convolutional filter with arguments (filter size, No. channels, No. filters)} & conv(5,3,33) & conv(5,3,33) \\
-& act\footnote{the activation function used}=ReLU & act=ReLU & act=ReLU \\
+convolutional filter with arguments (filter size, No. channels, No. filters).} & conv(5,3,33) & conv(5,3,33) \\
+& act\footnote{The activation function used.}=ReLU & act=ReLU & act=ReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{3}{*}{Layer 2} & conv(8,33,33) & conv(8,33,33) &
 conv(8,33,33) \\
-& maxpool(2,2)\footnote{max-pooling layer with arguments (pool size, stride
-length)} & maxpool(2,2) & maxpool(2,2) \\
+& maxpool(2,2)\footnote{Max-pooling layer with arguments (pool size, stride
+length).} & maxpool(2,2) & maxpool(2,2) \\
 & act=ReLU & act=ReLU & act=ReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -992,9 +992,9 @@ conv(11,17,33) \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Input $z,x$} & \multirow{2}{*}{-} &
-flatten\footnote{take the multi-channel output of the previous layer and
-reshape it into a 1-dimensional vector}$\rightarrow$[561] & flatten$\rightarrow$[561] \\
-& & append\footnote{append the argument to the current dataset}($z$)$\rightarrow$[571] & append($x$)$\rightarrow$[568] \\
+flatten\footnote{Take the multi-channel output of the previous layer and
+reshape it into a 1-dimensional vector.}$\rightarrow$[561] & flatten$\rightarrow$[561] \\
+& & append\footnote{Append the argument to the current dataset.}($z$)$\rightarrow$[571] & append($x$)$\rightarrow$[568] \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{3}{*}{Layer 4} & 
@@ -1007,10 +1007,10 @@ act=ReLU \\
 } & 
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-FC(571,2048)\footnote{fully
-connected layer with arguments (input size, output size)}\\
-dropout(0.2)\footnote{drop-out layer with argument (drop-out
-fraction)} \\
+FC(571,2048)\footnote{Fully
+connected layer with arguments (input size, output size).}\\
+dropout(0.2)\footnote{Drop-out layer with argument (drop-out
+fraction).} \\
 act=ReLU \\
 \end{tabular}
 } &
@@ -1035,23 +1035,58 @@ flatten$\rightarrow$[561] \\
 }
  & FC(2048,2048) & FC(2048,2048) \\
  & & dropout(0.2) & dropout(0.2) \\
- & & act=(Sigmoid,-ReLU)\footnote{Different activations are used for different
-parameters. For the scaled parameter means we use
-sigmoids and for log-variances we use negative ReLU functions.} & act=None \\
+ & & act=ReLU & act=ReLU \\
  \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{3}{*}{Layer 6} & FC(561,2048) & \multirow{3}{*}{output=$\mu_{r_2}$} &
-\multirow{3}{*}{output=$\mu_{q}$} \\
-& dropout(0.2) & & \\
-& act=ReLU &  &  \\
+\multirow{4}{*}{Layer 6} & 
+\multirow{4}{*}{
+\begin{tabular}[t]{c}
+FC(561,2048) \\
+dropout=0.2 \\
+act=ReLU \\
+\end{tabular}
+} & \multirow{4}{*}{
+\begin{tabular}[t]{c}
+FC(2048,98) \\
+act=(Sigmoid,-ReLU)\footnote{Different activations are used for different
+parameters. For the scaled parameter means we use
+sigmoids and for log-variances we use negative ReLU functions.} \\
+output=$\mu_{r_2}$ \\
+$\rightarrow$[7,2]\footnote{The $r_{\theta_2}$ output has size [physical space dimension, No. parameters defining
+the distribution per dimension].} \\
+\end{tabular}
+} &
+\multirow{4}{*}{
+\begin{tabular}[t]{c}
+FC(2048,20) \\
+act=None \\
+output=$\mu_{q}$ \\
+$\rightarrow$[2,10]\footnote{The $q_{\phi}$ output has size [latent space
+dimensionm, No. parameters defining the distribution per dimension].} \\
+\end{tabular}
+} \\
+& & & \\
+& & & \\
+& & & \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{3}{*}{Layer 7} & FC(2048,2048) & & \\
 & dropout(0.2) & & \\
-& act=None & & \\
+& act=ReLU & & \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Layer 8} & \multirow{2}{*}{output=$\mu_{r_1}$} & & \\
+\multirow{4}{*}{Layer 8} & \multirow{4}{*}{
+\begin{tabular}[t]{c}
+FC(2048,240) \\
+act=None \\
+output=$\mu_{r_1}$ \\
+$\rightarrow$[10,12,2]\footnote{The $r_{\theta_1}$ output has size
+[latent space dimension, No. modes, No. parameters defining each
+component per dimension].} \\
+\end{tabular}
+} & & \\
+& & & \\
+& & & \\
 & & & \\
 \botrule
 \end{tabular}
@@ -1067,8 +1102,8 @@ multi-channel 1-dimensional vectors where channels represent different \ac{GW}
 detectors. After passing through a series of convolutional and fully connected
 layers, the output then defines the parameters of a $n_z$-dimensional
 (diagonal) Gaussian mixture model in the latent space. We label these
-parameters as $\mu_{r_1}$ containing $n_z$ means and $n_z$ log-covariances
-together with the $M$ mixture component weights. The motivation for using this
+parameters as $\mu_{r_1}$ containing $n_z=10$ means and log-covariances
+together with the $M=12$ mixture component weights. The motivation for using this
 mixture model representation comes from the mult-modal nature of \ac{GW}
 posterior distributions. The encoder network can use this flexibility to
 represent the $y$ timeseries data as belonging to multiple possible latent
@@ -1089,7 +1124,7 @@ compound timeseries data "feature-space" and true signal parameters that are
 processed using the remaining fully-connected layers. The second difference is
 that the output of the network defines a \emph{single-modal} (diagonal)
 $n_z$-dimensional Gaussian. We label these parameters as $\mu_{q}$ containing
-$n_z$ means and $n_z$ log-covariances. The rational behind this choice is that
+$n_z=10$ means and log-covariances. The rational behind this choice is that
 since the $q_{\phi}$ distribution is conditional on the true signal parameters,
 there should be no ambiguity as to which mode in the latent space that a
 particular timeseries belongs to.}      
@@ -1118,22 +1153,23 @@ to model the right ascension and declination (sky) parameters.}
 %
 % decribe the hyper-parameter optimisation analysis
 %
-\new{We automatically tune a subset of the network hyperparameters (kernel
-size, stride size, pool size, number of modes) through Bayesian optimization
-using Gaussian Processes~\cite{Siria2020.06.11.144253}. We use the
-\texttt{scikit-optimize} toolkit~\cite{scikit-learn} and optimize on the total
-loss of our validation dataset. An initial set of network hyperparameters are
-randomly chosen according to a predefined uniform distribution. The network is
-then trained for $1.5\times 10^6$ iterations before the total validation loss
-is recorded. The Gaussian Process optimization algorithm choses a new set of
-network hyperparameters such that the total validation loss is minimized. We
-train a new network with the updated network hyperparameters and repeat the
-Gaussian Process optimization for approximately 30 iterations until a final
-optimized set of hyperparameters are chosen. We have found through random
-hyperparameter tuning that the size of the latent space does not have a
-significant effect on training performance as long as the latent space
-dimensionality is greater than the total number of source parameters infered.
-Hence we have chosen a latent space size of $n_z=10$ for the network.}
+\new{We automatically tune a subset of the network hyperparameters
+(convolutional filter size, filter stride length, max-pool size, number of
+modes ($M$)) through Bayesian optimization using Gaussian
+Processes~\cite{Siria2020.06.11.144253}. We use the \texttt{scikit-optimize}
+toolkit~\cite{scikit-learn} and optimize on the total loss of our validation
+dataset. An initial set of network hyperparameters are randomly chosen
+according to a predefined uniform distribution. The network is then trained for
+$\sim 10^6$ iterations before the total validation loss is recorded. The
+Gaussian Process optimization algorithm choses a new set of network
+hyperparameters such that the total validation loss is minimized. We train a
+new network with the updated network hyperparameters and repeat the Gaussian
+Process optimization for approximately 30 iterations until a final optimized
+set of hyperparameters are chosen. We have found through random hyperparameter
+tuning that the size of the latent space does not have a significant effect on
+training performance as long as the latent space dimensionality is greater than
+the total number of source parameters infered.  Hence we have chosen a latent
+space size of $n_z=10$ for the network.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Training procedure}\label{app:training_procedure}
