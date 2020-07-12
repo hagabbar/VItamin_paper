@@ -658,19 +658,21 @@ problematic.}
 In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts and
 time-dependent variation in the detector noise \ac{PSD}. Existing methods
 incorporate a parameterised \ac{PSD} estimation into their
-inference~\cite{2015PhRvD..91h4034L}. To account for these within our scheme,
-we \new{could} retrain our network at regular intervals using samples of real
-detector noise (preferably recent examples to best reflect the state of the
-detectors). \new{In this case we could also apply transfer learning to speed up
-each training instance based on the previously trained network state.
-Alternatively, since the \ac{PSD} is an estimated quantity, we could
-marginalise over its uncertainty by providing training data whitened by samples
-drawn from a distribution of possible \acp{PSD}.} Our work can naturally be
-extended to include the full range of \ac{CBC} signal types but also to any and
-all other parameterised \ac{GW} signals and to analyses of \ac{GW} data beyond
-that of ground based experiments. Given the abundant benefits of this method,
-we hope that a variant of this of approach will form the basis for future
-\ac{GW} parameter estimation.
+inference~\cite{2015PhRvD..91h4034L}. \new{To account for these and to exploit the
+"likelihood-free" nature of the \ac{CVAE} approach, we could} re-train our
+network at regular intervals using samples of real detector noise (preferably
+recent examples to best reflect the state of the detectors). \new{In this case
+we could also apply transfer learning to speed up each training instance based
+on the previously trained network state.  Alternatively, since the \ac{PSD} is
+an estimated quantity, we could marginalise over its uncertainty by providing
+training data whitened by samples drawn from a distribution of possible
+\acp{PSD}.} Our work can naturally be extended to include the full range of
+\ac{CBC} signal types but also to any and all other parameterised \ac{GW}
+signals and to analyses of \ac{GW} data beyond that of ground based
+experiments. Given the abundant benefits of this method, we hope that a variant
+of this of approach will form the basis for future \ac{GW} parameter
+estimation.
+
 %
 % word count ~620
 %
