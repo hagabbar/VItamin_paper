@@ -270,7 +270,10 @@ exceptionally well when applied towards computational imaging
 inference~\cite{1904.06264,NIPS2015_5775}, text to image
 inference~\cite{1512.00570}, high-resolution synthetic image
 generation~\cite{1612.00005} and the fitting of incomplete heterogeneous
-data~\cite{1807.03653}. It is this type of machine learning network that we
+data~\cite{1807.03653}. \acp{CVAE}, as part of the variational family of
+inference techniques are ideally suited to the problem of function
+approximation and have the potential to be significantly faster than existing
+approaches. It is \new{therefore} this type of machine learning network that we
 apply in the \ac{GW} case to accurately approximate the Bayesian posterior
 $p(x|y)$, \new{where $x$ represents the physical parameters that govern the
 \ac{GW} signal, and are the quantities we are interested in inferring. The data
@@ -298,18 +301,20 @@ $r_{\theta_1}(z|y)$ and $r_{\theta_2}(x|y,z)$ where
 r_{\theta}(x|y) = \int dz\,r_{\theta_1}(z|y)r_{\theta_2}(x|y,z).
 \end{align}
 %
-In this case the $\theta$ subscripts represent sets of trainable neural
-network parameters and the variable $z$ represents locations within a
-\emph{latent space}. This latter object is typically a lower dimensional space
-within which encoder networks attempt to represent their input data.}
+In this case the $\theta$ subscripts represent sets of trainable neural network
+parameters and the variable $z$ represents locations within a \emph{latent
+space}. This latter object is typically a lower dimensional space within which
+an encoder can represent the input data, and via marginalisation allows the
+construction of a rich family of possible probability densities.}
 
 Starting from \new{Eq.~\ref{eq:cross_ent}} it is possible to derive a
 computable \new{bound} for the cross-entropy that is reliant on \new{the
-$r_{\theta_1}$ and $r_{\theta_2}$ networks and a third "recognition" encoder network
-$q_{\phi}(z|x,y)$ governed by the trainable parameter-set $\phi$.} The details
-of the derivation are described in the methods section and
-in~\cite{1904.06264}. The final form of the cross-entropy \new{cost} function is
-given by the bound
+$r_{\theta_1}$ and $r_{\theta_2}$ networks and a third "recognition" encoder
+network $q_{\phi}(z|x,y)$ governed by the trainable parameter-set $\phi$.} The
+details of the derivation are described in the methods section and
+in~\cite{1904.06264} \new{but equate to an optimisation of the \ac{ELBO}}. The
+final form of the cross-entropy \new{cost} function is given by the bound
+
 %
 \begin{align}\label{eq:cost3} H \lesssim
 \frac{1}{N}\sum_{n=1}^{N}&\Big[\overbrace{-\log
@@ -933,7 +938,7 @@ detector network & \multicolumn{3}{c}{LIGO H1,L1, \& Virgo V1} & - \\
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Network design}
+\subsection{Network design}\label{sec:network_design}
 %
 % Describe the specific network hyper-parameters
 %
@@ -1129,7 +1134,7 @@ dimensionality is greater than the total number of source parameters infered.
 Hence we have chosen a latent space size of $n_z=10$ for the network.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Training procedure}
+\subsection{Training procedure}\label{app:training_procedure}
 %
 % Introduce the training process
 %
@@ -1202,17 +1207,22 @@ parameters.}
 %
 % the ramp
 %
-\new{A problematic aspect of training relates to the behaviour of the network during
-the initial stages of training. The network has a strong tendency to become
-trapped in local minima resulting in a decreasing cost component $L$ (the
-reconstruction cost) but a non-evolving \ac{KL}-divergence term that remains
-close to zero. To avoid this state we apply an annealing process in which the
-\ac{KL}-divergence term is initially ignored but its contribution is then
-increased logarithmically from 0 to 1 between the iteration indices
+\new{A problematic aspect of training relates to the behaviour of the network
+during the initial stages of training. The network has a strong tendency to
+become trapped in local minima resulting in a decreasing cost component $L$
+(the reconstruction cost) but a non-evolving \ac{KL}-divergence term that
+remains close to zero. To avoid this state we apply an annealing process in
+which the \ac{KL}-divergence term is initially ignored but its contribution is
+then increased logarithmically from 0 to 1 between the iteration indices
 $10^4$---$10^5$. This allows the $q_{\phi}$ encoder to learn the latent space
 representation of the data via the reconstruction cost before being required to
 try to best match its distribution to that modelled by the $r_{\theta_1}$
-encoder.}   
+encoder. In parallel with the gradual introduction of the \ac{KL} cost term, we
+also find that the stability of training is negatively affected by the
+complexity of our tailored output decoder likelihood functions. To resolve this
+we apply the same annealing procedure over the same iteration range in transitioning
+between unbound Gaussian likelihoods on all physical parameters to the tailored
+likelihoods.}   
 
 %
 % Some practical aspects of the training
