@@ -343,7 +343,7 @@ number of specific features that were included in order to tailor the analysis t
 section but in summary the primary modifications are as follows, 1) Each of the
 functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modelled using deep
 convolutional neural networks with multi-detector time-series represented as
-independent input channels. 2) The $r_{\theta_1}$ encoder models an $M=12$ component
+independent input channels. 2) The $r_{\theta_1}$ encoder models an $M=16$ component
 Gaussian mixture model within the $n_{z}=10$ dimensional latent space in order
 to capture the corresponding typical multi-modal nature of \ac{GW} posterior
 distributions. 3) Physically appropriate output decoder distributions are used
@@ -1081,7 +1081,7 @@ dimensionm, No. parameters defining the distribution per dimension].} \\
 FC(2048,240) \\
 act=None \\
 output=$\mu_{r_1}$ \\
-$\rightarrow$[10,12,2]\footnote{The $r_{\theta_1}$ output has size
+$\rightarrow$[10,16,2]\footnote{The $r_{\theta_1}$ output has size
 [latent space dimension, No. modes, No. parameters defining each
 component per dimension].} \\
 \end{tabular}
@@ -1104,7 +1104,7 @@ detectors. After passing through a series of convolutional and fully connected
 layers, the output then defines the parameters of a $n_z$-dimensional
 (diagonal) Gaussian mixture model in the latent space. We label these
 parameters as $\mu_{r_1}$ containing $n_z=10$ means and log-covariances
-together with the $M=12$ mixture component weights. The motivation for using this
+together with the $M=16$ mixture component weights. The motivation for using this
 mixture model representation comes from the mult-modal nature of \ac{GW}
 posterior distributions. The encoder network can use this flexibility to
 represent the $y$ time-series data as belonging to multiple possible latent
