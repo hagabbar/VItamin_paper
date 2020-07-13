@@ -258,7 +258,8 @@ neural networks~\cite{2019arXiv190905966C}, and where normalised flows in
 conjunction with \acp{CVAE} can reproduce Bayesian posteriors for a single
 \ac{GW} detector case~\cite{2020arXiv200207656G}. These methods, including the
 one presented in this paper, are known as ``likelihood-free'' approaches in
-which there is no requirement for explicit likelihood evaluation, only the need
+which there is no requirement for explicit likelihood 
+evaluation~\cite{Cranmer201912789}, only the need
 to sample from the likelihood. Nor is it the case that pre-computed posterior
 distributions are required in the training procedure.}
 
@@ -951,7 +952,7 @@ detector network & \multicolumn{3}{c}{LIGO H1,L1, \& Virgo V1} & - \\
 \new{The \ac{CVAE} network outlined in Fig.~\ref{fig:network_config} is constructed from
 the 3 separate neural networks modelling the encoder and decoder distributions
 $r_{\theta_1}$ and $r_{\theta_2}$ as well as the recognition function
-$q_{\phi}$. Each of these components are themselves deep convolutional networks
+$q_{\phi}$. Each of these components is a deep convolutional network
 consisting of a series of convolutional layers followed by a series of
 fully-connected layers. The details of each network structure are given in
 Table~\ref{Tab:network_design} where we indicate the activations used and additional
