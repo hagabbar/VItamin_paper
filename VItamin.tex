@@ -309,7 +309,7 @@ construction of a rich family of possible probability densities.}
 
 Starting from \new{Eq.~\ref{eq:cross_ent}} it is possible to derive a
 computable \new{bound} for the cross-entropy that is reliant on \new{the
-$r_{\theta_1}$ and $r_{\theta_2}$ networks and a third "recognition" encoder
+$r_{\theta_1}$ and $r_{\theta_2}$ networks and a third ``recognition'' encoder
 network $q_{\phi}(z|x,y)$ governed by the trainable parameter-set $\phi$.} The
 details of the derivation are described in the methods section and
 in~\cite{1904.06264} \new{but equate to an optimisation of the \ac{ELBO}}. The
@@ -337,11 +337,11 @@ of the training procedure are given in the methods section.}
 % brief mention of differences to a standard CVAE
 %
 \new{The implementation of the \ac{CVAE} that we employ in this letter has a
-number of specific features that were included so as to tailor the analysis to
+number of specific features that were included in order to tailor the analysis to
 \ac{GW} signals. The details of these enhancements are described in the Methods
 section but in summary the primary modifications are as follows, 1) Each of the
-functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modeled using deep
-convolutional neural networks with multi-detector timeseries represented as
+functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modelled using deep
+convolutional neural networks with multi-detector time-series represented as
 independent input channels. 2) The $r_{\theta_1}$ encoder models an $M=12$ component
 Gaussian mixture model within the $n_{z}=10$ dimensional latent space in order
 to capture the corresponding typical multi-modal nature of \ac{GW} posterior
@@ -415,7 +415,7 @@ the declination and inclination parameters for which we use priors uniform in
 $\cos\delta$ and $\sin\Theta_{jn}$ respectively. The corresponding prior ranges
 are defined in Table~\ref{tab:prior_ranges} and result in an \ac{SNR}
 distribution that peaks at $\text{SNR}\approx 9$ and ranging between 0 and 75}.
-We use a sampling frequency of $256$~Hz, a timeseries duration of 1 second, and
+We use a sampling frequency of $256$~Hz, a time-series duration of 1 second, and
 the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
@@ -429,7 +429,7 @@ The \new{\texttt{VItamin}} training process uses as input \new{$10^{7}$} \new{wh
 waveforms corresponding to parameters drawn from the same priors as assumed for
 the benchmark analysis. The waveforms are also of identical duration, sampling
 frequency, \new{and use the same waveform model as in} the benchmark analysis.
-\new{The signals are whitened}~\footnote{\new{The whitening is used primarily to
+\new{The signals are whitened}\footnote{\new{The whitening is used primarily to
 scale the input to a magnitude range more suitable to neural networks. The
 \emph{true} \ac{PSD} does not have to be used for whitening, but training data
 and test data must be contain signals that share the same \ac{PSD}.}}
@@ -466,9 +466,9 @@ diagonal. \new{Black vertical and horizontal lines denote the true parameter
 values of the simulated signal. At the top of the figure we include a Mollweide
 projection of the sky location posteriors from all 3 analyses. All results
 presented in this letter correspond to a 3-detector configuration but for
-clarity we only plot the H1 whitened noisy timeseries $y$ and the noise-free
+clarity we only plot the H1 whitened noisy time-series $y$ and the noise-free
 whitened signal (in blue and cyan respectively) to the right of the figure. The
-test signal was simulated with optimal multi-detector signal-to-noise ratio of
+test signal was simulated with the optimal multi-detector signal-to-noise ratio of
 17.2.}} 
 \end{figure*}
 
@@ -484,7 +484,7 @@ dataset in Fig.~\ref{fig:corner_plot} where strong agreement between \new{2}
 \ac{CVAE} (red) is clear. \new{It is also evident that whilst we refer to the
 \texttt{Bilby} sampler results as benchmark cases, different existing samplers
 do not perfectly agree with each other. For each of our 256 test cases we see
-equivelent levels of disparity between pairs of benchmark samplers \emph{and}
+equivalent levels of disparity between pairs of benchmark samplers \emph{and}
 between any benchmark sampler and our \ac{CVAE} results.}  
 
 %
@@ -496,7 +496,7 @@ show the results of 2 statistical tests (the \ac{PP} plot test and
 samplers \new{(\texttt{Dynesty}, \texttt{ptemcee}, \texttt{CPNest}, \texttt{emcee}, and \texttt{VItamin})}. \new{In
 both tests the quality of the \new{\texttt{VItamin}} results are indistinguishable from the
 benchmark samplers. The \ac{PP} plot results specifically indicate that the
-Bayesian 1-dimensional marginalised posteriors from each approach are
+Bayesian one-dimensional marginalised posteriors from each approach are
 self-consistent from a frequentist perspective (e.g., the true values lie
 within the $X\%$ confidence interval for $X\%$ of the test cases). The second
 test computes the distribution of \ac{KL}-divergences between posteriors
@@ -659,7 +659,7 @@ In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts and
 time-dependent variation in the detector noise \ac{PSD}. Existing methods
 incorporate a parameterised \ac{PSD} estimation into their
 inference~\cite{2015PhRvD..91h4034L}. \new{To account for these and to exploit the
-"likelihood-free" nature of the \ac{CVAE} approach, we could} re-train our
+``likelihood-free'' nature of the \ac{CVAE} approach, we could} re-train our
 network at regular intervals using samples of real detector noise (preferably
 recent examples to best reflect the state of the detectors). \new{In this case
 we could also apply transfer learning to speed up each training instance based
@@ -692,7 +692,7 @@ gratefully acknowledge the Science and Technology Facilities Council of the
 United Kingdom. CM and SH are supported by the Science and Technology Research
 Council (grant No.~ST/~L000946/1) and the European Cooperation in Science and
 Technology (COST) action CA17137. FT acknowledges support from Amazon Research and 
-EPSRC grant EP/M01326X/1, and RM-S EPSRC grants EP/M01326X/1 and EP/R018634/1. 
+EPSRC grant EP/M01326X/1, and RM-S EPSRC grants EP/M01326X/1, EP/T00097X/1 and EP/R018634/1. 
 
 %
 % word count 80 
@@ -725,7 +725,7 @@ EPSRC grant EP/M01326X/1, and RM-S EPSRC grants EP/M01326X/1 and EP/R018634/1.
 %
 \new{A \ac{CVAE} is} a form of variational autoencoder \new{that is}
 conditioned on an observation, where in our case the observation is a
-1-dimensional \ac{GW} time series signal $y$. The autoencoders from which
+1-dimensional \ac{GW} time-series signal $y$. The autoencoders from which
 variational autoencoders are derived are typically used for problems involving
 image reconstruction and/or dimensionality reduction. They perform a regression
 task whereby the autoencoder attempts to predict its own given input (model the
@@ -821,7 +821,7 @@ probability distribution in the physical parameter space.}
 %
 % explain why we don't just stop here
 %
-One could be forgiven in thinking that by setting up networks that simply aim
+One could be forgiven for thinking that by setting up networks that simply aim
 to minimise $H$ over the $\theta_{1}$ and $\theta_{2}$ would be enough to solve
 this problem. However, as shown in~\cite{NIPS2015_5775} this is an intractable
 problem and a network cannot be trained directly to do this. Instead we
@@ -1097,7 +1097,7 @@ component per dimension].} \\
 %
 % describe the r1 network
 %
-\new{The $r_{\theta_1}$ network takes the input timeseries data $y$ in the form of
+\new{The $r_{\theta_1}$ network takes the input time-series data $y$ in the form of
 multi-channel 1-dimensional vectors where channels represent different \ac{GW}
 detectors. After passing through a series of convolutional and fully connected
 layers, the output then defines the parameters of a $n_z$-dimensional
@@ -1106,7 +1106,7 @@ parameters as $\mu_{r_1}$ containing $n_z=10$ means and log-covariances
 together with the $M=12$ mixture component weights. The motivation for using this
 mixture model representation comes from the mult-modal nature of \ac{GW}
 posterior distributions. The encoder network can use this flexibility to
-represent the $y$ timeseries data as belonging to multiple possible latent
+represent the $y$ time-series data as belonging to multiple possible latent
 space regions. Due to this added flexibility we note that the $r_{\theta_1}$
 network is generally required to be more complex to learn this more complicated
 distribution, hence the additional layers in comparison to the other network
@@ -1117,17 +1117,17 @@ components.}
 % 
 \new{The recognition function network $q_{\phi}$ is very similar to the
 $r_{\theta_1}$ network with only 2 differences. The network takes as input the
-$y$ timeseries and the true signal parameters $x$, however, only the $y$ data
+$y$ time-series and the true signal parameters $x$, however, only the $y$ data
 is passed through the convolutional layers. Only after the final convolutional
 layer where the output is flattened is the $x$ data appended. It is then this
-compound timeseries data "feature-space" and true signal parameters that are
+compound time-series data ``feature-space'' and true signal parameters that are
 processed using the remaining fully-connected layers. The second difference is
 that the output of the network defines a \emph{single-modal} (diagonal)
 $n_z$-dimensional Gaussian. We label these parameters as $\mu_{q}$ containing
-$n_z=10$ means and log-covariances. The rational behind this choice is that
+$n_z=10$ means and log-covariances. The rationale behind this choice is that
 since the $q_{\phi}$ distribution is conditional on the true signal parameters,
 there should be no ambiguity as to which mode in the latent space that a
-particular timeseries belongs to.}      
+particular time-series belongs to.}      
 
 %
 % describe the r2 network (bespoke output distributions)
@@ -1168,7 +1168,7 @@ Process optimization for approximately 30 iterations until a final optimized
 set of hyperparameters are chosen. We have found through random hyperparameter
 tuning that the size of the latent space does not have a significant effect on
 training performance as long as the latent space dimensionality is greater than
-the total number of source parameters infered.  Hence we have chosen a latent
+the total number of source parameters inferred.  Hence we have chosen a latent
 space size of $n_z=10$ for the network.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1190,18 +1190,18 @@ back-propagate cost function derivatives to update the network parameters.
 %
 Training is performed via a series of steps illustrated schematically in
 Fig.~\ref{fig:network_config}. \new{A batch of data composed of pairs of
-timeseries $y$ and their corresponding true \ac{GW} signal parameters $x$ are
+time-series $y$ and their corresponding true \ac{GW} signal parameters $x$ are
 passed as input and the following steps are applied to each element of the
 batch.}
 %
 \begin{enumerate}
 %
-\item \new{The encoder $q_{\phi}$ takes both the timeseries
+\item \new{The encoder $q_{\phi}$ takes both the time-series
 $y$ and the true parameters $x$ defining the \ac{GW} signal. It then encodes
 these instances into parameters $\mu_{q}$ defining an uncorrelated (diagonal covariance matrix)
 $n_z$-dimensional Gaussian distribution in the latent space.} 
 %
-\item \new{The encoder $r_{\theta_1}$ is given only the timeseries data
+\item \new{The encoder $r_{\theta_1}$ is given only the time-series data
 $y$ and encodes it into a set of variables $\mu_{r_1}$ defining a
 multi-component multivariate Gaussian mixture distribution
 in the latent space.}
@@ -1229,7 +1229,7 @@ the parameter sets $\mu_{q}$ and $\mu_{r_1}$), is approximated as
 q_{\phi}(z|x_n,y_n)}\nonumber
 \end{align}
 %
-where $z$ is the sample drawn from $q_{\phi}(z|x_n,y_n)$ in the 1st
+where $z$ is the sample drawn from $q_{\phi}(z|x_n,y_n)$ in the first
 training stage. We use this single-sample Monte-Carlo integration approximation
 since the \ac{KL}-divergence between a single-component and a multi-component
 multivariate Gaussian distribution has no analytic solution (the average
