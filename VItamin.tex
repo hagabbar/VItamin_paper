@@ -252,8 +252,8 @@ detection~\cite{GEORGE201864,PhysRevLett.120.141103,GebKilParHarSch}, glitch
 classification~\cite{0264-9381-34-6-064003}, earthquake
 prediction~\cite{Coughlin_2017}, and to augment existing Bayesian sampling
 methods~\cite{2012MNRAS.421..169G}. We also highlight \new{recent developments
-in \ac{GW} parameter estimation (independent to this work) where 1- and
-2-dimensional marginalised Bayesian posteriors are produced rapidly using
+in \ac{GW} parameter estimation (independent to this work) where one- and
+two-dimensional marginalised Bayesian posteriors are produced rapidly using
 neural networks~\cite{2019arXiv190905966C}, and where normalised flows in
 conjunction with \acp{CVAE} can reproduce Bayesian posteriors for a single
 \ac{GW} detector case~\cite{2020arXiv200207656G}. These methods, including the
@@ -477,7 +477,7 @@ test signal was simulated with the optimal multi-detector signal-to-noise ratio 
 % discuss the corner plot results
 %
 We can immediately illustrate the accuracy of our machine learning predictions
-by directly plotting 2 and 1-dimensional marginalised posteriors generated
+by directly plotting 2 and one-dimensional marginalised posteriors generated
 using the output samples from our \new{\texttt{VItamin}} and \texttt{Bilby}
 approaches superimposed on each other. We show this for one example test
 dataset in Fig.~\ref{fig:corner_plot} where strong agreement between \new{2}
@@ -726,7 +726,7 @@ EPSRC grant EP/M01326X/1, and RM-S EPSRC grants EP/M01326X/1, EP/T00097X/1 and E
 %
 \new{A \ac{CVAE} is} a form of variational autoencoder \new{that is}
 conditioned on an observation, where in our case the observation is a
-1-dimensional \ac{GW} time-series signal $y$. The autoencoders from which
+one-dimensional \ac{GW} time-series signal $y$. The autoencoders from which
 variational autoencoders are derived are typically used for problems involving
 image reconstruction and/or dimensionality reduction. They perform a regression
 task whereby the autoencoder attempts to predict its own given input (model the
