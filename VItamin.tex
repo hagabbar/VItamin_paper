@@ -970,12 +970,12 @@ dropout and batch-normalisation layers.}
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Input $y$} & \multirow{2}{*}{[256,3]\footnote{The shape of the
-data [1-dimensional dataset length, No. channels].}} &
+data [one-dimensional dataset length, No. channels].}} &
 \multirow{2}{*}{[256,3]} & \multirow{2}{*}{[256,3]} \\
 & & & \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Layer 1} & conv(5,3,33)\footnote{1-dimensional
+\multirow{2}{*}{Layer 1} & conv(5,3,33)\footnote{one-dimensional
 convolutional filter with arguments (filter size, No. channels, No. filters).} & conv(5,3,33) & conv(5,3,33) \\
 & act\footnote{The activation function used.}=ReLU & act=ReLU & act=ReLU \\
 \hline
@@ -994,7 +994,7 @@ conv(11,17,33) \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Input $z,x$} & \multirow{2}{*}{-} &
 flatten\footnote{Take the multi-channel output of the previous layer and
-reshape it into a 1-dimensional vector.}$\rightarrow$[561] & flatten$\rightarrow$[561] \\
+reshape it into a one-dimensional vector.}$\rightarrow$[561] & flatten$\rightarrow$[561] \\
 & & append\footnote{Append the argument to the current dataset.}($z$)$\rightarrow$[571] & append($x$)$\rightarrow$[568] \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1360,9 +1360,9 @@ sampler & parameters \\
 \texttt{Dynesty}~\cite{dynesty} & live-points $=5000$ tolerance $=0.1$ \\
 \texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=250\,
 \text{temperatures}=8\,
-\\ \text{steps}=5000\, \text{burn}=1000\end{array}$ \\
+\\ \text{steps}=5000\, \text{burn}=4000\end{array}$ \\
 \texttt{CPNest}~\cite{cpnest} & live-points $=5000$ tolerance $=0.1$ \\
-\texttt{emcee}~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=1000$ \\
+\texttt{emcee}~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=4000$ \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
