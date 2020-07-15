@@ -655,7 +655,7 @@ the parameter space to lower masses and including component spin parameters
 will be problematic. 
 
 %
-% Non gaussian noise and the final statement
+% Non Gaussian noise and the final statement
 %
 In reality, \ac{GW} detectors are affected by non-Gaussian noise artefacts and
 time-dependent variation in the detector noise \ac{PSD}. Existing methods
@@ -688,7 +688,7 @@ We would like to acknowledge valuable input from the LIGO-Virgo Collaboration,
 specifically from Will Farr, Tom Dent, Jonah Kanner, and the parameter estimation 
 and machine-learning working groups. We would additionally like to thank Szabi 
 Marka for posing this challenge to us and the journal referees for their 
-helpful and contstructive comments. We thank Nvidia for the generous donation 
+helpful and constructive comments. We thank Nvidia for the generous donation 
 of a Tesla V-100 GPU used in addition to \ac{LVC} computational resources. 
 The authors also gratefully acknowledge the Science and Technology Facilities 
 Council of the United Kingdom. CM and SH are supported by the Science and 
@@ -1107,7 +1107,7 @@ layers, the output then defines the parameters of a $n_z$-dimensional
 (diagonal) Gaussian mixture model in the latent space. We label these
 parameters as $\mu_{r_1}$ containing $n_z=10$ means and log-covariances
 together with the $M=16$ mixture component weights. The motivation for using this
-mixture model representation comes from the mult-modal nature of \ac{GW}
+mixture model representation comes from the multi-modal nature of \ac{GW}
 posterior distributions. The encoder network can use this flexibility to
 represent the $y$ time-series data as belonging to multiple possible latent
 space regions. Due to this added flexibility we note that the $r_{\theta_1}$
@@ -1164,7 +1164,7 @@ toolkit~\cite{scikit-learn} and optimise on the total loss of our validation
 dataset. An initial set of network hyperparameters are randomly chosen
 according to a predefined uniform distribution. The network is then trained for
 $\sim 10^6$ iterations before the total validation loss is recorded. The
-Gaussian Process optimisation algorithm choses a new set of network
+Gaussian Process optimisation algorithm chooses a new set of network
 hyperparameters such that the total validation loss is minimized. We train a
 new network with the updated network hyperparameters and repeat the Gaussian
 Process optimisation for approximately 30 iterations until a final optimised
@@ -1217,7 +1217,7 @@ as input to the decoder $r_{\theta_2}$. This decoder outputs $\mu_{\theta_2}$
 comprising a set of parameters that define a distribution in the physical $x$
 space. 
  %
-\item The first term of the loss function, the reconstriction loss (defined as $L$ in
+\item The first term of the loss function, the reconstruction loss (defined as $L$ in
 Eq.~\ref{eq:cost3}), is then computed by evaluating the probability density
 defined by $\mu_{\theta_2}$ at the true $x$ training value (the average
 is then taken over the batch of input data). 
@@ -1240,7 +1240,7 @@ is then taken over the batch of input data).
 %
 \item The 2 loss components are then summed according to Eq.~\ref{eq:cost3} and
 all trainable network parameters (defined by $\theta_1,\theta_2,\phi$) are
-updated based on the derivative of the cost function with resepct to these
+updated based on the derivative of the cost function with respect to these
 parameters.
 %
 \end{enumerate}
