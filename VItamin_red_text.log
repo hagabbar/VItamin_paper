@@ -1,0 +1,854 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7050 64-bit) (preloaded format=pdflatex 2019.7.30)  15 JUL 2020 18:02
+entering extended mode
+**./VItamin_red_text.tex
+(VItamin_red_text.tex
+LaTeX2e <2018-12-01>
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/revtex\revtex4-1.c
+ls"
+Document Class: revtex4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revt
+ex4/ for documentation)
+ Copyright (c) 2009 The American Physical Society.
+ mailto:revtex@aps.org
+ Licensed under the LPPL:
+http://www.ctan.org/tex-archive/macros/latex/base/lppl.txt
+ Arthur Ogawa <arthur_ogawa at sbcglobal dot net>
+ Based on work by David Carlisle <david at dcarlisle.demon.co.uk>.
+ltxutil[2010/07/25/20:33:00 4.1r utilities package (portions licensed from W. E
+. Baxter web at superscript.com)]
+LaTeX Info: Redefining \@centercr on input line 308.
+Class revtex4-1 Info: Repairing broken LaTeX eqnarray on input line 358.
+\eqncolsep=\skip41
+Class revtex4-1 Info: Repairing hyperref-unfriendly LaTeX definition of \mpfoot
+note on input line 433.
+Class revtex4-1 Info: Repairing broken LateX \@sect on input line 755.
+\intertabularlinepenalty=\count80
+\@tbpen=\count81
+\@arstrutbox@hline=\box27
+Class revtex4-1 Info: Repairing broken LaTeX \@xbitor on input line 1786.
+Class revtex4-1 Info: Making \typeout \long on input line 2046.
+ltxfront[2010/07/25/20:33:00 4.1r frontmatter package (AO,DPC)]
+\c@affil=\count82
+\c@collab=\count83
+\absbox=\box28
+ltxgrid[2010/07/25/20:33:00 4.1r page grid package (portions licensed from W. E
+. Baxter web at superscript.com)]
+\c@linecount=\count84
+\output@latex=\toks14
+\box@size@1=\box29
+\box@size@2=\box30
+\@protection@box=\box31
+\@topmark@saved=\toks15
+\footins@saved=\box32
+\footins@recovered=\box33
+\column@recovered=\box34
+\pagesofar=\box35
+\footsofar=\box36
+\pagegrid@col=\count85
+Class revtex4-1 Info: Overriding \@vspace, \@vspacer, \@no@pgbk, \@newline, and
+ \\  on input line 5578.
+\c@part=\count86
+\c@section=\count87
+\c@subsection=\count88
+\c@subsubsection=\count89
+\c@paragraph=\count90
+\c@subparagraph=\count91
+\abovecaptionskip=\skip42
+\belowcaptionskip=\skip43
+\c@figure=\count92
+\fbox@1=\box37
+\c@table=\count93
+\fbox@2=\box38
+\c@video=\count94
+\fbox@4=\box39
+\@bibdataout=\write3
+\widetext@top=\box40
+\widetext@bot=\box41
+Class revtex4-1 Info: Selecting society aps on input line 7542.
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/revtex\aps4-1.rtx"
+File: aps4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revtex4/ for docu
+mentation)
+Class revtex4-1 Info: RevTeX society APS selected on input line 31.
+)
+Class revtex4-1 Info: Selecting journal prl on input line 7544.
+Class revtex4-1 Info: APS journal PRL selected on input line 7545.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/revtex\aps10pt4-1.
+rtx"
+File: aps10pt4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revtex4/ for 
+documentation)
+Class revtex4-1 Info: RevTeX pointsize 10pt selected on input line 30.
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/textcase\textcase.
+sty"
+Package: textcase 2004/10/07 v0.07 Text only upper/lower case changing (DPC)
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\amssymb.s
+ty"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\amsfonts.
+sty"
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks16
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsmath.st
+y"
+Package: amsmath 2018/12/01 v2.17b AMS math features
+\@mathmargin=\skip44
+
+For additional information on amsmath, use the `?' option.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amstext.st
+y"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsgen.sty
+"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks17
+\ex@=\dimen102
+)
+LaTeX Info: Redefining \text on input line 28.
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsbsy.sty
+"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen103
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsopn.sty
+"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count95
+LaTeX Info: Redefining \frac on input line 223.
+\uproot@=\count96
+\leftroot@=\count97
+LaTeX Info: Redefining \overline on input line 385.
+\classnum@=\count98
+\DOTSCASE@=\count99
+LaTeX Info: Redefining \ldots on input line 482.
+LaTeX Info: Redefining \dots on input line 485.
+LaTeX Info: Redefining \cdots on input line 606.
+\Mathstrutbox@=\box42
+\strutbox@=\box43
+\big@size=\dimen104
+LaTeX Font Info:    Redeclaring font encoding OML on input line 729.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 730.
+\macc@depth=\count100
+\c@MaxMatrixCols=\count101
+\dotsspace@=\muskip10
+\c@parentequation=\count102
+\dspbrk@lvl=\count103
+\tag@help=\toks18
+\row@=\count104
+\column@=\count105
+\maxfields@=\count106
+\andhelp@=\toks19
+\eqnshift@=\dimen105
+\alignsep@=\dimen106
+\tagshift@=\dimen107
+\tagwidth@=\dimen108
+\totwidth@=\dimen109
+\lineht@=\dimen110
+\@envbody=\toks20
+\multlinegap=\skip45
+\multlinetaggap=\skip46
+\mathdisplay@stack=\toks21
+LaTeX Info: Redefining \[ on input line 2844.
+LaTeX Info: Redefining \] on input line 2845.
+) ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/url\url.sty"
+\Urlmuskip=\muskip11
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/natbib\natbib.sty"
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip47
+\bibsep=\skip48
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count107
+)
+Class revtex4-1 Info: Repairing natbib's \BibitemShut on input line 7549.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/revtex\revsymb4-1.
+sty"
+Package: revsymb4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revtex4/ f
+or documentation)
+LaTeX Info: Redefining \frak on input line 95.
+LaTeX Info: Redefining \Bbb on input line 111.
+LaTeX Info: Redefining \REV@mathfrak on input line 119.
+))
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphicx.
+sty"
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\keyval.st
+y"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks22
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphics.
+sty"
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-cfg\graph
+ics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-def\pdfte
+x.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen111
+\Gin@req@width=\dimen112
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\dcolumn.sty"
+Package: dcolumn 2014/10/28 v1.06 decimal alignment package (DPC)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\array.sty"
+Package: array 2018/12/30 v2.4k Tabular extension package (FMi)
+\col@sep=\dimen113
+\ar@mcellbox=\box44
+\extrarowheight=\dimen114
+\NC@list=\toks23
+\extratabsurround=\skip49
+\backup@length=\skip50
+\ar@cellbox=\box45
+)) ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\bm.sty"
+Package: bm 2017/01/16 v1.2c Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup6
+\symboldletters=\mathgroup7
+\symboldsymbols=\mathgroup8
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
+LaTeX Info: Redefining \bm on input line 207.
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\color.sty
+"
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-cfg\color
+.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/acronym\acronym.st
+y"
+Package: acronym 2015/03/21 v1.41 Support for acronyms (Tobias Oetiker)
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/bigfoot\suffix.sty
+"
+Package: suffix 2006/07/15 1.5a Variant command support
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/xstring\xstring.st
+y"
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/generic/xstring\xstring.
+tex"
+\integerpart=\count108
+\decimalpart=\count109
+)
+Package: xstring 2019/02/06 v1.83 String manipulations (CT)
+)
+\AC@clearlist=\toks24
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/multirow\multirow.
+sty"
+Package: multirow 2019/05/31 v2.5 Span multiple rows of a table
+\multirow@colwidth=\skip51
+\multirow@cntb=\count110
+\multirow@dima=\skip52
+\bigstrutjot=\dimen115
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\tabularx.sty
+"
+Package: tabularx 2016/02/03 v2.11b `tabularx' package (DPC)
+\TX@col@width=\dimen116
+\TX@old@table=\dimen117
+\TX@old@col=\dimen118
+\TX@target=\dimen119
+\TX@delta=\dimen120
+\TX@cols=\count111
+\TX@ftn=\toks25
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/hyperref\hyperref.
+sty"
+Package: hyperref 2018/11/30 v6.88e Hypertext links for LaTeX
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\hobsub-
+hyperref.sty"
+Package: hobsub-hyperref 2016/05/16 v1.14 Bundle oberdiek, subset hyperref (HO)
+
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\hobsub-
+generic.sty"
+Package: hobsub-generic 2016/05/16 v1.14 Bundle oberdiek, subset generic (HO)
+Package: hobsub 2016/05/16 v1.14 Construct package bundles (HO)
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+Package: intcalc 2016/05/16 v1.2 Expandable calculations with integers (HO)
+Package: ifpdf 2018/09/07 v3.3 Provides the ifpdf switch
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+Package: pdftexcmds 2018/09/10 v0.29 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+Package: pdfescape 2016/05/16 v1.14 Implements pdfTeX's escape features (HO)
+Package: bigintcalc 2016/05/16 v1.4 Expandable calculations on big integers (HO
+)
+Package: bitset 2016/05/16 v1.2 Handle bit-vector datatype (HO)
+Package: uniquecounter 2016/05/16 v1.3 Provide unlimited unique counter (HO)
+)
+Package hobsub Info: Skipping package `hobsub' (already loaded).
+Package: letltxmacro 2016/05/16 v1.5 Let assignment for LaTeX macros (HO)
+Package: hopatch 2016/05/16 v1.3 Wrapper for package hooks (HO)
+Package: xcolor-patch 2016/05/16 xcolor patch
+Package: atveryend 2016/05/16 v1.9 Hooks at the very end of document (HO)
+Package: atbegshi 2016/06/09 v1.18 At begin shipout hook (HO)
+Package: refcount 2016/05/16 v3.5 Data extraction from label references (HO)
+Package: hycolor 2016/05/16 v1.8 Color options for hyperref/bookmark (HO)
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/generic/ifxetex\ifxetex.
+sty"
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/oberdiek\auxhook.s
+ty"
+Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/oberdiek\kvoptions
+.sty"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+)
+\@linkdim=\dimen121
+\Hy@linkcounter=\count112
+\Hy@pagecounter=\count113
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/hyperref\pd1enc.de
+f"
+File: pd1enc.def 2018/11/30 v6.88e Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+\Hy@SavedSpaceFactor=\count114
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/00miktex\hyperref.
+cfg"
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+Package hyperref Info: Hyper figures OFF on input line 4519.
+Package hyperref Info: Link nesting OFF on input line 4524.
+Package hyperref Info: Hyper index ON on input line 4527.
+Package hyperref Info: Plain pages OFF on input line 4534.
+Package hyperref Info: Backreferencing OFF on input line 4539.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4772.
+LaTeX Info: Redefining \href on input line 5036.
+\c@Hy@tempcnt=\count115
+LaTeX Info: Redefining \url on input line 5125.
+\XeTeXLinkMargin=\dimen122
+\Fld@menulength=\count116
+\Field@Width=\dimen123
+\Fld@charsize=\dimen124
+Package hyperref Info: Hyper figures OFF on input line 6380.
+Package hyperref Info: Link nesting OFF on input line 6385.
+Package hyperref Info: Hyper index ON on input line 6388.
+Package hyperref Info: backreferencing OFF on input line 6395.
+Package hyperref Info: Link coloring OFF on input line 6400.
+Package hyperref Info: Link coloring with OCG OFF on input line 6405.
+Package hyperref Info: PDF/A mode OFF on input line 6410.
+LaTeX Info: Redefining \ref on input line 6450.
+LaTeX Info: Redefining \pageref on input line 6454.
+\Hy@abspage=\count117
+\c@Item=\count118
+\c@Hfootnote=\count119
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/hyperref\hpdftex.d
+ef"
+File: hpdftex.def 2018/11/30 v6.88e Hyperref driver for pdfTeX
+\Fld@listcount=\count120
+\c@bookmark@seq@number=\count121
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/oberdiek\rerunfile
+check.sty"
+Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+82.
+)
+\Hy@SectionHShift=\skip53
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/mathtools\mathtool
+s.sty"
+Package: mathtools 2020/03/24 v1.24 mathematical typesetting tools
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\calc.sty"
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count122
+\calc@Bcount=\count123
+\calc@Adimen=\dimen125
+\calc@Bdimen=\dimen126
+\calc@Askip=\skip54
+\calc@Bskip=\skip55
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count124
+\calc@Cskip=\skip56
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/mathtools\mhsetup.
+sty"
+Package: mhsetup 2017/03/31 v1.3 programming setup (MH)
+)
+LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 130.
+LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 130.
+LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 130.
+LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 130.
+\g_MT_multlinerow_int=\count125
+\l_MT_multwidth_dim=\dimen127
+\origjot=\skip57
+\l_MT_shortvdotswithinadjustabove_dim=\dimen128
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen129
+\l_MT_above_intertext_sep=\dimen130
+\l_MT_below_intertext_sep=\dimen131
+\l_MT_above_shortintertext_sep=\dimen132
+\l_MT_below_shortintertext_sep=\dimen133
+\xmathstrut@box=\box46
+\xmathstrut@dim=\dimen134
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/diagbox\diagbox.st
+y"
+Package: diagbox 2020/02/09 v2.3 Making table heads with diagonal lines
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/pict2e\pict2e.sty"
+Package: pict2e 2020/06/20 v0.3e Improved picture commands (HjG,RN,JT)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/pict2e\pict2e.cfg"
+File: pict2e.cfg 2016/02/05 v0.1u pict2e configuration for teTeX/TeXLive
+)
+Package pict2e Info: Driver file: pdftex.def on input line 110.
+Package pict2e Info: Driver file for pict2e: p2e-pdftex.def on input line 112.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/pict2e\p2e-pdftex.
+def"
+File: p2e-pdftex.def 2016/02/05 v0.1u Driver-dependant file (RN,HjG,JT)
+)
+\pIIe@GRAPH=\toks26
+\@arclen=\dimen135
+\@arcrad=\dimen136
+\@tempdimd=\dimen137
+)
+\diagbox@boxa=\box47
+\diagbox@boxb=\box48
+\diagbox@boxm=\box49
+\diagbox@wd=\dimen138
+\diagbox@ht=\dimen139
+\diagbox@insepl=\dimen140
+\diagbox@insepr=\dimen141
+\diagbox@outsepl=\dimen142
+\diagbox@outsepr=\dimen143
+ ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp.sty"
+Package: fp 1995/04/02
+
+`Fixed Point Package', Version 0.8, April 2, 1995 (C) Michael Mehlich
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\defpattern.sty"
+Package: defpattern 1994/10/12
+\actioncount=\count126
+) ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-basic.sty"
+Package: fp-basic 1996/05/13
+\FP@xs=\count127
+\FP@xia=\count128
+\FP@xib=\count129
+\FP@xfa=\count130
+\FP@xfb=\count131
+\FP@rega=\count132
+\FP@regb=\count133
+\FP@regs=\count134
+\FP@times=\count135
+) ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-addons.sty
+"
+Package: fp-addons 1995/03/15
+) ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-snap.sty"
+Package: fp-snap 1995/04/05
+) ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-exp.sty"
+Package: fp-exp 1995/04/03
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-trigo.sty"
+Package: fp-trigo 1995/04/14
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-pas.sty"
+Package: fp-pas 1994/08/29
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-random.sty"
+Package: fp-random 1995/02/23
+\FPseed=\count136
+) ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-eqn.sty"
+Package: fp-eqn 1995/04/03
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-upn.sty"
+Package: fp-upn 1996/10/21
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/fp\fp-eval.sty"
+Package: fp-eval 1995/04/03
+)))
+Package hyperref Info: Option `colorlinks' set `true' on input line 51.
+Class revtex4-1 Info: Unrecognized array package. Please update this document c
+lass! (Proceeding with fingers crossed.) on input line 61.
+Class revtex4-1 Info: Robustifying \LaTeX's \boldmath command on input line 61.
+
+Class revtex4-1 Info: cite was not loaded (OK!) on input line 61.
+Class revtex4-1 Info: mcite was not loaded (OK!) on input line 61.
+Class revtex4-1 Info: multicol was not loaded (OK!) on input line 61.
+(VItamin_red_text.aux
+
+LaTeX Warning: Label `eq:cost1' multiply defined.
+
+)
+\openout1 = `VItamin_red_text.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/context/base/mkii\supp-p
+df.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count137
+\scratchdimen=\dimen144
+\scratchbox=\box50
+\nofMPsegments=\count138
+\nofMParguments=\count139
+\everyMPshowfont=\toks27
+\MPscratchCnt=\count140
+\MPscratchDim=\dimen145
+\MPnumerator=\count141
+\makeMPintoPDFobject=\count142
+\everyMPtoPDFconversion=\toks28
+)
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/oberdiek\epstopdf-
+base.sty"
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/oberdiek\grfext.st
+y"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+)
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
+\AtBeginShipoutBox=\box51
+Package hyperref Info: Link coloring ON on input line 61.
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/hyperref\nameref.s
+ty"
+Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
+
+("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\gettitl
+estring.sty"
+Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
+)
+\c@section@level=\count143
+)
+LaTeX Info: Redefining \ref on input line 61.
+LaTeX Info: Redefining \pageref on input line 61.
+LaTeX Info: Redefining \nameref on input line 61.
+ (VItamin_red_text.out) (VItamin_red_text.out
+! I can't write on file `VItamin_red_text.pdf'.
+Please type another file name for output: 
+)
+\@outlinefile=\write4
+\openout4 = `VItamin_red_text.out'.
+
+Class revtex4-1 Info: Taking \maketitle back from hyperref on input line 61.
+\openout3 = `VItamin_red_textNotes.bib'.
+
+LaTeX Font Info:    Try loading font information for U+msa on input line 86.
+ ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 86.
+ ("C:\Users\hunte\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Package acronym Info: Label `acro:GW' newly defined as it shall be overridden
+although it is yet undefined on input line 161.
+Package acronym Info: Label `acro:BNS' newly defined as it shall be overridden
+although it is yet undefined on input line 161.
+Package acronym Info: Label `acro:NSBH' newly defined as it shall be overridden
+
+although it is yet undefined on input line 161.
+Package acronym Info: Label `acro:EM' newly defined as it shall be overridden
+although it is yet undefined on input line 161.
+Package acronym Info: Label `acro:CVAE' newly defined as it shall be overridden
+
+although it is yet undefined on input line 161.
+Package acronym Info: Label `acro:BBH' newly defined as it shall be overridden
+although it is yet undefined on input line 161.
+Package acronym Info: Label `acro:LIGO' newly defined as it shall be overridden
+
+although it is yet undefined on input line 240.
+ [1{C:/Users/hunte/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Package acronym Info: Label `acro:ELBO' newly defined as it shall be overridden
+
+although it is yet undefined on input line 316.
+Package acronym Info: Label `acro:KL' newly defined as it shall be overridden
+although it is yet undefined on input line 335.
+<network_setup.png, id=132, 561.59813pt x 846.16125pt>
+File: network_setup.png Graphic file (type png)
+<use network_setup.png>
+Package pdftex.def Info: network_setup.png  used on input line 357.
+(pdftex.def)             Requested size: 233.69925pt x 352.10582pt.
+
+
+Package hyperref Warning: Suppressing empty link on input line 419.
+
+Package acronym Info: Label `acro:SNR' newly defined as it shall be overridden
+although it is yet undefined on input line 419.
+[2]
+
+LaTeX Warning: A float is stuck (cannot be placed) on input line 426.
+
+
+LaTeX Warning: A float is stuck (cannot be placed) on input line 426.
+
+
+Class revtex4-1 Warning: Deferred float stuck during \clearpage processing.
+
+Package acronym Info: Label `acro:PSD' newly defined as it shall be overridden
+although it is yet undefined on input line 437.
+
+Underfull \hbox (badness 1383) in paragraph at lines 430--452
+[]\OT1/cmr/m/n/10 The []\OT1/cmtt/m/n/10 VItamin[] \OT1/cmr/m/n/10 train-ing pr
+o-cess uses as in-put []$10[]$[]
+ []
+
+<corner_testcase0.png, id=170, 1156.32pt x 1156.32pt>
+File: corner_testcase0.png Graphic file (type png)
+<use corner_testcase0.png>
+Package pdftex.def Info: corner_testcase0.png  used on input line 457.
+(pdftex.def)             Requested size: 510.0pt x 509.99982pt.
+Package acronym Info: Label `acro:PP' newly defined as it shall be overridden
+although it is yet undefined on input line 496.
+[3 <./network_setup.png>] [4 <./corner_testcase0.png>]
+
+Package hyperref Warning: Suppressing empty link on input line 518.
+
+
+Package hyperref Warning: Suppressing empty link on input line 521.
+
+
+Underfull \hbox (badness 4954) in paragraph at lines 513--526
+[]\OT1/cmr/m/n/10 The dom-i-nat-ing com-pu-ta-tional cost of run-ning
+ []
+
+Package acronym Info: Label `acro:LVC' newly defined as it shall be overridden
+although it is yet undefined on input line 620.
+Package acronym Info: Label `acro:CBC' newly defined as it shall be overridden
+although it is yet undefined on input line 629.
+Package acronym Info: Label `acro:GPU' newly defined as it shall be overridden
+although it is yet undefined on input line 630.
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 711--712
+[]\OT1/cmr/m/n/10 Correspondence and re-quests for ma-te-ri-als
+ []
+
+
+Underfull \hbox (badness 5077) in paragraph at lines 711--712
+\OT1/cmr/m/n/10 should be ad-dressed to Hunter Gab-bard (email:
+ []
+
+[6]
+<inv_losses_log.png, id=251, 462.528pt x 346.896pt>
+File: inv_losses_log.png Graphic file (type png)
+<use inv_losses_log.png>
+Package pdftex.def Info: inv_losses_log.png  used on input line 902.
+(pdftex.def)             Requested size: 246.0pt x 184.49977pt.
+
+Overfull \hbox (2.04073pt too wide) in paragraph at lines 922--943
+ [][][] 
+ []
+
+
+Package hyperref Warning: Suppressing empty link on input line 961.
+
+[7]
+
+LaTeX Warning: A float is stuck (cannot be placed) on input line 962.
+
+
+LaTeX Warning: A float is stuck (cannot be placed) on input line 962.
+
+
+Class revtex4-1 Warning: Deferred float stuck during \clearpage processing.
+
+
+Overfull \vbox (0.64pt too high) detected at line 1019
+ []
+
+
+Overfull \vbox (1.04984pt too high) detected at line 1061
+ []
+
+
+Overfull \vbox (0.64pt too high) detected at line 1070
+ []
+
+
+Overfull \vbox (0.64pt too high) detected at line 1090
+ []
+
+[8 <./inv_losses_log.png>] [9] [10]
+<latest_pp_plot.png, id=334, 433.62pt x 433.62pt>
+File: latest_pp_plot.png Graphic file (type png)
+<use latest_pp_plot.png>
+Package pdftex.def Info: latest_pp_plot.png  used on input line 1339.
+(pdftex.def)             Requested size: 246.0pt x 246.00146pt.
+<hist-kl.png, id=343, 578.16pt x 433.62pt>
+File: hist-kl.png Graphic file (type png)
+<use hist-kl.png>
+Package pdftex.def Info: hist-kl.png  used on input line 1398.
+(pdftex.def)             Requested size: 510.0pt x 382.49986pt.
+ (VItamin_red_text.bbl [11 <./latest_pp_plot.png>]
+Underfull \hbox (badness 1406) in paragraph at lines 128--133
+ \OT1/cmr/m/n/9 J. Haster, V. Kalogera, T. Lit-ten-berg, I. Man-del,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--140
+ []\OT1/cmr/m/n/9 ``Gracedb | gravitational-wave can-di-date event
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--140
+ \OT1/cmr/m/n/9 database (ligo/virgo o3 pub-lic alerts),'' [][]$\OT1/cmtt/m/n/9
+ https :
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--140
+ \OT1/cmtt/m/n/9 / / gracedb . ligo . org / superevents / public / O3/$[][]\OT1
+/cmr/m/n/9 , ac-
+ []
+
+[12 <./hist-kl.png>]
+Underfull \hbox (badness 1331) in paragraph at lines 278--291
+ []\OT1/cmr/m/n/9 G. Ash-ton, M. Hueb-ner, P. D. Lasky, C. Tal-bot,
+ []
+
+
+Underfull \hbox (badness 6094) in paragraph at lines 330--336
+ []\OT1/cmr/m/n/9 M. Cough-lin, P. Earle, J. Harms, S. Bis-cans,
+ []
+
+
+Underfull \hbox (badness 1005) in paragraph at lines 352--358
+ []\OT1/cmr/m/n/9 A. J. K. Chua and M. Val-lis-neri, arXiv e-prints ,
+ []
+
+
+Underfull \hbox (badness 2837) in paragraph at lines 363--369
+ []\OT1/cmr/m/n/9 S. R. Green, C. Simp-son,  and J. Gair, arXiv
+ []
+
+
+Underfull \hbox (badness 1436) in paragraph at lines 363--369
+ \OT1/cmr/m/n/9 e-prints , arXiv:2002.07656 (2020), [][]arXiv:2002.07656
+ []
+
+
+Underfull \hbox (badness 1142) in paragraph at lines 544--554
+ []\OT1/cmr/m/n/9 D. J. Siria, R. Sanou, J. Mit-ton, E. P. Mwanga,
+ []
+
+) [13]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1436.
+ (VItamin_red_text.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1436.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1436.
+
+Package rerunfilecheck Info: File `VItamin_red_text.out' has not changed.
+(rerunfilecheck)             Checksum: B68056B38833102C4B269969C2750222;848.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 10328 strings out of 492895
+ 148155 string characters out of 3123735
+ 321713 words of memory out of 3000000
+ 13922 multiletter control sequences out of 15000+200000
+ 17662 words of font info for 66 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 34i,20n,31p,1785b,569s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cmextra/cmbsy6.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cmextra/cmbsy9.pfb><C:/Users/hunte/AppData/Local/Programs/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Users/hunte/AppData/Loca
+l/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/hunte
+/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:
+/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
+mbx9.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmex10.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/t
+ype1/public/amsfonts/cm/cmmi10.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/hunte/AppData/Local/Pr
+ograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/hunte/AppD
+ata/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/User
+s/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.
+pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmmi9.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmr10.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/hunte/AppData/Local/Programs/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/hunte/AppData/Local
+/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/hunte/Ap
+pData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Use
+rs/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.
+pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmsy10.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmsy6.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/
+fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/hunte/AppData/Local/Programs
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/hunte/AppData/Lo
+cal/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/hunt
+e/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><
+C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmti8.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmti9.pfb><C:/Users/hunte/AppData/Local/Programs/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/hunte/AppData/Local/Programs/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmtt8.pfb><C:/Users/hunte/AppData/Local/P
+rograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb><C:/Users/hunte/App
+Data/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msam10.pfb>
+Output written on .pdf (13 pages, 2296926 bytes).
+PDF statistics:
+ 568 PDF objects out of 1000 (max. 8388607)
+ 132 named destinations out of 1000 (max. 500000)
+ 122 words of extra memory for PDF output out of 10000 (max. 10000000)
+
