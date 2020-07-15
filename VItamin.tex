@@ -645,13 +645,13 @@ required to develop our approach and the computational burden of computing our
 256 benchmark analyses for each of 4 benchmark samplers. We have been able to
 extend our analysis to $1$ kHz sampling frequencies at the cost of an $\sim1.5$
 fold increase in training time and a similar increase on the \ac{GPU} memory
-requirement. We note that with the exception of requiring convolutional layers
-and an increase in the amount of training data to efficiently deal with a
-multi-detector analysis, the network complexity has not increased with the
-dimensionality of the physical parameter space nor with the sampling rate of
-the input data. We therefore do not anticipate that extending the parameter
-space to lower masses and including component spin parameters will be
-problematic.} 
+requirement. We note that with the exception of requiring one-dimensional
+convolutional layers and an increase in the amount of training data to
+efficiently deal with a multi-detector analysis, the network complexity has not
+increased with the dimensionality of the physical parameter space nor with the
+sampling rate of the input data. We therefore do not anticipate that extending
+the parameter space to lower masses and including component spin parameters
+will be problematic.} 
 
 %
 % Non gaussian noise and the final statement
@@ -953,7 +953,7 @@ detector network & \multicolumn{3}{c}{LIGO H1,L1, \& Virgo V1} & - \\
 the 3 separate neural networks modelling the encoder and decoder distributions
 $r_{\theta_1}$ and $r_{\theta_2}$ as well as the recognition function
 $q_{\phi}$. Each of these components is a deep convolutional network
-consisting of a series of convolutional layers followed by a series of
+consisting of a series of one-dimensional convolutional layers followed by a series of
 fully-connected layers. The details of each network structure are given in
 Table~\ref{Tab:network_design} where we indicate the activations used and additional
 dropout and batch-normalisation layers.}
@@ -1100,7 +1100,7 @@ component per dimension].} \\
 %
 \new{The $r_{\theta_1}$ network takes the input time-series data $y$ in the form of
 multi-channel 1-dimensional vectors where channels represent different \ac{GW}
-detectors. After passing through a series of convolutional and fully connected
+detectors. After passing through a series of one-dimensional convolutional and fully connected
 layers, the output then defines the parameters of a $n_z$-dimensional
 (diagonal) Gaussian mixture model in the latent space. We label these
 parameters as $\mu_{r_1}$ containing $n_z=10$ means and log-covariances
@@ -1119,16 +1119,16 @@ components.}
 \new{The recognition function network $q_{\phi}$ is very similar to the
 $r_{\theta_1}$ network with only 2 differences. The network takes as input the
 $y$ time-series and the true signal parameters $x$, however, only the $y$ data
-is passed through the convolutional layers. Only after the final convolutional
-layer where the output is flattened is the $x$ data appended. It is then this
-compound time-series data ``feature-space'' and true signal parameters that are
-processed using the remaining fully-connected layers. The second difference is
-that the output of the network defines a \emph{single-modal} (diagonal)
-$n_z$-dimensional Gaussian. We label these parameters as $\mu_{q}$ containing
-$n_z=10$ means and log-covariances. The rationale behind this choice is that
-since the $q_{\phi}$ distribution is conditional on the true signal parameters,
-there should be no ambiguity as to which mode in the latent space that a
-particular time-series belongs to.}      
+is passed through the one-dimensional convolutional layers. Only after the
+final convolutional layer where the output is flattened is the $x$ data
+appended. It is then this compound time-series data ``feature-space'' and true
+signal parameters that are processed using the remaining fully-connected
+layers. The second difference is that the output of the network defines a
+\emph{single-modal} (diagonal) $n_z$-dimensional Gaussian. We label these
+parameters as $\mu_{q}$ containing $n_z=10$ means and log-covariances. The
+rationale behind this choice is that since the $q_{\phi}$ distribution is
+conditional on the true signal parameters, there should be no ambiguity as to
+which mode in the latent space that a particular time-series belongs to.}      
 
 %
 % describe the r2 network (bespoke output distributions)
@@ -1155,7 +1155,7 @@ to model the right ascension and declination (sky) parameters.}
 % decribe the hyper-parameter optimisation analysis
 %
 \new{We automatically tune a subset of the network hyperparameters
-(convolutional filter size, filter stride length, max-pool size, number of
+(one-dimensional convolutional filter size, filter stride length, max-pool size, number of
 modes ($M$)) through Bayesian optimization using Gaussian
 Processes~\cite{Siria2020.06.11.144253}. We use the \texttt{scikit-optimize}
 toolkit~\cite{scikit-learn} and optimize on the total loss of our validation
