@@ -340,17 +340,18 @@ of the training procedure are given in the methods section.}
 \new{The implementation of the \ac{CVAE} that we employ in this letter has a
 number of specific features that were included in order to tailor the analysis to
 \ac{GW} signals. The details of these enhancements are described in the Methods
-section but in summary the primary modifications are as follows, 1) Each of the
+section but in summary, the primary modifications are as follows, 1) Physically 
+appropriate output decoder distributions are used for each output parameter: 
+von Mises-Fisher distribution on the sky location parameters, von Mises 
+distributions on periodic parameters, conditional truncated Gaussians for 
+the component masses, and truncated Gaussians for
+parameters with defined prior bounds. 2) Each of the
 functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modelled using deep
 convolutional neural networks with multi-detector time-series represented as
-independent input channels. 2) The $r_{\theta_1}$ encoder models an $M=16$ component
+independent input channels. 3) The $r_{\theta_1}$ encoder models an $M=16$ component
 Gaussian mixture model within the $n_{z}=10$ dimensional latent space in order
 to capture the corresponding typical multi-modal nature of \ac{GW} posterior
-distributions. 3) Physically appropriate output decoder distributions are used
-for each output parameter: von Mises-Fisher distribution on the sky location
-parameters, von Mises distributions on periodic parameters, conditional
-truncated Gaussians for the component masses, and truncated Gaussians for
-parameters with defined prior bounds.}  
+distributions.}  
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{network_setup.png}
@@ -446,7 +447,7 @@ have generated \new{$10^4$} posterior samples on \new{7} physical parameters
 \new{$x=(m_1,m_2,d_{\text{L}},t_{0},\Theta_{jn},\alpha,\delta)$}. We choose to
 output a subset of the full 9-dimensional space to demonstrate that parameters
 (such as $\phi_0$ \new{and $\psi$} in this case) can (if desired) be
-marginalized out within the \ac{CVAE} procedure itself, rather than after
+marginalised out within the \ac{CVAE} procedure itself, rather than after
 training. 
 
 %
@@ -510,7 +511,7 @@ benchmark sampler and any other.}
 % discuss the speed of the analysis
 %
 The dominating computational cost of running \texttt{VItamin} lies in the
-training time, which can take $\mathcal{O}(10\text{s})$ hours to complete. We
+training time, which takes $\mathcal{O}(1)$ day to complete. We
 stress that once trained, there is no need to retrain the network unless the
 user wishes to use different priors $p(x)$ or assume different noise
 characteristics. The speed at which posterior samples are generated for all
@@ -684,16 +685,17 @@ estimation.
 \section{Acknowledgements.}
 %
 We would like to acknowledge valuable input from the LIGO-Virgo Collaboration,
-specifically from Will Farr and the parameter estimation and machine-learning
-working groups. We would additionally like to thank Szabi Marka for posing this
-challenge to us \new{and the journal referees for their helpful and contstructive
-comments}. We thank Nvidia for the generous donation of a Tesla V-100 GPU
-used in addition to \ac{LVC} computational resources. The authors also
-gratefully acknowledge the Science and Technology Facilities Council of the
-United Kingdom. CM and SH are supported by the Science and Technology Research
-Council (grant No.~ST/~L000946/1) and the European Cooperation in Science and
-Technology (COST) action CA17137. FT acknowledges support from Amazon Research and 
-EPSRC grant EP/M01326X/1, and RM-S EPSRC grants EP/M01326X/1, EP/T00097X/1 and EP/R018634/1. 
+specifically from Will Farr, Tom Dent, Jonah Kanner, and the parameter estimation 
+and machine-learning working groups. We would additionally like to thank Szabi 
+Marka for posing this challenge to us \new{and the journal referees for their 
+helpful and contstructive comments}. We thank Nvidia for the generous donation 
+of a Tesla V-100 GPU used in addition to \ac{LVC} computational resources. 
+The authors also gratefully acknowledge the Science and Technology Facilities 
+Council of the United Kingdom. CM and SH are supported by the Science and 
+Technology Research Council (grant No.~ST/~L000946/1) and the European 
+Cooperation in Science and Technology (COST) action CA17137. FT acknowledges 
+support from Amazon Research and  EPSRC grant EP/M01326X/1, and RM-S EPSRC 
+grants EP/M01326X/1, EP/T00097X/1 and EP/R018634/1. 
 
 %
 % word count 80 
@@ -987,15 +989,15 @@ length).} & maxpool(2,2) & maxpool(2,2) \\
 & act=ReLU & act=ReLU & act=ReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Layer 3} & conv(11,17,33) & conv(11,17,33) &
-conv(11,17,33) \\
+\multirow{2}{*}{Layer 3} & conv(11,33,33) & conv(11,33,33) &
+conv(11,33,33) \\
 & act=ReLU & act=ReLU & act=ReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Input $z,x$} & \multirow{2}{*}{-} &
 flatten\footnote{Take the multi-channel output of the previous layer and
-reshape it into a one-dimensional vector.}$\rightarrow$[561] & flatten$\rightarrow$[561] \\
-& & append\footnote{Append the argument to the current dataset.}($z$)$\rightarrow$[571] & append($x$)$\rightarrow$[568] \\
+reshape it into a one-dimensional vector.}$\rightarrow$[4224] & flatten$\rightarrow$[4224] \\
+& & append\footnote{Append the argument to the current dataset.}($z$)$\rightarrow$[4234] & append($x$)$\rightarrow$[4231] \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{3}{*}{Layer 4} & 
@@ -1008,7 +1010,7 @@ act=ReLU \\
 } & 
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-FC(571,2048)\footnote{Fully
+FC(4234,2048)\footnote{Fully
 connected layer with arguments (input size, output size).}\\
 dropout(0.2)\footnote{Drop-out layer with argument (drop-out
 fraction).} \\
@@ -1017,7 +1019,7 @@ act=ReLU \\
 } &
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-FC(568,2048) \\
+FC(4231,2048) \\
 dropout(0.2) \\
 act=ReLU \\
 \end{tabular}
@@ -1029,9 +1031,9 @@ act=ReLU \\
 \multirow{3}{*}{Layer 5} &
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-conv(10,17,33) \\ 
+conv(10,33,33) \\ 
 act=ReLU \\
-flatten$\rightarrow$[561] \\
+flatten$\rightarrow$[2112] \\
 \end{tabular}
 }
  & FC(2048,2048) & FC(2048,2048) \\
@@ -1042,13 +1044,13 @@ flatten$\rightarrow$[561] \\
 \multirow{4}{*}{Layer 6} & 
 \multirow{4}{*}{
 \begin{tabular}[t]{c}
-FC(561,2048) \\
+FC(2112,2048) \\
 dropout=0.2 \\
 act=ReLU \\
 \end{tabular}
 } & \multirow{4}{*}{
 \begin{tabular}[t]{c}
-FC(2048,98) \\
+FC(2048,14) \\
 act=(Sigmoid,-ReLU)\footnote{Different activations are used for different
 parameters. For the scaled parameter means we use
 sigmoids and for log-variances we use negative ReLU functions.} \\
@@ -1062,8 +1064,8 @@ the distribution per dimension].} \\
 FC(2048,20) \\
 act=None \\
 output=$\mu_{q}$ \\
-$\rightarrow$[2,10]\footnote{The $q_{\phi}$ output has size [latent space
-dimensionm, No. parameters defining the distribution per dimension].} \\
+$\rightarrow$[10,2]\footnote{The $q_{\phi}$ output has size [latent space
+dimension, No. parameters defining the distribution per dimension].} \\
 \end{tabular}
 } \\
 & & & \\
@@ -1078,7 +1080,7 @@ dimensionm, No. parameters defining the distribution per dimension].} \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{4}{*}{Layer 8} & \multirow{4}{*}{
 \begin{tabular}[t]{c}
-FC(2048,240) \\
+FC(2048,320) \\
 act=None \\
 output=$\mu_{r_1}$ \\
 $\rightarrow$[10,16,2]\footnote{The $r_{\theta_1}$ output has size
@@ -1156,16 +1158,16 @@ to model the right ascension and declination (sky) parameters.}
 %
 \new{We automatically tune a subset of the network hyperparameters
 (one-dimensional convolutional filter size, filter stride length, max-pool size, number of
-modes ($M$)) through Bayesian optimization using Gaussian
+modes ($M$)) through Bayesian optimisation using Gaussian
 Processes~\cite{Siria2020.06.11.144253}. We use the \texttt{scikit-optimize}
-toolkit~\cite{scikit-learn} and optimize on the total loss of our validation
+toolkit~\cite{scikit-learn} and optimise on the total loss of our validation
 dataset. An initial set of network hyperparameters are randomly chosen
 according to a predefined uniform distribution. The network is then trained for
 $\sim 10^6$ iterations before the total validation loss is recorded. The
-Gaussian Process optimization algorithm choses a new set of network
+Gaussian Process optimisation algorithm choses a new set of network
 hyperparameters such that the total validation loss is minimized. We train a
 new network with the updated network hyperparameters and repeat the Gaussian
-Process optimization for approximately 30 iterations until a final optimized
+Process optimisation for approximately 30 iterations until a final optimised
 set of hyperparameters are chosen. We have found through random hyperparameter
 tuning that the size of the latent space does not have a significant effect on
 training performance as long as the latent space dimensionality is greater than
