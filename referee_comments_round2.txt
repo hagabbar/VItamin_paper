@@ -1,0 +1,318 @@
+Reviewers’ comments: 
+
+Reviewer #1 (Remarks to the Author):
+
+I would like to recommend this paper for publication after the following item
+is considered by the authors.
+
+- We greatly thank the referee for their input to the paper.
+
+While the authors have taken great care to document their experiments, there
+are too many parameters set in a typical PE run to reproduce scientific
+findings using values quoted in the table. For example, table 4 shows what
+might be considered to be the most important sampler hyperparameters, but there
+are many more. For example, the dynasty sampler (when called through Bilby at
+least) has known issues when using reflective boundary conditions on the prior,
+and the number of auto-correlation times to use before accepting a point (nact
+in the code) can greatly impact the results. From my own experience, I've
+needed to run the code using nact values as high as 25 before getting converged
+results. My suggestion would be to make the input files used in these
+experiments publicly available either as part of the paper or hosted somewhere
+like gitlab, github, or bitbucket.
+
+- We have now produced improved resuls with both the VItamin analysis and the
+  bilby benchmarks. The complete set of sampler parameters is defined in our
+new version of Table IV.
+
+Reviewer #2 (Remarks to the Author):
+
+The revised draft has addressed my main initial concerns. In particular: 
+1) The introduction has been revised and I believe it is much more accessible
+now.
+2) The details of the CVAE model have been substantially revised and the
+results now incorporate my suggestions and complementary modifications. I am
+pleased to see the new results. The model is now tailored to the problem it is
+trying to solve (by incorporating the correct support of the target density).
+The revised model has substantially strengthened the novelty factor of the
+paper.
+
+- We greatly thank the referee for their input to the paper.
+
+Reviewer #4 (Remarks to the Author):
+
+Performing accurate Bayesian inference on gravitational-wave signals is a
+corner stone of gravitational-wave astronomy. Current methods (mcmc, nested
+sampling etc…) carry a notoriously high computational cost which will soon
+present a problem as the number of interesting observations increases; as the
+complexity of signal models increases (as it generally tends to), and as
+detectors push down their low-frequency sensitivity so that the duration of
+observable signals increases. 
+
+The paper presents a novel approach to the problem of performing Bayesian
+inference using machine learning. The authors describe how a conditional
+variational autoencoder can be trained on known posterior/likelihoods, together
+with strain data, to quickly produce posterior densities given new strain data.
+Most impressive is the short time in which the network can produce results:
+around six orders of magnitude faster than the current state of the art. The
+authors demonstrate their method explicitly by performing inference on the
+parameters of synthetic binary black hole signals, and compare their results to
+those obtained using well established samplers, e.g., dynesty and emcee.
+
+- We would like to correct the referee on one statement. We do not use known
+  posteriors to train the CVAE. This is a crucial aspect to the analysis that
+we hope is clear in the manuscript. If training were dependent upon
+pre-computed posteriors then training time would ba astronomical and completely
+infeasible.
+
+The paper is well written and clear. The authors have made efforts to compare
+their results to those obtained using well established methods, though I
+dispute some of their conclusions about the accuracy of their results. Most
+impressively, the authors have applied their machine learning method to an
+astrophysical interesting subset of the parameter space of binary black holes;
+7 parameters, including the masses and sky location of the binary (2 parameters
+are marginalized over). This greatly expands on other work in the field which
+typically focuses on a small subset of parameters. I particularly enjoyed the
+clear description of the ML algorithm, which often is glossed over in other ML
+papers. 
+
+In compiling my review, I have considered whether the paper meets Nature’s
+three criteria
+(https://www.nature.com/nature/for-authors/editorial-criteria-and-processes)
+for publication, namely that the results:
+
+• report original scientific research (the main results and conclusions must not have been published or submitted elsewhere)
+• are of outstanding scientific importance
+• reach a conclusion of interest to an interdisciplinary readership.
+
+The results are certainly original. The results reach a conclusion that is
+broadly interesting to the gravitational-wave astronomy community: they
+demonstrate that ML approaches *may* be promising for gravitational-wave
+observations in the future. However, I do not believe that the results
+constitute outstanding scientific importance. While I believe the work is
+undoubtably novel and an extremely impressive technical achievement, I have a
+number of issues with:
+
+1. scope of the analysis
+2. the accuracy of the results
+
+Scope of the analysis
+
+The authors demonstrate that the method can produce the 7-dimensional posterior
+density describing their synthetic black hole signals. In doing so, they
+marginalize over coalescence- and polarisation phase. My biggest issue is that
+their numerical experiments do not address the full problem of binary black
+hole parameter estimation: estimating the full set of 15 parameters describing
+the binary. The authors suggest that their method can be readily extended to
+the full set of parameters:
+
+“We note that with the exception of requiring one-dimensional convolutional
+layers and an increase in the amount of training data to efficiently deal with
+a multi-detector analysis, the network complexity has not increased with the
+dimensionality of the physical parameter space nor with the sampling rate of
+the input data. We therefore do not anticipate that extending the parameter
+space to lower masses and including component spin parameters will be
+problematic.”
+
+However I am unconvinced that the authors have demonstrated that including
+component spin parameters will not be problematic. I have two reasons for this:
+
+Firstly, real gravitational-wave signals carry higher order modes beyond the
+leading-order modes which are the only ones present in their model,
+IMRPhenomPv2. It is the lack of modes beyond the dominant mode which allows one
+to explicitly marginalize over coalescence phase with IMRPhenomPv2. This cannot
+be done for models which include higher order modes and/or generic precessing
+spin effects. At the very least the authors would need to demonstrate that they
+are able to return accurate posteriors without explicitly marginalizing over
+phase.
+
+- The referee may have misunderstood what we mean by "marginalising out" the
+  phase and polarisation. We do not use the same techniques used by traditional
+samplers to compute this. The CVAE method will automatically marginalise over
+any parameters that are not specified as output parameters. A simple way of
+explaining this is to consider multiple training samples that contain almost
+identical signals but placed within different noise realisations. The CVAE is
+trained to learn that these are possibly the same signal and through the
+variational component of the algorithm it applies uncertainty to the output and
+ultimately generates posterior distributions that account for the noise
+distribution. When we vary phase or polarisation within their priors but do not
+include them in the parameter set (x) then the network will potentially see
+identically labelled input timeseries that contain both variation in noise but
+also variation due to the different unlabeled parameters. Just as in the noise
+case, the CVAE learns about the potential variation in the labelled output
+parameters by accounting for the implicit variation in the the noiase and in
+phase and polarisation.
+
+- Within this internal marginalisation process there are *no* assumptions about
+  the higher-mode content of the signal. The posterior distribution in the
+output parameters now accounts for the variation in the noise and in the
+implicit variation in the training set caused by the variation in the
+unlabelled parameters.   
+
+Secondly, I cannot conclude that the ML method is necessarily robust if they
+were to include precessing spin parameters. This is because there may be
+correlations between precessing spin parameters, phase at coalescence and other
+parameters, e.g., component masses can correlate with spin-tilt angles; mass
+ratio correlates with aligned-spin components. I believe that tackling this
+full 15D parameter estimation problem (explicitly sampling phase at
+coalescence) would be necessary to warrant outstanding scientific importance. 
+
+*** MUST DO ***
+- We have now included the full spin parameter set into the analysis and have
+  verified our original claims that the CVAE approach can correctly it.
+
+Accuracy of the results
+
+The authors provide three quantitative measures of the accuracy of their
+results: they compare posteriors from VItamin to dynesty and ptemcee, perform a
+PP test (as is standard in internal LIGO peer review), and compute
+KL-statistics between VItamin and the other samplers. The PP tests suggest that
+1D posterior densities are robust, which is nice to see. However, the PP test
+does not address whether the full N-dimensional PDF is itself unbiased, and I
+have concerns that they are in fact biased in a way that is not tested by the
+PP test or the KL test. My first concern is with the benchmark results
+themselves. There are clear differences between dynesty and ptemcee in Figure
+2. To understand VItamin’s results I would first need to see consistency
+between benchmark results. The authors state:
+
+“It is also evident that whilst we refer to the Bilby sampler results as
+benchmark cases, different existing samplers do not perfectly agree with each
+other. For each of our 256 test cases we see equivalent levels of disparity
+between pairs of benchmark samplers and between any benchmark sampler and our
+CVAE results”
+
+However, I am not convinced that this should be the case. A large amount of
+effort has been undertaken within the LIGO/Virgo collaboration to converge on
+sampler settings with bilby, which accurately match results obtained using the
+code LALInference (bilby’s predecessor). The comparisons (summarised in the
+bilby GWTC-1 paper https://arxiv.org/abs/2006.00714) demonstrate that both 1D
+and 2D credible intervals match well between the samplers. There is a clear
+disparity between the 2D credible intervals of ptemcee and dynesty which makes
+picking a benchmark set of results confusing. I suspect that the real issue
+here is that ptemcee is simply not converged fully. I am basing this on the
+fact that the sampler settings for dynesty in Table IV are very aggressive;
+much more so than for production analyses in the LVC. Certainly it is the case
+with, e.g., code reviews, that converging on good settings is challenging, and
+so far this has only been achieved with dynesty.
+
+*** MUST DO ***
+- We take the referee's point. It has been difficult to obtain trusted
+  benchmark sampler parameters. We have had repeated communication with bilby
+developers and reviewers and run extensive tests on different sampler
+parameters to ensure convergence. We can verify that Dynesty sampler using the
+LVC-reviewed and recommended sampler settings has converged and does represent
+the most trustworthy benchmark results. 
+
+In order to make comparisons between VItamin and the benchmark, I will assume
+for the moment that dynesty is more robust, given that dynesty has been adopted
+as the flagship sampler of bilby and is used in production LIGO/Virgo analyses.
+Then there is a clear problem with the VItamin results: while marginalized 1D
+posterior samples may look fine, some of these samples occur in pairs, triples,
+quadruples etc… which are statistically *extremely unlikely*. For instance, the
+2D VItamin posteriors for (distance, time), (distance, ra), (distance, dec),
+(ra, dec) have tails in their 95% CI which have effectively zero probability in
+the dynesty PDF. This bias does not show up in the PP test, because the PP test
+does not look for bias in 2D and higher-D PDFs. 
+
+- We do appreciate this point and perhaps our claims should be revised
+  (slightly). What we would like to convey is that CPnest, ptemcee, and emcee
+are all well respected, and importantly, all well established sampling
+approaches and all available as options within the bilby package. The
+application of machine learning techniques for Bayesian parameter estimation is
+starting a decade behind these appproaches and we feel that it is appropriate
+to allow for a little discrepancy between the flagship sampler and this
+entirely new, but clearly significant advance in the field. The fact that we
+agree on the same level as all the other samplers should be, in our opinion,
+enough to warrant publication. 
+
+*** MUST DO ***
+- Having said this, we have made advances to our analysis which are reflected
+  in the latest draft of the manuscript. Our results now show better agreement
+with the dynesty sampler. We have also revised our KL figure to include more
+information. We now show a more complete view of sampler-by-sampler
+comparisons as well as the limiting case of self-KL values where the same
+sampler is run on the same data twice. This highlights the best case KL values
+that one should expect. 
+
+As an example of how 1D PDFs can hide bias in 2D PDFs I have attached a corner
+plot showing that with a software injection, the highlighted parameter’s 1D PDF
+contains the true value in the 90% CI whereas in a certain 2D PDF it is falls
+on the 3-sigma credible interval boundary. Thus, while individual parameters
+can occur with the right probability, it is no guarantee that they occur in
+pairs with the correct probability. 
+
+- We thank the referee for the plot. We are aware that this type of
+  inconsistency can be hidden when using only p-p plots as a diagnostic. That
+is the reason that we include the KL histograms which operate on the entire
+joint parameter space. We again refer the referee to the updates results plots.
+
+I am particularly concerned with the (distance, time), (distance, ra),
+(distance, dec), (ra, dec) PDFs as the authors suggest that their method could
+be used for rapid sky localisation on BNS mergers. It currently appears to me
+that VItamin results could conceivably assign high probability to sky locations
+which in fact have effectively zero probability. I am therefore curious if the
+distributions for the other software injections also display similar
+disparities in the 2D credible intervals. In particular, what do the 2D
+credible intervals look like for the highest SNR signal in the injection set
+(SNR ~ 75)? 
+
+- We do not expect to obtain perfect agreement with the different samplers that
+  we test against. The question is how much discrepancy is tolerable? By
+definition, if a pair of 2D sky posteriors differ then there will always be
+some region that is given higher probability from one sampler than the other.
+We do not see direct evidence in our complete results, and in the subset
+explicitly presented in the paper, to justify the claim that Vitamin would
+"assign high probability to sky locations which in fact have effectively zero
+probability". We again appeal to the notion that VItamin is doing as well as
+the other benchmark samplers. 
+
+At the very least, I would like to see that the VItamin 2D credible intervals
+can (a) match the benchmark results, and (b) that benchmark results should be
+consistent in order to make a meaningful comparison. As things stand, I cannot
+claim that VItamin’s full 7D posteriors are unbiased and I strongly dispute the
+author’s claim that their results are indistinguishable from any of the
+benchmark results. 
+
+*** MUST DO ***
+- We do appreciate the referee's diligence on this issue but the request is
+  impossible to satisfy. What is the referee's definition of "match the
+benchmark results"? and that "benchmark results should be consistent"?  We have
+gone to great lengths to quantify consistency through self-consistency checks
+using p-p plots and cross-consistency through KL calculations. In the
+intervening time we have produced improved results and better understood the
+choice of hyper-parameters for the benchmark samplers. If we refer to the
+paper highlighted by the referee (the bilby GWTC-1 paper
+https://arxiv.org/abs/2006.00714) and follow their approach then we must
+perform 
+1) p-p plot tests
+2) JS tests (equivelent to the symmetric KL). However, these are only perfomed
+on 1D posteriors! They use units of bits and find
+that the mean and max JS was 0.0007 and 0.0015 bits for pairs of runs on the
+same data with the same sampler. Max JS values between bilby and LI were 0.0064
+(see Table 1). 
+
+The KL-statistic test also sweeps the issue of bias under the rug by saying
+that the KL-stat distribution between VItamin and benchmark results is similar
+to that of the benchmark results with themselves. I maintain that this should
+not be the case: the benchmark results should be converged so that the
+KL-statistic is close to zero. To use the bilby GWTC-1 paper as an example
+again, the authors use a Jensen-Shannon (JS) divergence statistic to measure
+the accuracy between bilby and LALInference. They find a maximum JS stat of
+0.0019 across all parameters for the entire GWTC-1 catalogue. While the JS
+statistic is not identical to the KL-statistic, they both nevertheless measure
+the difference in bits between two distributions. The authors find KL-stats of
+order 1-10 between their benchmark results, again suggesting a lack of
+convergence of one or all benchmark samplers.
+
+*** MUST DO ***
+- We would argue that the statemengt that the KL statistic should be close to
+  zero is not well defined. What does close to zero mean in this case? We have
+revised the KL plot to include more information as described earlier, however
+we are not sure what the referee deems satisfactory. We would like to again
+reiterate that the KL values, as opposed to those published in the bilby GTC1
+paper, are computed on the joint distribution, and not on single parameters. We
+would also like to highlight the difficulty in computing these values and the
+corresponding limitations of that computation. These limitations are best
+represenetd by the self-KL values now shown in the KL figure. 
+
+
+
