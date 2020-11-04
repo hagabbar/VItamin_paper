@@ -1360,12 +1360,12 @@ private communication with the \texttt{Bilby} development team. }
 \toprule
 sampler & parameters \\
 \hline
-\texttt{Dynesty}~\cite{dynesty} & live-points $=5000$ tolerance $=0.1$ \\
-\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=250\,
-\text{temperatures}=8\,
-\\ \text{steps}=5000\, \text{burn}=4000\end{array}$ \\
-\texttt{CPNest}~\cite{cpnest} & live-points $=5000$ tolerance $=0.1$ \\
-\texttt{emcee}~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=4000$ \\
+\texttt{Dynesty}~\cite{dynesty} & live-points $=1000$ tolerance $=0.1$ nact $=50$ \\
+\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=200\,
+\text{temperatures}=20\,
+\\ \text{nsamples}=10000\ \end{array}$ \\
+\texttt{CPNest}~\cite{cpnest} & live-points $=2048$ tolerance $=0.1$ \\
+\texttt{emcee}~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=4000$ a$=1.4$ \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
