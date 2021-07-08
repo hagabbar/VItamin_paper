@@ -114,6 +114,7 @@ for gravitational-wave astronomy}
 \acrodef{LIGO}[LIGO]{advanced Laser Interferometer Gravitational wave Observatory}
 \acrodef{CVAE}[CVAE]{conditional variational autoencoder}
 \acrodef{KL}[KL]{Kullback--Leibler}
+\acrodef{JS}[JS]{Jensen–-Shannon}
 \acrodef{GPU}[GPU]{graphics processing unit}
 \acrodef{LVC}[LVC]{LIGO-Virgo Collaboration}
 \acrodef{PP}[p-p]{probability-probability}
@@ -256,8 +257,7 @@ in \ac{GW} parameter estimation (independent to this work) where one- and
 two-dimensional marginalised Bayesian posteriors are produced rapidly using
 neural networks~\cite{2019arXiv190905966C}, and where normalised flows in
 conjunction with \acp{CVAE} can reproduce Bayesian posteriors for a single
-\ac{GW} detector case~\cite{2020arXiv200207656G} \hunter{Could also cite 
-the other Green papers here.}. These methods, including the
+\ac{GW} detector case~\cite{PhysRevD.102.104057,Green_2021}. These methods, including the
 one presented in this paper, are known as ``likelihood-free'' approaches in
 which there is no requirement for explicit likelihood 
 evaluation~\cite{Cranmer201912789}, only the need
@@ -412,7 +412,8 @@ For the benchmark analysis we assume that 15 parameters are
 unknown: the component masses
 $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the sky position
 $\alpha,\delta$, the binary inclination $\Theta_{jn}$, the \ac{GW} polarisation
-angle ${\psi}$, the time of coalescence $t_{0}$, and the phase at coalescence
+angle ${\psi}$, the time of coalescence $t_{0}$, the spin parameters $a_1,a_2,
+\Theta_1,\Theta_2,\phi_{12},\phi_{jl}$, and the phase at coalescence
 $\phi_0$. For each parameter we use a uniform prior with the exception of
 the declination and inclination parameters for which we use priors uniform in
 $\cos\delta$ and $\sin\Theta_{jn}$ respectively. The corresponding prior ranges
@@ -424,9 +425,6 @@ minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
 \texttt{Bilby}. For each run and sampler we extract $\mathcal{O}(8^3)$
 samples from the posterior on the 15 physical parameters.  
-
-\hunter{Update to include all 15 source parameters.  This includes updating the prior ranges 
-in Table 2.}
 
 %
 % the VItamin process
@@ -448,8 +446,8 @@ passing each of our $250$ whitened noisy testing set of \ac{GW} waveforms
 as input into the testing path of the pre-trained
 \ac{CVAE} (Fig.~\ref{fig:network_config}). For each input waveform we sample until we
 have generated $8^3$ posterior samples on 14 physical parameters
-$x=(m_1,m_2,d_{\text{L}},t_{0},\Theta_{jn},\alpha,\delta)$. \hunter{
-Add other physical parameters inferred} We choose to
+$x=(m_1,m_2,d_{\text{L}},t_{0},\Theta_{jn},a_1,a_2,\Theta_1,\Theta_2,\psi,
+\phi_{12},\phi_{jl},\alpha,\delta)$. We choose to
 output a subset of the full 15-dimensional space to demonstrate that parameters
 (such as $\phi_0$ in this case) can (if desired) be
 marginalised out within the \ac{CVAE} procedure itself, rather than after
@@ -501,19 +499,18 @@ to send}.
 %
 Figures~\ref{fig:pp_plot} and \ref{fig:kl_results} (see the Methods section)
 show the results of 2 statistical tests (the \ac{PP} plot test and
-\ac{KL}-divergence tests) performed on the entire test dataset and between all
+\ac{JS}-divergence tests) performed on the entire test dataset and between all
 samplers (\texttt{Dynesty}, \texttt{ptemcee}, \texttt{CPNest}, \texttt{emcee}, and \texttt{VItamin}). In
 both tests the quality of the \texttt{VItamin} results are indistinguishable from the
 benchmark samplers. The \ac{PP} plot results specifically indicate that the
 Bayesian one-dimensional marginalised posteriors from each approach are
 self-consistent from a frequentist perspective (e.g., the true values lie
 within the $X\%$ confidence interval for $X\%$ of the test cases). The second
-test computes the distribution of \ac{KL}-divergences between posteriors
+test computes the distribution of \ac{JS}-divergences between posteriors
 conditioned on the same test data $y$ from pairs of samplers. In all cases this
 measure of ``distribution similarity'' between \texttt{VItamin} and any particular
 benchmark sampler is entirely consistent with the distribution between that
-benchmark sampler and any other.   \hunter{replace all instances of KL for 
-figure of merit plots with JS.}
+benchmark sampler and any other.
 
 %
 % discuss the speed of the analysis
@@ -945,8 +942,14 @@ right ascension & $\alpha$ & 0 & $2\pi$ & radians \\
 declination & $\delta$ & $-\pi/2$ & $\pi/2$ & radians \\
 inclination & $\iota$ & 0 & $\pi$ & radians \\
 polarisation & $\psi$ & 0 & $\pi$ & radians \\
+spin magnitude 1 & $a_1$ & 0 & 0.8 & - \\
+spin magnitude 2 & $a_2$ & 0 & 0.8 & - \\
+tilt angle 1 & $\Theta_1$ & 0 & $\pi$ & radians \\
+tilt angle 2 & $\Theta_2$ & 0 & $\pi$ & radians \\
+azimuthal angle & $\phi_{12}$ & 0 & $2\pi$ & radians \\
+azimuthal position & $\phi_{jl}$ & 0 & $2\pi$ & radians \\
 \hline
-spins & - & \multicolumn{2}{c}{0} & - \\
+%spins & - & \multicolumn{2}{c}{0} & - \\
 epoch & \multicolumn{3}{c}{1126259642} & GPS time \\
 detector network & \multicolumn{3}{c}{LIGO H1,L1, \& Virgo V1} & - \\
 \botrule
@@ -1154,25 +1157,26 @@ $q_{\phi}$ network but with a difference in the form of their outputs. The
 $r_{\theta_2}$ output represents the parameters ($\mu_{r_2}$) that govern an
 $n_x$-dimensional distribution in the physical parameter space and we have
 carefully chosen appropriate distributions for each of the physical parameters.
-For the luminosity distance, the binary inclination, and the time of
-coalescence we have adopted truncated Gaussian distributions where the
+For the luminosity distance, the binary inclination, the time of
+coalescence, and spin parameters $a_1,a_2,\Theta_1,\Theta_2$ we have 
+adopted truncated Gaussian distributions where the
 truncation occurs at the predefined prior boundaries of the respective
 parameter space dimensions. For the component masses we have adopted
 conditional truncated Gaussians where the conditional aspect is to ensure that
 $m_{1}\geq m_{2}$\footnote{This additional complication of requiring conditional
 decoder output distributions could be avoided if a different mass
-parameterisation were chosen, e.g., total mass and symmetric mass ratio.}. Had
-we chosen to explicitly infer the coalescence phase,
-independent von Mises distributions would be applied to capture the periodic
-nature of this parameter. Finally, we use the von Mises-Fisher distribution
-to model the right ascension and declination (sky) parameters.  \hunter{Must 
-also mention the spins here.}    
+parameterisation were chosen, e.g., total mass and symmetric mass ratio.}. 
+Independent von Mises distributions are applied for the polarization angle, 
+and spin parameters $\phi_{12},\phi_{jl}$ in order to capture the periodic 
+nature of these parameters. Finally, we use the von Mises-Fisher distribution
+to model the right ascension and declination (sky) parameters.    
 
 %
 % decribe the hyper-parameter optimisation analysis
 %
 
-\hunter{We don't use hyper parameter optimisation anymore}
+\hunter{We didn't end up using the hyperparameter optimised network. 
+Should we keep this?}
 We automatically tune a subset of the network hyperparameters
 (one-dimensional convolutional filter size, filter stride length, max-pool size, number of
 modes ($M$)) through Bayesian optimisation using Gaussian
@@ -1302,7 +1306,7 @@ realisation despite only having a finite number of waveforms.
 Completion of training is determined by comparing output posteriors on test
 samples with those of \texttt{Bilby} iteratively during training. This
 comparison is done using standard figures of merit such as the \ac{PP}-plot
-\ac{KL}-divergence (see Figs.~\ref{fig:pp_plot} and
+\ac{JS}-divergence (see Figs.~\ref{fig:pp_plot} and
 \ref{fig:kl_results}). We also assess training completion based on whether the
 evolution of the cost function and its component parts
 (Fig.~\ref{fig:loss_log}) have converged. We use a single Nvidia Tesla V100
@@ -1375,8 +1379,7 @@ sampling method are\hunter{update these values} (0.972,0.211 \texttt{VItamin}), 
 \centering
 \caption{Benchmark sampler configuration parameters. Values were chosen based
 on a combination of their recommended default parameters~\cite{1811.02042} and
-private communication with the \texttt{Bilby} development team.  \hunter{Make sure 
-all these values are updated.}}
+private communication with the \texttt{Bilby} development team.}
 \begin{tabular}[t]{lc}
 \toprule
 sampler & parameters \\
@@ -1394,7 +1397,7 @@ sampler & parameters \\
 \text{min}\_\text{tau}=1\, \text{threads}=1\, \end{array}$ \\
 
 \texttt{CPNest}~\cite{cpnest} & live-points $=2048$ maxmcmc $=1000$ nthreads$=$ None 
-seed$=1994$ \\
+seed$=1994$ dlogz $=0.1$ \\
 
 \texttt{emcee}~\cite{emcee} & nwalkers $=250$ nsteps $=14000$ nburn$=4000$ a$=1.4$
 burn$\_$in$\_$fraction$=0.25$ burn$\_$in$\_$act$\_$=3 \\
@@ -1424,16 +1427,16 @@ under the null-hypothesis that they are consistent with the diagonal. These
 results show that for at least 1 parameter, emcee shows inconsistency with the
 modal at the 1\% level. \texttt{Dynesty} has a worst case that is consistent only at the
 4\% level.  All other samplers (including \texttt{VItamin}) show consistency at
-$>10\%$ in the worst case. \hunter{May need to reword some of this slightly.}    
+$>10\%$ in the worst case. \hunter{Update these values.}    
 
 %
 \begin{figure*}
     \includegraphics[width=\textwidth]{hist-kl.png}
-    \caption{\label{fig:kl_results} Distributions of \ac{KL}-divergence values
+    \caption{\label{fig:kl_results} Distributions of \ac{JS}-divergence values
 between posteriors produced by different samplers. In each panel we show the
-distribution of \ac{KL}-divergences computed between a single benchmark sampler
+distribution of \ac{JS}-divergences computed between a single benchmark sampler
 and every other benchmark sampler over all 250 \ac{GW} test cases (grey). Also
-plotted in each panel are the corresponding \ac{KL}-divergence distributions
+plotted in each panel are the corresponding \ac{JS}-divergence distributions
 between the single benchmark sampler and the \texttt{VItamin} outputs (blue,
 green, purple, yellow).}
 
@@ -1441,24 +1444,23 @@ green, purple, yellow).}
 %
 
 %
-% discuss the KL results
+% discuss the JS results
 %
-The \ac{KL}-divergence has been used to define the cost function of the
-\ac{CVAE} analysis, but in general it is used as measure of the similarity
+The \ac{JS}-divergence is generally used as measure of the similarity
 between distributions. In Fig.~\ref{fig:kl_results} we use this quantity to
 compare the output posterior estimates between samplers for the same input test
 data. To do this we run each independent sampler (including \texttt{VItamin})
 on the same test data to produce samples from the corresponding posterior. We
-then compute the \ac{KL}-divergence between the output distributions from each
+then compute the \ac{JS}-divergence between the output distributions from each
 sampler with every other sampler~\cite{4839047}.  For distributions that are
-identical, the \ac{KL}-divergence {should} equal zero but since we are
+identical, the \ac{JS}-divergence {should} equal zero but since we are
 representing our posterior distributions using finite numbers of samples,
-identical distributions result in \ac{KL}-divergence values $\mathcal{O}(X)$.
+identical distributions result in \ac{JS}-divergence values $\mathcal{O}(X)$.
 In Fig.~\ref{fig:kl_results} we show the distributions of these
-\ac{KL}-divergences for the 250 test \ac{GW} samples. In each panel we plot the
-distribution of \ac{KL}-divergences obtained when comparing one of the 4
+\ac{JS}-divergences for the 250 test \ac{GW} samples. In each panel we plot the
+distribution of \ac{JS}-divergences obtained when comparing one of the 4
 benchmark samplers with all other benchmark samplers (excluding
-\texttt{VItamin}). We also plot the distribution of \ac{KL}-divergences
+\texttt{VItamin}). We also plot the distribution of \ac{JS}-divergences
 obtained when comparing the same sampler with \texttt{VItamin} alone. In all 4
 cases the \texttt{VItamin} results show distributions completely consistent
 with the deviations observed between benchmark samplers. \hunter{will need to 
