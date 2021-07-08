@@ -416,8 +416,8 @@ angle ${\psi}$, the time of coalescence $t_{0}$, and the phase at coalescence
 $\phi_0$. For each parameter we use a uniform prior with the exception of
 the declination and inclination parameters for which we use priors uniform in
 $\cos\delta$ and $\sin\Theta_{jn}$ respectively. The corresponding prior ranges
-are defined in Table~\ref{tab:prior_ranges} and result in an \ac{SNR}
-distribution that peaks at $\text{SNR}\approx 9$ and ranging between 0 and 75.
+are defined in Table~\ref{tab:prior_ranges} and result in a  \ac{SNR}
+distribution that has a median value of $\text{SNR}\approx 9$ and ranging between 0 and 75.
 We use a sampling frequency of $1024$~Hz, a time-series duration of 1 second, and
 the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
@@ -426,7 +426,7 @@ benchmark analysis using multiple sampling algorithms available within
 samples from the posterior on the 15 physical parameters.  
 
 \hunter{Update to include all 15 source parameters.  This includes updating the prior ranges 
-in Table 2.  Will also need to update the SNR peak value and the upper range limit value.}
+in Table 2.}
 
 %
 % the VItamin process
@@ -1371,7 +1371,7 @@ sampling method are\hunter{update these values} (0.972,0.211 \texttt{VItamin}), 
 %
 % I feel the need, the need for clearly outlining the bilby parameter choices
 %
-\begin{table}
+\begin{table*}
 \centering
 \caption{Benchmark sampler configuration parameters. Values were chosen based
 on a combination of their recommended default parameters~\cite{1811.02042} and
@@ -1381,16 +1381,27 @@ all these values are updated.}}
 \toprule
 sampler & parameters \\
 \hline
-\texttt{Dynesty}~\cite{dynesty} & live-points $=5000$ tolerance $=0.1$ \\
-\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=250\,
-\text{temperatures}=8\,
-\\ \text{steps}=5000\, \text{burn}=4000\end{array}$ \\
-\texttt{CPNest}~\cite{cpnest} & live-points $=5000$ tolerance $=0.1$ \\
-\texttt{emcee}~\cite{emcee} & walkers $=250$ steps $=14000$ burn$=4000$ \\
+\texttt{Dynesty}~\cite{dynesty} & live-points $=1000$ dlogz $=0.1$ nact $=50$  npool $=8$ bound $=$ None sample $=$ uniform\\
+
+%\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=200\,
+%\text{temperatures}=20\,
+%\\ \text{nsamples}=10000\, \text{threads}=10\end{array}$ \\
+\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=200\, 
+\text{temperatures}=20\, \text{burn}\_\text{in}\_\text{nact}=50\, \text{thin}\_\text{by}\_\text{nact}=0.5\, \\
+\text{nsamples}=10000\, \text{threads}=10\, \text{autocorr}\_\text{tol}=50\, \text{autocorr}\_\text{c} \text{safety}=1\, \text{autocorr}\_\text{tau}=1\, \\ 
+\text{gradient}\_\text{tau}=0.1\, 
+\text{gradient}\_\text{mean}\_\text{log}\_\text{posterior}=0.1\, \text{Q}\_\text{tol}=1.01\, 
+\text{min}\_\text{tau}=1\, \text{threads}=1\, \end{array}$ \\
+
+\texttt{CPNest}~\cite{cpnest} & live-points $=2048$ maxmcmc $=1000$ nthreads$=$ None 
+seed$=1994$ \\
+
+\texttt{emcee}~\cite{emcee} & nwalkers $=250$ nsteps $=14000$ nburn$=4000$ a$=1.4$
+burn$\_$in$\_$fraction$=0.25$ burn$\_$in$\_$act$\_$=3 \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
-\end{table}
+\end{table*}
 
 %
 % discuss pp plot result
