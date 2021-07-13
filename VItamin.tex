@@ -460,9 +460,9 @@ training.
     \includegraphics[width=\textwidth]{corner_testcase0.png}
     \caption{\label{fig:corner_plot} Corner plot showing one and two-dimensional
 marginalised posterior distributions on the \ac{GW} parameters for one
-example test dataset. Filled red contours represent the
+example test dataset. Red contours represent the
 two-dimensional joint posteriors obtained from \texttt{VItamin} and
-solid blue and green contours are the corresponding posteriors
+blue and green contours are the corresponding posteriors
 output from our benchmark analyses (using the \texttt{Dynesty} and \texttt{ptemcee}
 samplers within \texttt{Bilby}). In each case, the contour boundaries enclose
 $68,90$ and $95\%$ probability. One dimensional histograms of the posterior
@@ -474,7 +474,7 @@ presented in this letter correspond to a three-detector configuration but for
 clarity we only plot the H1 whitened noisy time-series $y$ and the noise-free
 whitened signal (in blue and cyan respectively) to the right of the figure. The
 test signal was simulated with an optimal multi-detector signal-to-noise ratio of
-17.2.} 
+14.3.} 
 \end{figure*}
 
 %
@@ -907,7 +907,7 @@ non-Gaussian detector noise.
 %
 \begin{figure}
     \includegraphics[width=\columnwidth]{inv_losses_log.png}
-\caption{\label{fig:loss_log} The cost as a function of training iteration.
+\caption{\label{fig:loss_log} The cost as a function of training epoch.
 We show the total cost function (green) together with its component parts:
 the \ac{KL}-divergence component (orange) and the reconstruction component
 (blue) which are simply summed to obtain the total. The solid curves correspond
@@ -915,7 +915,7 @@ to the cost computed on each batch of training data and the dashed curves
 represent the cost when computed on independent validation data. The close
 agreement between training and validation cost values indicates that the
 network is not overfitting to the training data. The change in behavior of the
-cost between $10^4$ and $10^5$ iterations is a consequence of gradually
+cost between $1\times10^2$ and $3\times10^2$ epochs is a consequence of gradually
 introducing the \ac{KL} cost term contribution via an annealing process.} 
 \end{figure}
 
@@ -1173,25 +1173,25 @@ to model the right ascension and declination (sky) parameters.
 % decribe the hyper-parameter optimisation analysis
 %
 
-\hunter{We didn't end up using the hyperparameter optimised network. 
-Should we keep this?}
-We automatically tune a subset of the network hyperparameters
-(one-dimensional convolutional filter size, filter stride length, max-pool size, number of
-modes ($M$)) through Bayesian optimisation using Gaussian
-Processes~\cite{Siria2020.06.11.144253}. We use the \texttt{scikit-optimize}
-toolkit~\cite{scikit-learn} and optimise on the total loss of our validation
-dataset. An initial set of network hyperparameters are randomly chosen
-according to a predefined uniform distribution. The network is then trained for
-$\sim 10^6$ iterations before the total validation loss is recorded. The
-Gaussian Process optimisation algorithm chooses a new set of network
-hyperparameters such that the total validation loss is minimized. We train a
-new network with the updated network hyperparameters and repeat the Gaussian
-Process optimisation for approximately 30 iterations until a final optimised
-set of hyperparameters are chosen. We have found through random hyperparameter
-tuning that the size of the latent space does not have a significant effect on
-training performance as long as the latent space dimensionality is greater than
-the total number of source parameters inferred.  Hence we have chosen a latent
-space size of $n_z=15$ for the network.
+%\hunter{We didn't end up using the hyperparameter optimised network. 
+%Should we keep this?}
+%We automatically tune a subset of the network hyperparameters
+%(one-dimensional convolutional filter size, filter stride length, max-pool size, number %of
+%modes ($M$)) through Bayesian optimisation using Gaussian
+%Processes~\cite{Siria2020.06.11.144253}. We use the \texttt{scikit-optimize}
+%toolkit~\cite{scikit-learn} and optimise on the total loss of our validation
+%dataset. An initial set of network hyperparameters are randomly chosen
+%according to a predefined uniform distribution. The network is then trained for
+%$\sim 10^6$ iterations before the total validation loss is recorded. The
+%Gaussian Process optimisation algorithm chooses a new set of network
+%hyperparameters such that the total validation loss is minimized. We train a
+%new network with the updated network hyperparameters and repeat the Gaussian
+%Process optimisation for approximately 30 iterations until a final optimised
+%set of hyperparameters are chosen. We have found through random hyperparameter
+%tuning that the size of the latent space does not have a significant effect on
+%training performance as long as the latent space dimensionality is greater than
+%the total number of source parameters inferred.  Hence we have chosen a latent
+%space size of $n_z=15$ for the network.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Training procedure}\label{app:training_procedure}
@@ -1273,15 +1273,15 @@ become trapped in local minima resulting in a decreasing cost component $L$
 (the reconstruction cost) but a non-evolving \ac{KL}-divergence term that
 remains close to zero. To avoid this state we apply an annealing process in
 which the \ac{KL}-divergence term is initially ignored but its contribution is
-then increased logarithmically from 0 to 1 between the iteration indices
-$10^4$---$10^5$. \hunter{Iteration values will need to be updated}
+then increased logarithmically from 0 to 1 between the epoch indices
+$1\times10^2$---$3\times10^2$. 
  This allows the $q_{\phi}$ encoder to learn the latent space
 representation of the data via the reconstruction cost before being required to
 try to best match its distribution to that modelled by the $r_{\theta_1}$
 encoder. In parallel with the gradual introduction of the \ac{KL} cost term, we
 also find that the stability of training is negatively affected by the
 complexity of our tailored output decoder likelihood functions. To resolve this
-we apply the same annealing procedure over the same iteration range in transitioning
+we apply the same annealing procedure over the same epoch range in transitioning
 between unbound Gaussian likelihoods on all physical parameters to the tailored
 likelihoods.   \hunter{Is this type of annealing still done?}
 
@@ -1290,8 +1290,10 @@ likelihoods.   \hunter{Is this type of annealing still done?}
 %
 As is standard practice in machine learning applications, the cost is computed
 over a batch of training samples and repeated for a pre-defined number of
-iterations. For our purposes, we found that $\sim 10^6$ training
-iterations \hunter{Update this value}, a batch size of $1500$ training samples and a learning rate of
+epochs. An epoch is defined as the point at which the network has been trained 
+on a number of samples equivalent to the size of the entire training set. 
+For our purposes, we found that $\sim 3 \times 10^4$ training
+epochs, a batch size of $1500$ training samples and a learning rate of
 $10^{-4}$ was sufficient. We used a total of $10^7$ training samples in order
 to adequately cover the \ac{BBH} parameter space. We additionally ensure that
 an (effectively) infinite number of noise realizations are employed by making
@@ -1382,23 +1384,23 @@ private communication with the \texttt{Bilby} development team.}
 \toprule
 sampler & parameters \\
 \hline
-\texttt{Dynesty}~\cite{dynesty} & live-points $=1000$ dlogz $=0.1$ nact $=50$  npool $=8$ bound $=$ None sample $=$ uniform\\
+\texttt{Dynesty}~\cite{dynesty} & live-points $=1000$, dlogz $=0.1$, nact $=50$,  npool $=8$, bound $=$ None, sample $=$ uniform\\
 
 %\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=200\,
 %\text{temperatures}=20\,
 %\\ \text{nsamples}=10000\, \text{threads}=10\end{array}$ \\
-\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=200\, 
-\text{temperatures}=20\, \text{burn}\_\text{in}\_\text{nact}=50\, \text{thin}\_\text{by}\_\text{nact}=0.5\, \\
-\text{nsamples}=10000\, \text{threads}=10\, \text{autocorr}\_\text{tol}=50\, \text{autocorr}\_\text{c} \text{safety}=1\, \text{autocorr}\_\text{tau}=1\, \\ 
-\text{gradient}\_\text{tau}=0.1\, 
-\text{gradient}\_\text{mean}\_\text{log}\_\text{posterior}=0.1\, \text{Q}\_\text{tol}=1.01\, 
-\text{min}\_\text{tau}=1\, \text{threads}=1\, \end{array}$ \\
+\texttt{ptemcee}~\cite{ptemcee} & $\begin{array}{c}\text{walkers}=200,\, 
+\text{temperatures}=20,\, \text{burn}\_\text{in}\_\text{nact}=50,\, \text{thin}\_\text{by}\_\text{nact}=0.5,\, \\
+\text{nsamples}=10000,\, \text{threads}=10,\, \text{autocorr}\_\text{tol}=50,\, \text{autocorr}\_\text{c} \text{safety}=1,\, \text{autocorr}\_\text{tau}=1,\, \\ 
+\text{gradient}\_\text{tau}=0.1,\, 
+\text{gradient}\_\text{mean}\_\text{log}\_\text{posterior}=0.1,\, \text{Q}\_\text{tol}=1.01,\, 
+\text{min}\_\text{tau}=1,\, \text{threads}=1,\, \end{array}$ \\
 
-\texttt{CPNest}~\cite{cpnest} & live-points $=2048$ maxmcmc $=1000$ nthreads$=$ None 
-seed$=1994$ dlogz $=0.1$ \\
+\texttt{CPNest}~\cite{cpnest} & live-points $=2048$, maxmcmc $=1000$, nthreads$=$ 1, 
+seed$=1994$, dlogz $=0.1$ \\
 
-\texttt{emcee}~\cite{emcee} & nwalkers $=250$ nsteps $=14000$ nburn$=4000$ a$=1.4$
-burn$\_$in$\_$fraction$=0.25$ burn$\_$in$\_$act$\_$=3 \\
+\texttt{emcee}~\cite{emcee} & nwalkers $=250$, nsteps $=14000$, nburn$=4000$, a$=1.4$,
+burn$\_$in$\_$fraction$=0.25$, burn$\_$in$\_$act$\_$=3 \\
 \botrule
 \end{tabular}
 \label{Tab:sampler_params}
@@ -1428,15 +1430,35 @@ modal at the 1\% level. \texttt{Dynesty} has a worst case that is consistent onl
 $>10\%$ in the worst case. \hunter{Update these values.}    
 
 %
+%\begin{figure*}
+%    \includegraphics[width=\textwidth]{hist-kl.png}
+%    \caption{\label{fig:kl_results} Distributions of \ac{JS}-divergence values
+%between posteriors produced by different samplers. In each panel we show the
+%distribution of \ac{JS}-divergences computed between a single benchmark sampler
+%and every other benchmark sampler over all 250 \ac{GW} test cases (grey). Also
+%plotted in each panel are the corresponding \ac{JS}-divergence distributions
+%between the single benchmark sampler and the \texttt{VItamin} outputs (blue,
+%green, purple, yellow). \hunter{This figure description needs to be changed.}}
+%
+%\end{figure*}
+%
+
+%
 \begin{figure*}
-    \includegraphics[width=\textwidth]{hist-kl.png}
-    \caption{\label{fig:kl_results} Distributions of \ac{JS}-divergence values
-between posteriors produced by different samplers. In each panel we show the
-distribution of \ac{JS}-divergences computed between a single benchmark sampler
-and every other benchmark sampler over all 250 \ac{GW} test cases (grey). Also
-plotted in each panel are the corresponding \ac{JS}-divergence distributions
-between the single benchmark sampler and the \texttt{VItamin} outputs (blue,
-green, purple, yellow).}
+    \includegraphics[width=\textwidth]{JS_IndiPar_dynesty.png}
+    \caption{\label{fig:kl_results} Distributions of \ac{JS}-divergence values between 
+    \texttt{Dynesty} posteriors and posteriors produced by different samplers 
+    as a function 
+    of source parameter. In each box plot we show the distribution of 1-dimensional 
+     \ac{JS}-divergences computed between the benchmark sampler \texttt{Dynesty} 
+     and every other benchmark sampler over all 250 \ac{GW} test cases 
+     (green, maroon, pink). Also plotted are the corresponding 
+     \ac{JS}-divergence distributions between \texttt{VItamin} and \texttt{Dynesty} 
+     (blue). The lower and upper end of boxes represent the 25th and 75th credibility
+      regions respectively. The lower and upper end of the whiskers represent the 5th 
+      and 95th percent credibility regions. The dashed red line represents optimal JS divergence value according to sampler experts ($\sim 0.002$). 
+      The orange line is representative of the median JS value for each distribution. 
+      }
 
 \end{figure*}
 %
