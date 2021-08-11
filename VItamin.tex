@@ -993,6 +993,8 @@ data [one-dimensional dataset length, No. channels].}} &
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Layer 1} & conv(64,3,96)\footnote{one-dimensional
 convolutional filter with arguments (filter size, No. channels, No. filters).} & conv(64,3,96) & conv(64,3,96) \\
+& L2Reg(0.001)\footnote{L2 regularization funciton applied to the kernel weights 
+matrix.} & L2Reg(0.001) & L2Reg(0.001) \\
 & act\footnote{The activation function used.}=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1000,28 +1002,33 @@ convolutional filter with arguments (filter size, No. channels, No. filters).} &
 conv(32,96,96) \\
 & stride(4)\footnote{Striding layer with arguments (stride
 length).} & stride(4) & stride(4) \\
+& L2Reg(0.001) & L2Reg(0.001) & L2Reg(0.001) \\
 & act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Layer 3} & conv(32,96,96) & conv(32,96,96) &
 conv(32,96,96) \\
+& L2Reg(0.001) & L2Reg(0.001) & L2Reg(0.001) \\
 & act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Layer 4} & conv(16,96,96) & conv(16,96,96) &
 conv(16,96,96) \\
 & stride(2) & stride(2) & stride(2) \\
+& L2Reg(0.001) & L2Reg(0.001) & L2Reg(0.001) \\
 & act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Layer 5} & conv(16,96,96) & conv(16,96,96) &
 conv(16,96,96) \\
+& L2Reg(0.001) & L2Reg(0.001) & L2Reg(0.001) \\
 & act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \multirow{2}{*}{Layer 6} & conv(16,96,96) & conv(16,96,96) &
 conv(16,96,96) \\
 & stride(2) & stride(2) & stride(2) \\
+& L2Reg(0.001) & L2Reg(0.001) & L2Reg(0.001) \\
 & act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
