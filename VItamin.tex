@@ -985,123 +985,152 @@ dropout and batch-normalisation layers.
 \backslashbox{Layer}{Network} & $r_{\theta_1}(z|y)$ & $r_{\theta_2}(x|y,z)$ & $q_{\phi}(z|x,y)$ \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Input $y$} & \multirow{2}{*}{[256,3]\footnote{The shape of the
+\multirow{2}{*}{Input $y$} & \multirow{2}{*}{[1024,3]\footnote{The shape of the
 data [one-dimensional dataset length, No. channels].}} &
-\multirow{2}{*}{[256,3]} & \multirow{2}{*}{[256,3]} \\
+\multirow{2}{*}{[1024,3]} & \multirow{2}{*}{[1024,3]} \\
 & & & \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Layer 1} & conv(5,3,33)\footnote{one-dimensional
-convolutional filter with arguments (filter size, No. channels, No. filters).} & conv(5,3,33) & conv(5,3,33) \\
-& act\footnote{The activation function used.}=ReLU & act=ReLU & act=ReLU \\
+\multirow{2}{*}{Layer 1} & conv(64,3,96)\footnote{one-dimensional
+convolutional filter with arguments (filter size, No. channels, No. filters).} & conv(64,3,96) & conv(64,3,96) \\
+& act\footnote{The activation function used.}=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{3}{*}{Layer 2} & conv(8,33,33) & conv(8,33,33) &
-conv(8,33,33) \\
-& maxpool(2,2)\footnote{Max-pooling layer with arguments (pool size, stride
-length).} & maxpool(2,2) & maxpool(2,2) \\
-& act=ReLU & act=ReLU & act=ReLU \\
+\multirow{3}{*}{Layer 2} & conv(32,96,96) & conv(32,96,96) &
+conv(32,96,96) \\
+& stride(4)\footnote{Striding layer with arguments (stride
+length).} & stride(4) & stride(4) \\
+& act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Layer 3} & conv(11,33,33) & conv(11,33,33) &
-conv(11,33,33) \\
-& act=ReLU & act=ReLU & act=ReLU \\
+\multirow{2}{*}{Layer 3} & conv(32,96,96) & conv(32,96,96) &
+conv(32,96,96) \\
+& act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
+\hline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\multirow{2}{*}{Layer 4} & conv(16,96,96) & conv(16,96,96) &
+conv(16,96,96) \\
+& stride(2) & stride(2) & stride(2) \\
+& act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
+\hline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\multirow{2}{*}{Layer 5} & conv(16,96,96) & conv(16,96,96) &
+conv(16,96,96) \\
+& act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
+\hline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\multirow{2}{*}{Layer 6} & conv(16,96,96) & conv(16,96,96) &
+conv(16,96,96) \\
+& stride(2) & stride(2) & stride(2) \\
+& act=LeakyReLU & act=LeakyReLU & act=LeakyReLU \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{2}{*}{Input $z,x$} & \multirow{2}{*}{-} &
-flatten\footnote{Take the multi-channel output of the previous layer and
-reshape it into a one-dimensional vector.}$\rightarrow$[4224] & flatten$\rightarrow$[4224] \\
-& & append\footnote{Append the argument to the current dataset.}($z$)$\rightarrow$[4234] & append($x$)$\rightarrow$[4231] \\
+\multirow{2}{*}{Input $z,x$} & \multirow{2}{*}{flatten\footnote{Take the multi-channel output of the previous layer and
+reshape it into a one-dimensional vector.}$\rightarrow$[6144]} &
+flatten$\rightarrow$[6144] & flatten$\rightarrow$[6144] \\
+& & append\footnote{Append the argument to the current dataset.}($z$)$\rightarrow$[6159] & append($x$)$\rightarrow$[6159] \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{3}{*}{Layer 4} & 
+\multirow{3}{*}{Layer 7} & 
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-conv(10,33,33) \\
-maxpool(2,2) \\
-act=ReLU \\
+FC(6159,4096)\footnote{Fully
+connected layer with arguments (input size, output size).}\\
+act=LeakyReLU \\
 \end{tabular}
 } & 
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-FC(4234,2048)\footnote{Fully
-connected layer with arguments (input size, output size).}\\
-dropout(0.2)\footnote{Drop-out layer with argument (drop-out
-fraction).} \\
-act=ReLU \\
+FC(6159,4096) \\
+act=LeakyReLU \\
 \end{tabular}
 } &
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-FC(4231,2048) \\
-dropout(0.2) \\
-act=ReLU \\
+FC(6159,4096) \\
+act=LeakyReLU \\
 \end{tabular}
 } \\
 & & & \\
 & & & \\
 \hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{3}{*}{Layer 5} &
+\multirow{3}{*}{Layer 8} & 
 \multirow{3}{*}{
 \begin{tabular}[t]{c}
-conv(10,33,33) \\ 
-act=ReLU \\
-flatten$\rightarrow$[2112] \\
+FC(4096,2048)\\
+act=LeakyReLU \\
 \end{tabular}
-}
- & FC(2048,2048) & FC(2048,2048) \\
- & & dropout(0.2) & dropout(0.2) \\
- & & act=ReLU & act=ReLU \\
- \hline
+} & 
+\multirow{3}{*}{
+\begin{tabular}[t]{c}
+FC(4096,2048) \\
+act=LeakyReLU \\
+\end{tabular}
+} &
+\multirow{3}{*}{
+\begin{tabular}[t]{c}
+FC(4096,2048) \\
+act=LeakyReLU \\
+\end{tabular}
+} \\
+& & & \\
+& & & \\
+\hline
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{4}{*}{Layer 6} & 
+\multirow{3}{*}{Layer 9} & 
+\multirow{3}{*}{
+\begin{tabular}[t]{c}
+FC(2048,1024)\\
+act=LeakyReLU \\
+\end{tabular}
+} & 
+\multirow{3}{*}{
+\begin{tabular}[t]{c}
+FC(2048,1024)\\
+act=LeakyReLU \\
+\end{tabular}
+} &
+\multirow{3}{*}{
+\begin{tabular}[t]{c}
+FC(2048,1024) \\
+act=LeakyReLU \\
+\end{tabular}
+} \\
+& & & \\
+& & & \\
+\hline
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\multirow{4}{*}{Layer 10} & 
 \multirow{4}{*}{
 \begin{tabular}[t]{c}
-FC(2112,2048) \\
-dropout=0.2 \\
-act=ReLU \\
+FC(1024,960) \\
+act=None \\
+output=$\mu_{r_1}$ \\
+$\rightarrow$[15,32,2]\footnote{The $r_{\theta_1}$ output has size
+[latent space dimension, No. modes, No. parameters defining each
+component per dimension].} \\
 \end{tabular}
 } & \multirow{4}{*}{
 \begin{tabular}[t]{c}
-FC(2048,14) \\
+FC(1024,30) \\
 act=(Sigmoid,-ReLU)\footnote{Different activations are used for different
 parameters. For the scaled parameter means we use
 sigmoids and for log-variances we use negative ReLU functions.} \\
 output=$\mu_{r_2}$ \\
-$\rightarrow$[7,2]\footnote{The $r_{\theta_2}$ output has size [physical space dimension, No. parameters defining
+$\rightarrow$[15,2]\footnote{The $r_{\theta_2}$ output has size [physical space dimension, No. parameters defining
 the distribution per dimension].} \\
 \end{tabular}
 } &
 \multirow{4}{*}{
 \begin{tabular}[t]{c}
-FC(2048,20) \\
+FC(1024,30) \\
 act=None \\
 output=$\mu_{q}$ \\
-$\rightarrow$[10,2]\footnote{The $q_{\phi}$ output has size [latent space
+$\rightarrow$[15,2]\footnote{The $q_{\phi}$ output has size [latent space
 dimension, No. parameters defining the distribution per dimension].} \\
 \end{tabular}
 } \\
-& & & \\
-& & & \\
-& & & \\
-\hline
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{3}{*}{Layer 7} & FC(2048,2048) & & \\
-& dropout(0.2) & & \\
-& act=ReLU & & \\
-\hline
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\multirow{4}{*}{Layer 8} & \multirow{4}{*}{
-\begin{tabular}[t]{c}
-FC(2048,320) \\
-act=None \\
-output=$\mu_{r_1}$ \\
-$\rightarrow$[10,16,2]\footnote{The $r_{\theta_1}$ output has size
-[latent space dimension, No. modes, No. parameters defining each
-component per dimension].} \\
-\end{tabular}
-} & & \\
 & & & \\
 & & & \\
 & & & \\
@@ -1367,7 +1396,7 @@ update and the phase/psi reparameterization trick.}
 parameter and for each benchmark sampler and \texttt{VItamin}. The curves were
 constructed using the 250 test datasets and the dashed black diagonal line
 indicates the ideal result. The best and worst-case $p$-values associated with each
-sampling method are (0.918,  0.047\texttt{VItamin}), (0.912, 0.007\texttt{Dynesty}), (0.931,0.007
+sampling method are (0.918,  0.047 \texttt{VItamin}), (0.912, 0.007 \texttt{Dynesty}), (0.931,0.007
 \texttt{ptemcee}), (0.706,0.007 \texttt{CPNest}), (0.667,0.004 \texttt{emcee} ). 
 }
 \end{figure}
