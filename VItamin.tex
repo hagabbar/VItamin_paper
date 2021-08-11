@@ -344,16 +344,15 @@ number of specific features that were included in order to tailor the analysis t
 section but in summary, the primary modifications are as follows, 1) Physically 
 appropriate output decoder distributions are used for each output parameter: 
 von Mises-Fisher distribution on the sky location parameters, von Mises 
-distributions on periodic parameters, conditional truncated Gaussians for 
-the component masses, and truncated Gaussians for
+distributions on $\phi_{12},\phi_{jl}$,  we model $\psi, \phi$ as locations in an 
+abstract 2D plane\hunter{Added small modification here to address phase/psi},  and truncated Gaussians for
 parameters with defined prior bounds. 2) Each of the
 functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modelled using deep
 convolutional neural networks with multi-detector time-series represented as
 independent input channels. 3) The $r_{\theta_1}$ encoder models an $M=32$ component
 Gaussian mixture model within the $n_{z}=15$ dimensional latent space in order
 to capture the corresponding typical multi-modal nature of \ac{GW} posterior
-distributions.  \hunter{Possible scope to briefly mention polar angle representation 
-as well as the phase/psi reparameterization trick?}.
+distributions.
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{network_setup.png}
@@ -488,11 +487,9 @@ dataset in Fig.~\ref{fig:corner_plot} where strong agreement between 2
 \texttt{Bilby} samplers (\texttt{Dynesty} in blue, and \texttt{ptemcee} in green) and the
 \ac{CVAE} (red) is clear. It is also evident that whilst we refer to the
 \texttt{Bilby} sampler results as benchmark cases, different existing samplers
-do not perfectly agree with each other. For each of our 250 test cases we see
+do not perfectly agree with each other.  For each of our 250 test cases we see
 equivalent levels of disparity between pairs of benchmark samplers \emph{and}
-between any benchmark sampler and our \ac{CVAE} results.  \hunter{This interpretation 
-of the results may need to be reworded depending on the message we want 
-to send}.
+between any benchmark sampler and our \ac{CVAE} results. 
 
 %
 % mention the p-p plot and KL distribution results
@@ -501,17 +498,19 @@ Figures~\ref{fig:pp_plot} and \ref{fig:kl_results} (see the Methods section)
 show the results of 2 statistical tests (the \ac{PP} plot test and
 \ac{JS}-divergence tests) performed on the entire test dataset and between all
 samplers (\texttt{Dynesty}, \texttt{ptemcee}, \texttt{CPNest}, \texttt{emcee}, and \texttt{VItamin}). In
-both tests the quality of the \texttt{VItamin} results are indistinguishable from the
+both tests the quality of the \texttt{VItamin} results are consistent with the
 benchmark samplers. The \ac{PP} plot results specifically indicate that the
 Bayesian one-dimensional marginalised posteriors from each approach are
 self-consistent from a frequentist perspective (e.g., the true values lie
 within the $X\%$ confidence interval for $X\%$ of the test cases). The second
 test computes the distribution of \ac{JS}-divergences between posteriors
-conditioned on the same test data $y$ from pairs of samplers. In all cases this
-measure of ``distribution similarity'' between \texttt{VItamin} and any particular
-benchmark sampler is entirely consistent with the distribution between that
-benchmark sampler and any other \hunter{Need to slightly reword this 
-to reflect the new 1-D JS plots.}.
+conditioned on the same test data $y$ from the ``gold standard'' benchmark 
+sampler \texttt{Dynesty} and every other benchmark sampler (including 
+\texttt{VItamin}~\hunter{I reworded this sentence here}.  This measure of ``
+distribution similarity'' shows that the results of \texttt{VItamin} vs. 
+\texttt{Dynesty} generally lies between those of  \texttt{CPNest} vs. 
+\texttt{Dynesty} and \texttt{ptemcee} vs. \texttt{Dynesty}~\hunter{I reworded 
+this sentence here.}.
 
 %
 % discuss the speed of the analysis
@@ -601,8 +600,7 @@ degree of accuracy, Bayesian posterior probability distributions generated
 through machine learning. This is accomplished using a \ac{CVAE} trained on
 simulated \ac{GW} signals and does not require the input of precomputed
 posterior estimates. We have demonstrated that our neural network model, which
-when trained, can reproduce \hunter{Does ``reproduce'' need to be walked back 
-a bit?} complete and accurate posterior estimates in
+when trained, can produce \hunter{Changed this to produce rather than reproduce.} complete and accurate posterior estimates in
 a fraction of a second, achieves the same quality of results as the
 trusted benchmark analyses used within the LIGO-Virgo Collaboration.
 
@@ -656,7 +654,7 @@ in training time and a similar increase on the \ac{GPU} memory
 requirement. We note that with the exception of requiring one-dimensional
 convolutional layers and an increase in the amount of training data to
 efficiently deal with a multi-detector analysis, the network complexity has not
-increased \hunter{Not sure if this statement is still accurate?} 
+increased 
 with the dimensionality of the physical parameter space nor with the
 sampling rate of the input data. We therefore do not anticipate that extending
 the parameter space to lower masses will be problematic. 
@@ -1147,7 +1145,6 @@ dimension, No. parameters defining the distribution per dimension].} \\
 \label{Tab:network_design}
 \end{table*}  
 
-\hunter{Network design values need to be updated}
 
 %
 % describe the r1 network
@@ -1320,7 +1317,7 @@ also find that the stability of training is negatively affected by the
 complexity of our tailored output decoder likelihood functions. To resolve this
 we apply the same annealing procedure over the same epoch range in transitioning
 between unbound Gaussian likelihoods on all physical parameters to the tailored
-likelihoods.   \hunter{Is this type of annealing still done?}
+likelihoods. 
 
 %
 % Some practical aspects of the training
@@ -1390,7 +1387,7 @@ procedure and hence sampling from our latent model $r_{\theta}(x|y)$ (see
 Eq.~\ref{eq:latent_model}).
 
 \hunter{Will probably need to mention somewhere in here the polar representation 
-update and the phase/psi reparameterization trick.}
+update and the phase/psi reparameterization trick.  Would you like to write this bit here Chris?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Additional tests}
@@ -1493,7 +1490,7 @@ $>0.4\%$ in the worst case.
      \ac{JS}-divergence distributions between \texttt{VItamin} and \texttt{Dynesty} 
      (blue). The lower and upper end of boxes represent the 25th and 75th credibility
       regions respectively. The lower and upper end of the whiskers represent the 5th 
-      and 95th percent credibility regions. The dashed red line represents optimal JS divergence value according to sampler experts ($\sim 0.002$). 
+      and 95th percent credibility regions. 
       The orange line is representative of the median JS value for each distribution. 
       }
 
@@ -1508,20 +1505,24 @@ between distributions. In Fig.~\ref{fig:kl_results} we use this quantity to
 compare the output posterior estimates between samplers for the same input test
 data. To do this we run each independent sampler (including \texttt{VItamin})
 on the same test data to produce samples from the corresponding posterior. We
-then compute the \ac{JS}-divergence between the output distributions from each
-sampler with every other sampler~\cite{4839047}.  For distributions that are
-identical, the \ac{JS}-divergence {should} equal zero but since we are
+then compute the \ac{JS}-divergence between the single \ac{GW} source parameter 
+output distributions from each
+sampler with the output distributions from the \texttt{Dynesty} sampler~\cite{4839047}.  
+For distributions that are
+identical, the \ac{JS}-divergence \textit{should} equal zero but since we are
 representing our posterior distributions using finite numbers of samples,
 identical distributions result in \ac{JS}-divergence values $\mathcal{O}(X)$.
 In Fig.~\ref{fig:kl_results} we show the distributions of these
-\ac{JS}-divergences for the 250 test \ac{GW} samples. In each panel we plot the
-distribution of \ac{JS}-divergences obtained when comparing one of the 4
-benchmark samplers with all other benchmark samplers (excluding
-\texttt{VItamin}). We also plot the distribution of \ac{JS}-divergences
-obtained when comparing the same sampler with \texttt{VItamin} alone. In all 4
-cases the \texttt{VItamin} results show distributions completely consistent
-with the deviations observed between benchmark samplers. \hunter{will need to 
-reword this to talk about 1-dimensional JS values.}  
+\ac{JS}-divergences for the 250 test \ac{GW} samples as a function 
+of \ac{GW} source parameter.  We see that the \ac{JS}-divergence distribution
+of \texttt{Dynesty} vs. \texttt{emcee} contains the highest \ac{JS}-divergence values 
+out of all samplers, whereas \texttt{Dynesty} vs.  \texttt{ptemcee} seems to 
+show the most similarity between posterior distributions.  It is also shown that 
+\texttt{VItamin} vs. \texttt{Dynesty} \ac{JS}-divergence distributions generally 
+lie within similar levels of disagreement as those from both \texttt{CPNest} vs. 
+\texttt{Dynesty} and \texttt{ptemcee} vs. \texttt{Dynesty}.  \hunter{I added my own 
+interpretation of the results here as an addition.}
+  
 
 \bibliographystyle{apsrev4-1}
 \bibliography{references}% Produces the bibliography via BibTeX.
