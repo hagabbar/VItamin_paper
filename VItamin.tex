@@ -344,8 +344,8 @@ number of specific features that were included in order to tailor the analysis t
 section but in summary, the primary modifications are as follows, 1) Physically 
 appropriate output decoder distributions are used for each output parameter: 
 von Mises-Fisher distribution on the sky location parameters, von Mises 
-distributions on $\phi_{12},\phi_{jl}$,  we model $\psi, \phi$ as locations in an 
-abstract 2D plane\hunter{Added small modification here to address phase/psi},  and truncated Gaussians for
+distributions on $\phi_0,\psi,\phi_{12},\phi_{jl}$,  a reparameterisation of $\psi, \phi_0$ 
+as locations in an abstract 2D plane,  and truncated Gaussians for
 parameters with defined prior bounds. 2) Each of the
 functions $r_{\theta_1},r_{\theta_2}$, and $q_{\phi}$ are modelled using deep
 convolutional neural networks with multi-detector time-series represented as
@@ -413,16 +413,17 @@ $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the sky position
 $\alpha,\delta$, the binary inclination $\Theta_{jn}$, the \ac{GW} polarisation
 angle ${\psi}$, the time of coalescence $t_{0}$, the spin parameters $a_1,a_2,
 \Theta_1,\Theta_2,\phi_{12},\phi_{jl}$, and the phase at coalescence
-$\phi_0$. For each parameter we use a uniform prior with the exception of
-the declination and inclination parameters for which we use priors uniform in
-$\cos\delta$ and $\sin\Theta_{jn}$ respectively. The corresponding prior ranges
+$\phi_0$. For each parameter we use a uniform prior with the exception of 
+the declination, inclination, and tilt angle parameters for 
+which we use priors uniform in $\cos\delta$, $\sin\Theta_{jn}$, $\sin\Theta_1$, 
+and $\sin\Theta_2$ respectively.The corresponding prior ranges
 are defined in Table~\ref{tab:prior_ranges} and result in a  \ac{SNR}
 distribution that has a median value of $\text{SNR}\approx 9$ and ranging between 0 and 75.
 We use a sampling frequency of $1024$~Hz, a time-series duration of 1 second, and
 the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
-\texttt{Bilby}. For each run and sampler we extract $\mathcal{O}(8^3)$
+\texttt{Bilby}. For each run and sampler we extract $\mathcal{O}(8000)$
 samples from the posterior on the 15 physical parameters.  
 
 %
@@ -444,13 +445,13 @@ variance Gaussian noise). The \texttt{VItamin} posterior results are produced by
 passing each of our $250$ whitened noisy testing set of \ac{GW} waveforms
 as input into the testing path of the pre-trained
 \ac{CVAE} (Fig.~\ref{fig:network_config}). For each input waveform we sample until we
-have generated $8^3$ posterior samples on 14 physical parameters
-$x=(m_1,m_2,d_{\text{L}},t_{0},\Theta_{jn},a_1,a_2,\Theta_1,\Theta_2,\psi,
-\phi_{12},\phi_{jl},\alpha,\delta)$. We choose to
-output a subset of the full 15-dimensional space to demonstrate that parameters
-(such as $\phi_0$ in this case) can (if desired) be
-marginalised out within the \ac{CVAE} procedure itself, rather than after
-training. 
+have generated $8000$ posterior samples on 15 physical parameters
+$x=(m_1,m_2,d_{\text{L}},t_{0},\Theta_{jn},a_1,a_2,\Theta_1,\Theta_2,\psi, \phi_0,
+\phi_{12},\phi_{jl},\alpha,\delta)$.  \hunter{I added note here}
+We do not include $\phi_0$ in our results 
+because we apply phase marginalisation to all Bayesian samplers. Phase marginalisation is 
+applied since this 
+improves overall stability and runtime of the samplers~\cite{1811.02042}.
 
 %
 % Corner plot results
@@ -466,7 +467,8 @@ output from our benchmark analyses (using the \texttt{Dynesty} and \texttt{ptemc
 samplers within \texttt{Bilby}). In each case, the contour boundaries enclose
 $68,90$ and $95\%$ probability. One dimensional histograms of the posterior
 distribution for each parameter from both methods are plotted along the
-diagonal. Black vertical and horizontal lines denote the true parameter
+diagonal. Vertical dashed lines in the one dimensional plots are representative of the
+ $5\%$ --- $95\%$ symmetric confidence bounds of the 3 sampler 1 dimensional posteriors.Orange vertical and horizontal lines denote the true parameter
 values of the simulated signal. At the top of the figure we include a Mollweide
 projection of the sky location posteriors from all three analyses. All results
 presented in this letter correspond to a three-detector configuration but for
@@ -483,12 +485,14 @@ We can immediately illustrate the accuracy of our machine learning predictions
 by directly plotting 2 and one-dimensional marginalised posteriors generated
 using the output samples from our \texttt{VItamin} and \texttt{Bilby}
 approaches superimposed on each other. We show this for one example test
-dataset in Fig.~\ref{fig:corner_plot} where strong agreement between 2
-\texttt{Bilby} samplers (\texttt{Dynesty} in blue, and \texttt{ptemcee} in green) and the
+dataset in Fig.~\ref{fig:corner_plot} where strong agreement between the
+\texttt{Bilby} sampler \texttt{Dynesty} in blue,  and the
 \ac{CVAE} (red) is clear. It is also evident that whilst we refer to the
 \texttt{Bilby} sampler results as benchmark cases, different existing samplers
-do not perfectly agree with each other.  For each of our 250 test cases we see
-equivalent levels of disparity between pairs of benchmark samplers \emph{and}
+do not perfectly agree with each other(i.e. \texttt{ptemcee} in green) despite using 
+expert recommended sampler settings \hunter{I added something here}.  For each of our 
+250 test cases we see
+reasonable levels of disparity between pairs of benchmark samplers \emph{and}
 between any benchmark sampler and our \ac{CVAE} results. 
 
 %
@@ -498,7 +502,7 @@ Figures~\ref{fig:pp_plot} and \ref{fig:kl_results} (see the Methods section)
 show the results of 2 statistical tests (the \ac{PP} plot test and
 \ac{JS}-divergence tests) performed on the entire test dataset and between all
 samplers (\texttt{Dynesty}, \texttt{ptemcee}, \texttt{CPNest}, \texttt{emcee}, and \texttt{VItamin}). In
-both tests the quality of the \texttt{VItamin} results are consistent with the
+both tests the quality of the \texttt{VItamin} results are reasonably consistent with the
 benchmark samplers. The \ac{PP} plot results specifically indicate that the
 Bayesian one-dimensional marginalised posteriors from each approach are
 self-consistent from a frequentist perspective (e.g., the true values lie
@@ -516,7 +520,7 @@ this sentence here.}.
 % discuss the speed of the analysis
 %
 The dominating computational cost of running \texttt{VItamin} lies in the
-training time, which takes $\mathcal{O}(4-5)$ days to complete. We
+training time, which takes $\mathcal{O}(7)$ days to complete. We
 stress that once trained, there is no need to retrain the network unless the
 user wishes to use different priors $p(x)$ or assume different noise
 characteristics. The speed at which posterior samples are generated for all
@@ -524,7 +528,7 @@ samplers used, including \texttt{VItamin}, is shown in Table~\ref{Tab:speed}.
 Run-time for the benchmark samplers is defined as the time to complete their
 analyses when configured using the parameter choices defined in
 Table~\ref{Tab:sampler_params}. For \texttt{VItamin}, this time is defined as
-the total time to produce $8^3$ samples. For our test case of \ac{BBH} signals
+the total time to produce $8000$ samples. For our test case of \ac{BBH} signals
 \texttt{VItamin} produces samples from the posterior at a rate which is $\sim
 6$ orders of magnitude faster than our benchmark analyses using current
 inference techniques. 
@@ -909,12 +913,12 @@ non-Gaussian detector noise.
 \caption{\label{fig:loss_log} The cost as a function of training epoch.
 We show the total cost function (green) together with its component parts:
 the \ac{KL}-divergence component (orange) and the reconstruction component
-(blue) which are simply summed to obtain the total. The solid curves correspond
-to the cost computed on each batch of training data and the dashed curves
+(blue) which are simply summed to obtain the total. The dark curves correspond
+to the cost computed on each batch of training data and the lighter curves
 represent the cost when computed on independent validation data. The close
 agreement between training and validation cost values indicates that the
 network is not overfitting to the training data. The change in behavior of the
-cost between $1\times10^2$ and $3\times10^2$ epochs is a consequence of gradually
+cost between $10^2$ and $3\times10^2$ epochs is a consequence of gradually
 introducing the \ac{KL} cost term contribution via an annealing process.} 
 \end{figure}
 
@@ -1153,16 +1157,14 @@ The $r_{\theta_1}$ network takes the input time-series data $y$ in the form of
 multi-channel 1-dimensional vectors where channels represent different \ac{GW}
 detectors. After passing through a series of one-dimensional convolutional and fully connected
 layers, the output then defines the parameters of a $n_z$-dimensional
-(diagonal) Gaussian mixture model in the latent space. We label these
-parameters as $\mu_{r_1}$ containing $n_z=15$ means and log-covariances
-together with the $M=32$ mixture component weights. The motivation for using this
+(diagonal) Gaussian mixture model in the latent space. We label these 
+parameters as $\mu_{r_1}$ containing $n_z\times M$ means 
+and log-covariances, where $M=32$ mixture component weights 
+and $n_z = 15$.The motivation for using this
 mixture model representation comes from the multi-modal nature of \ac{GW}
 posterior distributions. The encoder network can use this flexibility to
 represent the $y$ time-series data as belonging to multiple possible latent
-space regions. Due to this added flexibility we note that the $r_{\theta_1}$
-network is generally required to be more complex to learn this more complicated
-distribution, hence the additional layers in comparison to the other network
-components.   
+space regions. 
 
 %
 % describe the q network
@@ -1189,19 +1191,35 @@ $q_{\phi}$ network but with a difference in the form of their outputs. The
 $r_{\theta_2}$ output represents the parameters ($\mu_{r_2}$) that govern an
 $n_x$-dimensional distribution in the physical parameter space and we have
 carefully chosen appropriate distributions for each of the physical parameters.
-For the luminosity distance, the binary inclination, the time of
+For the two component masses, luminosity distance, the binary inclination, the time of
 coalescence, and spin parameters $a_1,a_2,\Theta_1,\Theta_2$ we have 
 adopted truncated Gaussian distributions where the
 truncation occurs at the predefined prior boundaries of the respective
-parameter space dimensions. For the component masses we have adopted
-conditional truncated Gaussians where the conditional aspect is to ensure that
-$m_{1}\geq m_{2}$\footnote{This additional complication of requiring conditional
-decoder output distributions could be avoided if a different mass
-parameterisation were chosen, e.g., total mass and symmetric mass ratio.}. 
-Independent von Mises distributions are applied for the polarization angle, 
+parameter space dimensions. 
+%For the component masses we have adopted
+%conditional truncated Gaussians where the conditional aspect is to ensure that
+%$m_{1}\geq m_{2}$\footnote{This additional complication of requiring conditional
+%decoder output distributions could be avoided if a different mass
+%parameterisation were chosen, e.g., total mass and symmetric mass ratio.}. 
+Independent von Mises distributions are applied for the polarization angle,  phase, 
 and spin parameters $\phi_{12},\phi_{jl}$ in order to capture the periodic 
 nature of these parameters. Finally, we use the von Mises-Fisher distribution
 to model the right ascension and declination (sky) parameters.    
+
+%
+% Reparameterisation trick on phase/psi
+%
+\hunter{I added a small explanation of phase/psi reparameterisation.}
+We additionally reparameterise phase and the polarisation angle to lie within 
+an abstract 2D plane.  This is done in order to simplify the search space for 
+the neural network and was partly influenced by the work of~\cite{10.1093/mnras/stv1584}. 
+This is accomplished by representing $\psi$ and $\phi_ 0$ as two new parameters 
+$\psi^{'}$ and $X$. $X$ is given as the modulus of $\frac{\psi+\phi_0}{\pi}$ and 
+$\psi^{'}$ is given as the modulus of $\frac{\psi}{\pi/2}$. The parameterisation given above acts to effectively reduce the number 
+of modes seen by the network, thus making the search space simpler. After training, the network 
+will output posterior samples in the $X,\psi^{'}$ abstract space  and we 
+must then convert back to the original $\psi$ and $\phi_ 0$ space to produce our final 
+set of posterior samples. 
 
 %
 % decribe the hyper-parameter optimisation analysis
@@ -1386,9 +1404,6 @@ joint posterior distribution can then be obtained by simply repeating this
 procedure and hence sampling from our latent model $r_{\theta}(x|y)$ (see
 Eq.~\ref{eq:latent_model}).
 
-\hunter{Will probably need to mention somewhere in here the polar representation 
-update and the phase/psi reparameterization trick.  Would you like to write this bit here Chris?}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Additional tests}
 %
@@ -1480,18 +1495,7 @@ $>0.4\%$ in the worst case.
 %
 \begin{figure*}
     \includegraphics[width=\textwidth]{JS_IndiPar_dynesty.png}
-    \caption{\label{fig:kl_results} Distributions of \ac{JS}-divergence values between 
-    \texttt{Dynesty} posteriors and posteriors produced by different samplers 
-    as a function 
-    of source parameter. In each box plot we show the distribution of 1-dimensional 
-     \ac{JS}-divergences computed between the benchmark sampler \texttt{Dynesty} 
-     and every other benchmark sampler over all 250 \ac{GW} test cases 
-     (green, maroon, pink). Also plotted are the corresponding 
-     \ac{JS}-divergence distributions between \texttt{VItamin} and \texttt{Dynesty} 
-     (blue). The lower and upper end of boxes represent the 25th and 75th credibility
-      regions respectively. The lower and upper end of the whiskers represent the 5th 
-      and 95th percent credibility regions. 
-      The orange line is representative of the median JS value for each distribution. 
+    \caption{\label{fig:kl_results} \hunter{New description here} We show JS divergence values for all 250 test samples as a function of test sample source parameter for \texttt{Dynesty} against every other sampling approach. Each sampler method vs. another sampler method are denoted as different colors. The lower and upper end of boxes represent the 25th and 75th percentile credible regions respectively. The lower and upper end of the whiskers represent the 5th and 95th percentile credible regions.  The orange lines are representative of the median JS values for each pair of compared samplers. We see here that \texttt{VItamin} performs to within a degree of acscuracy which is reasonably consistent with other Bayesian samplers when looking at predictions on an individual source parameter basis.
       }
 
 \end{figure*}
@@ -1500,28 +1504,33 @@ $>0.4\%$ in the worst case.
 %
 % discuss the JS results
 %
-The \ac{JS}-divergence is generally used as measure of the similarity
-between distributions. In Fig.~\ref{fig:kl_results} we use this quantity to
-compare the output posterior estimates between samplers for the same input test
-data. To do this we run each independent sampler (including \texttt{VItamin})
-on the same test data to produce samples from the corresponding posterior. We
-then compute the \ac{JS}-divergence between the single \ac{GW} source parameter 
-output distributions from each
-sampler with the output distributions from the \texttt{Dynesty} sampler~\cite{4839047}.  
-For distributions that are
-identical, the \ac{JS}-divergence \textit{should} equal zero but since we are
-representing our posterior distributions using finite numbers of samples,
-identical distributions result in \ac{JS}-divergence values $\mathcal{O}(X)$.
-In Fig.~\ref{fig:kl_results} we show the distributions of these
-\ac{JS}-divergences for the 250 test \ac{GW} samples as a function 
-of \ac{GW} source parameter.  We see that the \ac{JS}-divergence distribution
-of \texttt{Dynesty} vs. \texttt{emcee} contains the highest \ac{JS}-divergence values 
-out of all samplers, whereas \texttt{Dynesty} vs.  \texttt{ptemcee} seems to 
-show the most similarity between posterior distributions.  It is also shown that 
-\texttt{VItamin} vs. \texttt{Dynesty} \ac{JS}-divergence distributions generally 
-lie within similar levels of disagreement as those from both \texttt{CPNest} vs. 
-\texttt{Dynesty} and \texttt{ptemcee} vs. \texttt{Dynesty}.  \hunter{I added my own 
-interpretation of the results here as an addition.}
+\hunter{New description of results have been added here.}
+The \ac{JS}-divergence is generally used as measure of the similarity 
+between distributions.  In Fig.~\ref{fig:kl_results} 
+we use this quantity to compare the output posterior estimates between 
+samplers for the same input test data. To do this we run each independent 
+sampler (including \texttt{VItamin}) on the same test data to produce 
+samples from the corresponding posterior. We then compute the 
+1-dimensional \ac{JS}-divergence between the output single 
+parameter distributions from each sampler with every 
+other sampler~\cite{4839047}. For distributions that are 
+identical, the \ac{JS}-divergence {should} equal zero but since we 
+are representing our posterior distributions using finite numbers of 
+samples, identical distributions result in \ac{JS}-divergence values
+$\mathcal{O}(X)$.  
+In Fig. \ref{fig:kl_results}, it can be seen that \texttt{Dynesty}  
+vs. \texttt{VItamin} JS values closely match results from 
+\texttt{Dynesty} vs. \texttt{Ptemcee} for nearly all parameters, with 
+the exception of $t_0$, $\theta_{jn}$, $\phi_{jl}$, $\alpha$ and 
+$\delta$. \texttt{VItamin} predictions have slightly 
+higher \ac{JS} values across all source parameters except for the 
+spin parameters. \texttt{Dynesty} vs. CPNest seems to generally 
+have similar JS values to \texttt{Dynesty} vs. \texttt{Ptemcee} with 
+the exception of having broader credible intervals on $t_0$, 
+$\theta_{jn}$, $\phi_{jl}$, $\alpha$ and $\delta$. 
+\texttt{Dynesty} vs. \texttt{Emcee} generally has higher JS values than 
+all other methods, which is expected given the difficulty of 
+\texttt{Emcee} convergence.
   
 
 \bibliographystyle{apsrev4-1}
