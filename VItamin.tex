@@ -412,12 +412,12 @@ For the benchmark analysis we assume that 15 parameters are
 unknown: the component masses
 $m_1,m_2$, the luminosity distance $d_{\text{L}}$, the sky position
 $\alpha,\delta$, the binary inclination $\Theta_{jn}$, the \ac{GW} polarisation
-angle ${\psi}$, the time of coalescence $t_{0}$, the spin parameters $a_1,a_2,
+angle ${\psi}$, the time of coalescence $t_{0}$, and the spin parameters $a_1,a_2,
 \Theta_1,\Theta_2,\phi_{12},\phi_{jl}$, and the phase at coalescence
-$\phi_0$. For each parameter we use a uniform prior with the exception of 
+$\phi_0$. We internally  For each parameter we use a uniform prior with the exception of 
 the declination, inclination, and tilt angle parameters for 
 which we use priors uniform in $\cos\delta$, $\sin\Theta_{jn}$, $\sin\Theta_1$, 
-and $\sin\Theta_2$ respectively.The corresponding prior ranges
+and $\sin\Theta_2$ respectively. The corresponding prior ranges
 are defined in Table~\ref{tab:prior_ranges} and result in a  \ac{SNR}
 distribution that has a median value of $\text{SNR}\approx 9$ and ranging between 0 and 75.
 We use a sampling frequency of $1024$~Hz, a time-series duration of 1 second, and
@@ -503,7 +503,8 @@ Figures~\ref{fig:pp_plot} and \ref{fig:kl_results} (see the Methods section)
 show the results of 2 statistical tests (the \ac{PP} plot test and
 \ac{JS}-divergence tests) performed on the entire test dataset and between all
 samplers (\texttt{Dynesty}, \texttt{ptemcee}, \texttt{CPNest}, \texttt{emcee}, and \texttt{VItamin}). In
-both tests the quality of the \texttt{VItamin} results are reasonably consistent with the
+both tests the quality of the \texttt{VItamin} results are~\hunter{I changed this.}
+ reasonably consistent with the
 benchmark samplers. The \ac{PP} plot results specifically indicate that the
 Bayesian one-dimensional marginalised posteriors from each approach are
 self-consistent from a frequentist perspective (e.g., the true values lie
@@ -650,7 +651,7 @@ manner on a vastly reduced time scale.
 % future work, current limitations and prospects
 %
 For \ac{BBH} signals, \ac{GW} data is usually sampled at $1$---$4$ kHz
-dependent upon the mass of binary. We have chosen to use the noticeably low
+dependent upon the mass of the binary. We have chosen to use the noticeably low
 sampling rate of 1024Hz in order to decrease the computational time
 required to develop our approach and the computational burden of computing our
 250 benchmark analyses for each of 4 benchmark samplers.  We have found that 
@@ -1521,16 +1522,16 @@ samples, identical distributions result in \ac{JS}-divergence values
 $\mathcal{O}(X)$.  
 In Fig. \ref{fig:kl_results}, it can be seen that \texttt{Dynesty}  
 vs. \texttt{VItamin} JS values closely match results from 
-\texttt{Dynesty} vs. \texttt{Ptemcee} for nearly all parameters, with 
+\texttt{Dynesty} vs. \texttt{ptemcee} for nearly all parameters, with 
 the exception of $\phi_{12}$ and $\psi$. \texttt{VItamin} predictions have slightly 
 higher \ac{JS} values across all source parameters except for the 
 spin parameters. \texttt{Dynesty} vs. \texttt{CPNest} seems to generally 
-have similar \ac{JS} values to \texttt{Dynesty} vs. \texttt{Ptemcee} with 
+have similar \ac{JS} values to \texttt{Dynesty} vs. \texttt{ptemcee} with 
 the exception of having broader credible intervals on $t_0$, 
 $\theta_{jn}$, $\phi_{jl}$, $\alpha$ and $\delta$. 
-\texttt{Dynesty} vs. \texttt{Emcee} generally has higher JS values than 
+\texttt{Dynesty} vs. \texttt{emcee} generally has higher JS values than 
 all other methods, which is expected given the difficulty of 
-\texttt{Emcee} convergence.
+\texttt{emcee} convergence.
   
 
 \bibliographystyle{apsrev4-1}
