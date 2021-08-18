@@ -138,18 +138,19 @@ for gravitational-wave astronomy}
 \ac{GW} detection is now
 commonplace~\cite{PhysRevX.6.041015,PhysRevLett.119.161101} and as the
 sensitivity of the global network of \ac{GW} detectors improves, we will
-observe $\mathcal{O}(100)$s of transient \ac{GW} events per
+observe on the order of 100s of transient \ac{GW} events per
 year~\cite{2018LRR....21....3A}. The current methods used to estimate their
 source parameters employ optimally sensitive~\cite{2009CQGra..26o5017S} but
 computationally costly Bayesian inference approaches~\cite{1409.7215} where
-typical analyses have taken between 6 hours and 5 days~\cite{gracedb_O3}.
+typical analyses have taken between 6 hours and 6 days~\cite{gracedb_O3}.
+~\hunter{Ask Chris about these outliers.}
 %
 % rationale
 %
 For \ac{BNS} and \ac{NSBH} systems prompt counterpart \ac{EM} signatures are
 expected on timescales of 1 second -- 1 minute and the current fastest method
 for alerting \ac{EM} follow-up observers~\cite{2016PhRvD..93b4013S}, can
-provide estimates in $\mathcal{O}(1)$ minute, on a limited range of key source
+provide estimates in on the order of 1 minute, on a limited range of key source
 parameters. 
 %
 % results
@@ -423,7 +424,7 @@ We use a sampling frequency of $1024$~Hz, a time-series duration of 1 second, an
 the waveform model used is \texttt{IMRPhenomPv2}~\cite{1809.10113} with a
 minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
-\texttt{Bilby}. For each run and sampler we extract $\mathcal{O}(8000)$
+\texttt{Bilby}. For each run and sampler we extract on the order of 8000
 samples from the posterior on the 15 physical parameters.  
 
 %
@@ -512,7 +513,7 @@ conditioned on the same test data $y$ from the ``gold standard'' benchmark
 sampler \texttt{Dynesty} and every other benchmark sampler (including 
 \texttt{VItamin}~\hunter{I reworded this sentence here}.  This measure of ``
 distribution similarity'' shows that the results of \texttt{VItamin} vs. 
-\texttt{Dynesty} generally lies between those of  \texttt{CPNest} vs. 
+\texttt{Dynesty} generally lie between those of  \texttt{CPNest} vs. 
 \texttt{Dynesty} and \texttt{ptemcee} vs. \texttt{Dynesty}~\hunter{I reworded 
 this sentence here.}.
 
@@ -520,7 +521,7 @@ this sentence here.}.
 % discuss the speed of the analysis
 %
 The dominating computational cost of running \texttt{VItamin} lies in the
-training time, which takes $\mathcal{O}(7)$ days to complete. We
+training time, which takes on the order of 7 days to complete. We
 stress that once trained, there is no need to retrain the network unless the
 user wishes to use different priors $p(x)$ or assume different noise
 characteristics. The speed at which posterior samples are generated for all
@@ -557,12 +558,12 @@ $\displaystyle\frac{\tau_{\text{VItamin}}}{\tau_{X}}$} \\
 & min & max & median & \\
 \hline
 \texttt{Dynesty}\footnote{The benchmark samplers all produced
-$\mathcal{O}(8000)$ samples dependent on the default sampling parameters
+on the order of 8000 samples dependent on the default sampling parameters
 used.}~\cite{dynesty} & 21564 & 261268 & 45607
 \footnote{We note that there are a growing number of specialised
 techniques~\cite{2016PhRvD..94d4031S,2019PhRvD..99h4026W,2019PhRvD.100d3030T,PhysRevD.92.023002}
 designed to speed up traditional sampling algorithms that could be used to
-reduce the runtimes quoted here by $\mathcal{O}(1-2)$ orders of magnitude.}
+reduce the runtimes quoted here by approximately 1-2 orders of magnitude.}
 %\footnote{The reader may note that benchmark sampler run times are a few orders
 %of magnitude lower than what is typical of a complete \ac{BBH} analysis
 %($\mathcal{O}(10^{4} -10^{5})$ seconds). This is primarily due our use of a
@@ -635,7 +636,7 @@ The predicted number of future detections of \ac{BNS} mergers ($\sim
 180$~\cite{2018LRR....21....3A}) will severely strain the \ac{GW} community's
 current computational resources using existing Bayesian methods. We anticipate
 that future iterations of our approach will provide full-parameter estimation
-on all classes of \ac{CBC} signals in $\mathcal{O}(1)$ second on single
+on all classes of \ac{CBC} signals in approximately 1 second on single
 \acp{GPU}. Our trained network is also modular, and can be shared and used
 easily by any user to produce results. The specific analysis described in this
 letter assumes a uniform prior on the signal parameters. However, this is a
@@ -902,7 +903,7 @@ the parameter space and hence an analytic noise and signal model must be
 assumed. For a \ac{CVAE} implementation we are required only to sample from
 the likelihood distribution, i.e., generate simulated noisy measurements given a
 set of signal parameters. This gives us the option of avoiding the assumption
-of detector noise Gaussianity in the future by training the \ac{CVAE} using "real"
+of detector noise Gaussianity in the future by training the \ac{CVAE} using ``real''
 non-Gaussian detector noise.
 
 %
@@ -1160,7 +1161,7 @@ layers, the output then defines the parameters of a $n_z$-dimensional
 (diagonal) Gaussian mixture model in the latent space. We label these 
 parameters as $\mu_{r_1}$ containing $n_z\times M$ means 
 and log-covariances, where $M=32$ mixture component weights 
-and $n_z = 15$.The motivation for using this
+and $n_z = 15$. The motivation for using this
 mixture model representation comes from the multi-modal nature of \ac{GW}
 posterior distributions. The encoder network can use this flexibility to
 represent the $y$ time-series data as belonging to multiple possible latent
@@ -1495,7 +1496,7 @@ $>0.4\%$ in the worst case.
 %
 \begin{figure*}
     \includegraphics[width=\textwidth]{JS_IndiPar_dynesty.png}
-    \caption{\label{fig:kl_results} \hunter{New description here} We show JS divergence values for all 250 test samples as a function of test sample source parameter for \texttt{Dynesty} against every other sampling approach. Each sampler method vs. another sampler method are denoted as different colors. The lower and upper end of boxes represent the 25th and 75th percentile credible regions respectively. The lower and upper end of the whiskers represent the 5th and 95th percentile credible regions.  The orange lines are representative of the median JS values for each pair of compared samplers. We see here that \texttt{VItamin} performs to within a degree of acscuracy which is reasonably consistent with other Bayesian samplers when looking at predictions on an individual source parameter basis.
+    \caption{\label{fig:kl_results} \hunter{New description here} We show JS divergence values for all 250 test samples as a function of test sample source parameter for \texttt{Dynesty} against every other sampling approach. Each sampler method vs. another sampler method are denoted as different colors. The lower and upper end of boxes represent the 25th and 75th percentile credible regions respectively. The lower and upper end of the whiskers represent the 5th and 95th percentile credible regions.  The orange lines are representative of the median JS values for each pair of compared samplers. We see here that \texttt{VItamin} performs to within a degree of accuracy which is reasonably consistent with other Bayesian samplers when looking at predictions on an individual source parameter basis.
       }
 
 \end{figure*}
@@ -1521,11 +1522,10 @@ $\mathcal{O}(X)$.
 In Fig. \ref{fig:kl_results}, it can be seen that \texttt{Dynesty}  
 vs. \texttt{VItamin} JS values closely match results from 
 \texttt{Dynesty} vs. \texttt{Ptemcee} for nearly all parameters, with 
-the exception of $t_0$, $\theta_{jn}$, $\phi_{jl}$, $\alpha$ and 
-$\delta$. \texttt{VItamin} predictions have slightly 
+the exception of $\phi_{12}$ and $\psi$. \texttt{VItamin} predictions have slightly 
 higher \ac{JS} values across all source parameters except for the 
-spin parameters. \texttt{Dynesty} vs. CPNest seems to generally 
-have similar JS values to \texttt{Dynesty} vs. \texttt{Ptemcee} with 
+spin parameters. \texttt{Dynesty} vs. \texttt{CPNest} seems to generally 
+have similar \ac{JS} values to \texttt{Dynesty} vs. \texttt{Ptemcee} with 
 the exception of having broader credible intervals on $t_0$, 
 $\theta_{jn}$, $\phi_{jl}$, $\alpha$ and $\delta$. 
 \texttt{Dynesty} vs. \texttt{Emcee} generally has higher JS values than 
