@@ -143,7 +143,7 @@ year~\cite{2018LRR....21....3A}. The current methods used to estimate their
 source parameters employ optimally sensitive~\cite{2009CQGra..26o5017S} but
 computationally costly Bayesian inference approaches~\cite{1409.7215} where
 typical analyses have taken between 6 hours and 6 days~\cite{gracedb_O3}.
-~\hunter{Ask Chris about these outliers.}
+~\hunter{Update to include the GWTC-2 and GWTC-2.1}
 %
 % rationale
 %
@@ -339,6 +339,9 @@ of the training procedure are given in the methods section.
 %
 % brief mention of differences to a standard CVAE
 %
+\hunter{2D reparameterisation is on all 4 parameters}
+\hunter{Need to change the parameters to be in words "parameters with cyclic 
+prior bounds"}
 The implementation of the \ac{CVAE} that we employ in this letter has a
 number of specific features that were included in order to tailor the analysis to
 \ac{GW} signals. The details of these enhancements are described in the Methods
@@ -426,7 +429,11 @@ minimum cutoff frequency of $20$Hz. For each input test waveform we run the
 benchmark analysis using multiple sampling algorithms available within
 \texttt{Bilby}. For each run and sampler we extract on the order of 8000
 samples from the posterior on the 15 physical parameters.  
-
+\hunter{internally typo }
+\hunter{don't need an for spin parameters}
+\hunter{we internally marginalise can go}
+\hunter{mention mass conditional prior, we also enforce m1>m2}
+\hunter{Fix phase marginalisation error here. Needs to be 14 parameters.}
 %
 % the VItamin process
 %
@@ -453,7 +460,12 @@ We do not include $\phi_0$ in our results
 because we apply phase marginalisation to all Bayesian samplers. Phase marginalisation is 
 applied since this 
 improves overall stability and runtime of the samplers~\cite{1811.02042}.
-
+\hunter{Could get rid of this big vector of parameters}
+\hunter{On the 15 dimensional parameters X, comparison results do 
+not use phi0 when comparing to Bayesian samplers.}
+\hunter{make last sentence one sentence from since. don't need "of the 
+samplers" at the end.}
+\hunter{Move this sentence to the end of the previous paragraph.}
 %
 % Corner plot results
 %
@@ -490,11 +502,13 @@ dataset in Fig.~\ref{fig:corner_plot} where strong agreement between the
 \texttt{Bilby} sampler \texttt{Dynesty} in blue,  and the
 \ac{CVAE} (red) is clear. It is also evident that whilst we refer to the
 \texttt{Bilby} sampler results as benchmark cases, different existing samplers
-do not perfectly agree with each other(i.e. \texttt{ptemcee} in green) despite using 
-expert recommended sampler settings \hunter{I added something here}.  For each of our 
+do not perfectly agree with each other (i.e. \texttt{ptemcee} in green) despite using 
+expert recommended sampler settings \hunter{add reference to sampler settings 
+table}.  For each of our 
 250 test cases we see
 reasonable levels of disparity between pairs of benchmark samplers \emph{and}
 between any benchmark sampler and our \ac{CVAE} results. 
+\hunter{Maybe this last sentence should be cut}
 
 %
 % mention the p-p plot and KL distribution results
@@ -512,7 +526,7 @@ within the $X\%$ confidence interval for $X\%$ of the test cases). The second
 test computes the distribution of \ac{JS}-divergences between posteriors
 conditioned on the same test data $y$ from the ``gold standard'' benchmark 
 sampler \texttt{Dynesty} and every other benchmark sampler (including 
-\texttt{VItamin}~\hunter{I reworded this sentence here}.  This measure of ``
+\texttt{VItamin})~\hunter{I reworded this sentence here}.  This measure of ``
 distribution similarity'' shows that the results of \texttt{VItamin} vs. 
 \texttt{Dynesty} generally lie between those of  \texttt{CPNest} vs. 
 \texttt{Dynesty} and \texttt{ptemcee} vs. \texttt{Dynesty}~\hunter{I reworded 
@@ -608,7 +622,8 @@ simulated \ac{GW} signals and does not require the input of precomputed
 posterior estimates. We have demonstrated that our neural network model, which
 when trained, can produce \hunter{Changed this to produce rather than reproduce.} complete and accurate posterior estimates in
 a fraction of a second, achieves the same quality of results as the
-trusted benchmark analyses used within the LIGO-Virgo Collaboration.
+trusted benchmark analyses used within the \ac{LVC}.
+\hunter{fix space typo in fig.2}
 
 %
 % CBC implications and why this is a game-changer - speed for EM followup
@@ -618,7 +633,8 @@ increase in speed over existing algorithms. We have demonstrated the approach
 using \ac{BBH} signals but with additional work to increase sample rate
 and signal duration, the method can also be extended for application to
 signals from \ac{BNS} mergers (e.g., GW170817~\cite{PhysRevLett.119.161101},
-and GW190425~\cite{2020ApJ...892L...3A}) and \ac{NSBH} systems where
+and GW190425~\cite{2020ApJ...892L...3A}) and \ac{NSBH} systems\hunter{reference 
+NSBH paper} where
 improved low-latency alerts will be especially pertinent. By using our
 approach, parameter estimation speed will no longer be limiting
 factor\footnote{A complete low-latency pipeline includes a number of
@@ -921,7 +937,8 @@ represent the cost when computed on independent validation data. The close
 agreement between training and validation cost values indicates that the
 network is not overfitting to the training data. The change in behavior of the
 cost between $10^2$ and $3\times10^2$ epochs is a consequence of gradually
-introducing the \ac{KL} cost term contribution via an annealing process.} 
+introducing the \ac{KL} cost term contribution via an annealing process.\hunter{
+Add the definition of an epoch somewhere (if not already there)}} 
 \end{figure}
 
 %
@@ -983,7 +1000,11 @@ dropout and batch-normalisation layers.
 %
 \begin{table*}
 \centering
-\caption{The \texttt{VItamin} network hyper-parameters}
+\caption{The \texttt{VItamin} network hyper-parameters \hunter{for the 
+2d abstract plane each parameter, is actually two. So 19,2 in r2. Cyclic 
+parameters have two means and two variances since it's in the 2d plane.
+Make a statement that says they're shared and use dash in r2 and q. State in 
+beginning of text of network design that this is the case.}}
 \begin{tabular}[t]{l|ccc}
 \toprule
 \backslashbox{Layer}{Network} & $r_{\theta_1}(z|y)$ & $r_{\theta_2}(x|y,z)$ & $q_{\phi}(z|x,y)$ \\
@@ -1207,6 +1228,7 @@ Independent von Mises distributions are applied for the polarization angle,  pha
 and spin parameters $\phi_{12},\phi_{jl}$ in order to capture the periodic 
 nature of these parameters. Finally, we use the von Mises-Fisher distribution
 to model the right ascension and declination (sky) parameters.    
+\hunter{May want to mention 2D representation here.}
 
 %
 % Reparameterisation trick on phase/psi
@@ -1221,7 +1243,15 @@ $\psi^{'}$ is given as the modulus of $\frac{\psi}{\pi/2}$. The parameterisation
 of modes seen by the network, thus making the search space simpler. After training, the network 
 will output posterior samples in the $X,\psi^{'}$ abstract space  and we 
 must then convert back to the original $\psi$ and $\phi_ 0$ space to produce our final 
-set of posterior samples. 
+set of posterior samples. \hunter{don't have fractions in text.}
+
+\hunter{psi and phi are not together cyclic, so thus we must reparameterise them
+.}
+\hunter{The reason the 2D plane is used is because there's no bounderies. also, very 
+easy to jump from 0 to 2pi}
+\hunter{Have to say at the end of this. This parametersation is completey acceptable
+for spinning, precessing waveforms, but not appropriate when considering higher order 
+modes.}
 
 %
 % decribe the hyper-parameter optimisation analysis
@@ -1337,7 +1367,7 @@ also find that the stability of training is negatively affected by the
 complexity of our tailored output decoder likelihood functions. To resolve this
 we apply the same annealing procedure over the same epoch range in transitioning
 between unbound Gaussian likelihoods on all physical parameters to the tailored
-likelihoods. 
+likelihoods. \hunter{change to truncated, see thesis.}
 
 %
 % Some practical aspects of the training
@@ -1353,6 +1383,10 @@ to adequately cover the \ac{BBH} parameter space. We additionally ensure that
 an (effectively) infinite number of noise realizations are employed by making
 sure that every time a training sample is used it is given a unique noise
 realisation despite only having a finite number of waveforms.
+\hunter{change epoch definition.}
+\hunter{Add one sentence. We augment the data on the amplitude, phase and time 
+of arrival every time we load in new data. This is done by shifting all the 
+parameters randomly when we read it in.}
 
 %
 % completion of training and hardware
@@ -1480,6 +1514,7 @@ modal at the 0.4\% level. \texttt{Dynesty} has a worst case that is consistent o
 0.7\% level.  All other samplers (including \texttt{VItamin}) show consistency at
 $>0.4\%$ in the worst case.     
 
+\hunter{Add reference to github code when mentioning vitamin at first. (page 2}
 %
 %\begin{figure*}
 %    \includegraphics[width=\textwidth]{hist-kl.png}
@@ -1497,7 +1532,7 @@ $>0.4\%$ in the worst case.
 %
 \begin{figure*}
     \includegraphics[width=\textwidth]{JS_IndiPar_dynesty.png}
-    \caption{\label{fig:kl_results} \hunter{New description here} We show JS divergence values for all 250 test samples as a function of test sample source parameter for \texttt{Dynesty} against every other sampling approach. Each sampler method vs. another sampler method are denoted as different colors. The lower and upper end of boxes represent the 25th and 75th percentile credible regions respectively. The lower and upper end of the whiskers represent the 5th and 95th percentile credible regions.  The orange lines are representative of the median JS values for each pair of compared samplers. We see here that \texttt{VItamin} performs to within a degree of accuracy which is reasonably consistent with other Bayesian samplers when looking at predictions on an individual source parameter basis.
+    \caption{\label{fig:kl_results} \hunter{New description here} We show JS divergence values for all 250 test samples as a function of test sample source parameter for \texttt{Dynesty} against every other sampling approach. Each sampler method vs. another sampler method are denoted as different colors. The lower and upper end of boxes represent the 25th and 75th percentile credible regions respectively. The lower and upper end of the whiskers represent the 5th and 95th percentile credible regions.  The orange lines are representative of the median JS values for each pair of compared samplers. \hunter{move legend to bottom left}
       }
 
 \end{figure*}
@@ -1516,16 +1551,17 @@ samples from the corresponding posterior. We then compute the
 1-dimensional \ac{JS}-divergence between the output single 
 parameter distributions from each sampler with every 
 other sampler~\cite{4839047}. For distributions that are 
-identical, the \ac{JS}-divergence {should} equal zero but since we 
+identical, the \ac{JS}-divergence {should} \hunter{results in finiti 
+JS divergence values. Remove the end of this sentence.} equal zero but since we 
 are representing our posterior distributions using finite numbers of 
 samples, identical distributions result in \ac{JS}-divergence values
 $\mathcal{O}(X)$.  
 In Fig. \ref{fig:kl_results}, it can be seen that \texttt{Dynesty}  
-vs. \texttt{VItamin} JS values closely match results from 
+vs. \texttt{VItamin} JS values are competitive with results from 
 \texttt{Dynesty} vs. \texttt{ptemcee} for nearly all parameters, with 
 the exception of $\phi_{12}$ and $\psi$. \texttt{VItamin} predictions have slightly 
 higher \ac{JS} values across all source parameters except for the 
-spin parameters. \texttt{Dynesty} vs. \texttt{CPNest} seems to generally 
+spin parameters. The \texttt{Dynesty} vs. \texttt{CPNest} comparison seems to generally 
 have similar \ac{JS} values to \texttt{Dynesty} vs. \texttt{ptemcee} with 
 the exception of having broader credible intervals on $t_0$, 
 $\theta_{jn}$, $\phi_{jl}$, $\alpha$ and $\delta$. 
