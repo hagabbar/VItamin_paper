@@ -455,8 +455,8 @@ as input into the testing path of the pre-trained
 \ac{CVAE} (Fig.~\ref{fig:network_config}). For each input waveform we sample until we
 have generated $8000$ posterior samples on 15 physical parameters, collectively denoted 
 here as $x$.  Comparison results between \texttt{VItamin} and Bayesian samplers 
-do not use $\phi_0$ since it is marginalised out in the Bayesian samplers. \hunter{I don't like this 
-wording.}
+do not use $\phi_0$ since it is marginalised out in the Bayesian sampler inference 
+process.
 
 %
 % Corner plot results
@@ -1513,7 +1513,7 @@ $>0.4\%$ in the worst case.
 %
 \begin{figure*}
     \includegraphics[width=\textwidth]{JS_IndiPar_dynesty.png}
-    \caption{\label{fig:kl_results} We show JS divergence values for all 250 test samples as a function of test sample source parameter for \texttt{Dynesty} against every other sampling approach. Each sampler method vs. another sampler method are denoted as different colors. The lower and upper end of boxes represent the 25th and 75th percentile credible regions respectively. The lower and upper end of the whiskers represent the 5th and 95th percentile credible regions.  The orange lines are representative of the median JS values for each pair of compared samplers. \hunter{move legend to bottom left}
+    \caption{\label{fig:kl_results} We show JS divergence values for all 250 test samples as a function of test sample source parameter for \texttt{Dynesty} against every other sampling approach. Each sampler method vs. another sampler method are denoted as different colors. The lower and upper end of boxes represent the 25th and 75th percentile credible regions respectively. The lower and upper end of the whiskers represent the 5th and 95th percentile credible regions.  The orange lines are representative of the median JS values for each pair of compared samplers.
       }
 
 \end{figure*}
